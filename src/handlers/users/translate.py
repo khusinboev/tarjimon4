@@ -100,10 +100,10 @@ def translate_auto(to_lang: str, text: str) -> str:
     return translate_text("auto", to_lang, text)
 
 
-async def reply_in_chunks(msg: Message, text: str, prefix: str = ""):
+async def answer_in_chunks(msg: Message, text: str, prefix: str = ""):
     chunk_size = 3500
     for i in range(0, len(text), chunk_size):
-        await msg.reply(prefix + text[i:i + chunk_size], parse_mode="HTML")
+        await msg.answer(prefix + text[i:i + chunk_size], parse_mode="HTML")
         prefix = ""
 
 
@@ -136,9 +136,9 @@ async def handle_text(msg: Message):
 
     try:
         result = translate_auto(to_lang, msg.text) if from_lang == "auto" else translate_text(from_lang, to_lang, msg.text)
-        await reply_in_chunks(msg, result)
+        await answer_in_chunks(msg, result)
     except Exception as e:
-        await msg.reply(f"⚠️ Xatolik yuz berdi:\n{e}")
+        await msg.answer(f"⚠️ Xatolik yuz berdi:\n{e}")
 
 
 @translate_router.message(F.caption)
@@ -153,9 +153,9 @@ async def handle_caption(msg: Message):
 
     try:
         result = translate_auto(to_lang, msg.caption) if from_lang == "auto" else translate_text(from_lang, to_lang, msg.caption)
-        await reply_in_chunks(msg, result)
+        await answer_in_chunks(msg, result)
     except Exception as e:
-        await msg.reply(f"⚠️ Xatolik yuz berdi:\n{e}")
+        await msg.answer(f"⚠️ Xatolik yuz berdi:\n{e}")
 
 
 async def transcribe_audio(file_bytes: bytes) -> str:
@@ -173,30 +173,29 @@ async def transcribe_audio(file_bytes: bytes) -> str:
             os.remove(tmp_path)
 
 
-# === ASOSNI FONDA ISHLATADIGAN FUNKSIYA ===
 async def process_audio_task(msg: Message, file_bytes: bytes, from_lang: str, to_lang: str, caption: str = None):
     try:
         if caption:
             try:
                 cap_trans = translate_auto(to_lang, caption) if from_lang == "auto" else translate_text(from_lang, to_lang, caption)
-                await reply_in_chunks(msg, cap_trans, prefix="📝 <b>Caption tarjimasi:</b>\n")
+                await answer_in_chunks(msg, cap_trans, prefix="📝 <b>Caption tarjimasi:</b>\n")
             except Exception as e:
-                await msg.reply(f"⚠️ Caption tarjima xatoligi: {e}")
+                await msg.answer(f"⚠️ Caption tarjima xatoligi: {e}")
 
         transcript = await transcribe_audio(file_bytes)
         if not transcript:
-            await msg.reply("⚠️ Hech qanday matn aniqlanmadi.")
+            await msg.answer("⚠️ Hech qanday matn aniqlanmadi.")
             return
 
-        await reply_in_chunks(msg, transcript, prefix="🎙 <b>Transkripsiya:</b>\n")
+        await answer_in_chunks(msg, transcript, prefix="🎙 <b>Transkripsiya:</b>\n")
 
         try:
             translated = translate_auto(to_lang, transcript) if from_lang == "auto" else translate_text(from_lang, to_lang, transcript)
-            await reply_in_chunks(msg, translated, prefix="🌐 <b>Tarjima:</b>\n")
+            await answer_in_chunks(msg, translated, prefix="🌐 <b>Tarjima:</b>\n")
         except Exception as e:
-            await msg.reply(f"⚠️ Tarjima xatoligi: {e}")
+            await msg.answer(f"⚠️ Tarjima xatoligi: {e}")
     except Exception as e:
-        await msg.reply(f"⚠️ Xatolik: {e}")
+        await msg.answer(f"⚠️ Xatolik: {e}")
 
 
 @translate_router.message(F.voice | F.audio)
@@ -216,12 +215,9 @@ async def handle_media(msg: Message):
         file_obj = await msg.bot.download(file_id)
         file_bytes = file_obj.read()
 
-        await msg.reply("⏳ Audio qayta ishlanmoqda, biroz kuting...")
+        await msg.answer("⏳ Audio qayta ishlanmoqda, iltimos kuting...")
 
-        # Asosiy og‘ir vazifani fonda ishga tushiramiz
-        asyncio.create_task(
-            process_audio_task(msg, file_bytes, from_lang or "auto", to_lang, caption=msg.caption)
-        )
+        await process_audio_task(msg, file_bytes, from_lang or "auto", to_lang, caption=msg.caption)
 
     except Exception as e:
-        await msg.reply(f"⚠️ Foylani yuklashda xatolik:\n{e}")
+        await msg.answer(f"⚠️ Foylani yuklashda yoki qayta ishlashda xatolik:\n{e}")
