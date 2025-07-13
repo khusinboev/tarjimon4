@@ -4,20 +4,19 @@ import tempfile
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import (
-    Message, 
-    CallbackQuery, 
-    InlineKeyboardButton, 
-    InlineKeyboardMarkup
+    Message,
+    CallbackQuery,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
 )
 from deep_translator import GoogleTranslator
 from whisper import load_model
 
 from config import sql, db
 
-# Yagona router
 translate_router = Router()
 
-# --- Tillar ro‘yxati ---
+# --- Tillar ro'yxati ---
 LANGUAGES = {
     "auto": {"name": "Avto", "flag": "🌐"},
     "uz": {"name": "O‘zbek", "flag": "🇺🇿"},
@@ -32,20 +31,22 @@ LANGUAGES = {
     "ko": {"name": "Koreys", "flag": "🇰🇷"},
     "hi": {"name": "Hind", "flag": "🇮🇳"},
     "id": {"name": "Indonez", "flag": "🇮🇩"},
-    "fa": {"name": "Fors (Afg‘on)", "flag": "🇮🇷"},
+    "fa": {"name": "Fors", "flag": "🇮🇷"},
     "es": {"name": "Ispan", "flag": "🇪🇸"},
     "it": {"name": "Italyan", "flag": "🇮🇹"},
     "kk": {"name": "Qozoq", "flag": "🇰🇿"},
-    "ky": {"name": "Qirg‘iz", "flag": "🇰🇬"},
+    "ky": {"name": "Qirg'iz", "flag": "🇰🇬"},
     "az": {"name": "Ozarbayjon", "flag": "🇦🇿"},
     "tk": {"name": "Turkman", "flag": "🇹🇰"},
     "tg": {"name": "Tojik", "flag": "🇹🇯"},
 }
 
-# --- Foydalanuvchi tillari bilan ishlovchi funksiyalar ---
+
+# --- Foydalanuvchi tillari bilan ishlash ---
 def get_user_langs(user_id: int):
     sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id = %s", (user_id,))
     return sql.fetchone()
+
 
 def update_user_lang(user_id: int, lang_code: str, direction: str):
     assert direction in ["from", "to"]
@@ -62,6 +63,7 @@ def update_user_lang(user_id: int, lang_code: str, direction: str):
             (user_id, from_lang, to_lang),
         )
     db.commit()
+
 
 def get_language_inline_keyboard(user_id: int):
     user_langs = get_user_langs(user_id) or (None, None)
@@ -86,6 +88,7 @@ def get_language_inline_keyboard(user_id: int):
         ])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
+
 # --- Tarjima funksiyalari ---
 def translate_text(from_lang: str, to_lang: str, text: str) -> str:
     try:
@@ -93,14 +96,17 @@ def translate_text(from_lang: str, to_lang: str, text: str) -> str:
     except Exception as e:
         return f"⚠️ Tarjima xatosi: {e}"
 
+
 def translate_auto(to_lang: str, text: str) -> str:
     return translate_text("auto", to_lang, text)
+
 
 # --- Komanda: /languages ---
 @translate_router.message(Command("languages"))
 async def language_menu_handler(msg: Message):
     kb = get_language_inline_keyboard(msg.from_user.id)
     await msg.answer("🌤 Tillarni tanlang:\nChap: Kiruvchi | O‘ng: Chiquvchi", reply_markup=kb)
+
 
 # --- Tugma orqali tilni tanlash ---
 @translate_router.callback_query(F.data.startswith("setlang:"))
@@ -111,7 +117,16 @@ async def process_language_selection(callback: CallbackQuery):
     await callback.message.edit_reply_markup(reply_markup=kb)
     await callback.answer("✅ Til yangilandi")
 
-# --- Matnni tarjima qilish ---
+
+# --- Matnni bo'lib yuborish ---
+async def reply_in_chunks(msg: Message, text: str, prefix: str = ""):
+    chunk_size = 3500
+    for i in range(0, len(text), chunk_size):
+        await msg.reply(prefix + text[i:i + chunk_size], parse_mode="HTML")
+        prefix = ""
+
+
+# --- Text va caption tarjima qilish ---
 @translate_router.message(F.text)
 async def handle_text(msg: Message):
     user_langs = get_user_langs(msg.from_user.id)
@@ -125,16 +140,12 @@ async def handle_text(msg: Message):
         return
 
     try:
-        if from_lang == "auto" or not from_lang:
-            result = translate_auto(to_lang, msg.text)
-        else:
-            result = translate_text(from_lang, to_lang, msg.text)
-
-        await msg.reply(result[:3500] + ("..." if len(result) > 3500 else ""), parse_mode="HTML")
+        result = translate_auto(to_lang, msg.text) if from_lang == "auto" else translate_text(from_lang, to_lang, msg.text)
+        await reply_in_chunks(msg, result)
     except Exception as e:
         await msg.reply(f"⚠️ Xatolik yuz berdi:\n{e}")
 
-# --- Caption (sarlavha)ni tarjima qilish ---
+
 @translate_router.message(F.caption)
 async def handle_caption(msg: Message):
     user_langs = get_user_langs(msg.from_user.id)
@@ -146,47 +157,32 @@ async def handle_caption(msg: Message):
         return
 
     try:
-        if from_lang == "auto" or not from_lang:
-            result = translate_auto(to_lang, msg.caption)
-        else:
-            result = translate_text(from_lang, to_lang, msg.caption)
-
-        await msg.reply(result[:3500] + ("..." if len(result) > 3500 else ""), parse_mode="HTML")
+        result = translate_auto(to_lang, msg.caption) if from_lang == "auto" else translate_text(from_lang, to_lang, msg.caption)
+        await reply_in_chunks(msg, result)
     except Exception as e:
         await msg.reply(f"⚠️ Xatolik yuz berdi:\n{e}")
 
-# --- Whisper model faqat bir marta yuklanadi ---
+
+# --- Whisper model ---
 model = load_model("tiny")
 
-def limit_text_length(text: str, max_len: int = 3500) -> str:
-    return text if len(text) <= max_len else text[:max_len] + "..."
 
-# --- Ovozni transkriptsiya va tarjima qilish ---
-async def transcribe_and_translate(file_bytes: bytes, to_lang: str, from_lang: str = "auto") -> str:
+async def transcribe_audio(file_bytes: bytes) -> str:
     tmp_path = None
     try:
         with tempfile.NamedTemporaryFile(suffix=".ogg", delete=False) as tmp:
             tmp.write(file_bytes)
             tmp_path = tmp.name
-
         result = model.transcribe(tmp_path)
-        text = result.get("text", "").strip()
-
-        if not text:
-            return "⚠️ Hech qanday matn aniqlanmadi."
-
-        translated = GoogleTranslator(source=from_lang, target=to_lang).translate(text)
-
-        return limit_text_length(
-            f"🎙 <b>Transkripsiya:</b> {text}\n\n🌐 <b>Tarjima:</b> {translated}"
-        )
+        return result.get("text", "").strip()
     except Exception as e:
-        return f"⚠️ Xatolik: {e}"
+        return f"⚠️ Transkripsiya xatosi: {e}"
     finally:
         if tmp_path and os.path.exists(tmp_path):
             os.remove(tmp_path)
 
-# --- Voice va Audio xabarlar uchun handler ---
+
+# --- Audio va Voice uchun handler ---
 @translate_router.message(F.voice | F.audio)
 async def handle_media(msg: Message):
     user_langs = get_user_langs(msg.from_user.id)
@@ -200,10 +196,32 @@ async def handle_media(msg: Message):
         return
 
     try:
-        file_obj = await msg.bot.download(msg.voice.file_id if msg.voice else msg.audio.file_id)
+        file_id = msg.voice.file_id if msg.voice else msg.audio.file_id
+        file_obj = await msg.bot.download(file_id)
         file_bytes = file_obj.read()
 
-        result = await transcribe_and_translate(file_bytes, to_lang, from_lang or "auto")
-        await msg.reply(result, parse_mode="HTML")
+        # Caption tarjimasi (mavjud bo‘lsa)
+        if msg.caption:
+            try:
+                cap_trans = translate_auto(to_lang, msg.caption) if from_lang == "auto" else translate_text(from_lang, to_lang, msg.caption)
+                await reply_in_chunks(msg, cap_trans, prefix="📝 <b>Caption tarjimasi:</b>\n")
+            except Exception as e:
+                await msg.reply(f"⚠️ Caption tarjima xatoligi: {e}")
+
+        # Transkripsiya
+        transcript = await transcribe_audio(file_bytes)
+        if not transcript:
+            await msg.reply("⚠️ Hech qanday matn aniqlanmadi.")
+            return
+
+        await reply_in_chunks(msg, transcript, prefix="🎙 <b>Transkripsiya:</b>\n")
+
+        # Tarjima
+        try:
+            translated = translate_auto(to_lang, transcript) if from_lang == "auto" else translate_text(from_lang, to_lang, transcript)
+            await reply_in_chunks(msg, translated, prefix="🌐 <b>Tarjima:</b>\n")
+        except Exception as e:
+            await msg.reply(f"⚠️ Tarjima xatoligi: {e}")
+
     except Exception as e:
-        await msg.reply(f"⚠️ Xatolik yuz berdi:\n{e}")
+        await msg.reply(f"⚠️ Foylani yuklashda yoki qayta ishlashda xatolik:\n{e}")
