@@ -10,6 +10,7 @@ from src.handlers.admins.messages import msg_router
 from src.handlers.others.channels import channel_router
 from src.handlers.others.groups import group_router
 from src.handlers.others.other import other_router
+from src.handlers.users.media_translate import media_router
 from src.handlers.users.translate import translate_router
 from src.handlers.users.users import user_router
 from src.middlewares.middleware import RegisterUserMiddleware
@@ -33,6 +34,7 @@ async def main():
     #for user
     dp.include_router(user_router)
     dp.include_router(translate_router)
+    dp.include_router(media_router)
 
     #for other
     dp.include_router(group_router)
