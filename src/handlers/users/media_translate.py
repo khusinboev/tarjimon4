@@ -50,7 +50,7 @@ async def handle_voice(msg: Message):
         return
 
     file = await msg.bot.download(msg.voice.file_id)
-    content = await file.read()
+    content = file.read()
     result = await transcribe_and_translate(content, to_lang, from_lang or "auto")
     await msg.reply(result)
 
@@ -69,6 +69,6 @@ async def handle_audio(msg: Message):
         return
 
     file = await msg.bot.download(msg.audio.file_id)
-    content = await file.read()
+    content = file.read()
     result = await transcribe_and_translate(content, to_lang, from_lang or "auto")
     await msg.reply(result)
