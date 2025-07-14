@@ -145,7 +145,7 @@ async def answer_in_chunks_bot(bot: Bot, chat_id: int, text: str, prefix: str = 
         prefix = ""
 
 
-@translate_router.message(Command("languages"))
+@translate_router.message(Command("lang"))
 async def language_menu_handler(msg: Message):
     """Til menyusini ko'rsatish"""
     kb = get_language_inline_keyboard(msg.from_user.id)
