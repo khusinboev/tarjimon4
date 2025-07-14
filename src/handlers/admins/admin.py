@@ -44,7 +44,7 @@ async def backs(message: Message, state: FSMContext):
 
 
 # Statistika
-@admin_router.message(F.text == "📊Statistika", F.chat.type == ChatType.PRIVATE, F.from_user.id.in_(adminPanel))
+@admin_router.message(F.text == "📊Statistika", F.chat.type == ChatType.PRIVATE, F.from_user.id.in_(ADMIN_ID))
 async def new(message: Message):
     now = datetime.now(pytz.timezone("Asia/Tashkent")).date()
 
