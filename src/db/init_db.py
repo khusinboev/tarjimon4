@@ -1,5 +1,6 @@
 from config import db, sql
-from src.handlers.users.xususiyatlar import LANGUAGES
+from src.handlers.users.translate import LANGUAGES
+
 
 async def create_all_base():
     sql.execute("""CREATE TABLE IF NOT EXISTS public.accounts
