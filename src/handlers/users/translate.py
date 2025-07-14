@@ -15,7 +15,7 @@ from deep_translator import GoogleTranslator
 from concurrent.futures import ThreadPoolExecutor
 
 from whisper import load_model
-import easyocr
+# import easyocr
 
 from config import sql, db
 
@@ -358,86 +358,86 @@ async def handle_media(msg: Message, bot: Bot):
     except Exception as e:
         await msg.answer(f"⚠️ Foylni yuklashda xatolik:\n{e}")
 
-async def process_image_task(bot: Bot, chat_id: int, image_bytes: bytes, from_lang: str, to_lang: str):
-    try:
-        if from_lang not in OCR_LANGS:
-            await bot.send_message(chat_id, "⚠️ Bu tilda OCR (rasmdan matn ajratish) hozircha qo‘llab-quvvatlanmaydi.")
-            return
-
-        processing_msg = await bot.send_message(chat_id, "⏳ Rasm qayta ishlanmoqda, iltimos kuting...")
-
-        text = extract_text_from_image(image_bytes, from_lang)
-
-        if not text:
-            await bot.edit_message_text(
-                chat_id=chat_id,
-                message_id=processing_msg.message_id,
-                text="⚠️ Rasm ichida matn topilmadi."
-            )
-            return
-
-        await bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=processing_msg.message_id,
-            text="✅ Rasmdan matn ajratildi, tarjima qilinmoqda..."
-        )
-
-        await answer_in_chunks_bot(bot, chat_id, text, prefix="📄 <b>Ajratilgan matn:</b>\n")
-
-        translated = (
-            translate_auto(to_lang, text) if from_lang == "auto"
-            else translate_text(from_lang, to_lang, text)
-        )
-        await answer_in_chunks_bot(bot, chat_id, translated, prefix="🌐 <b>Tarjima:</b>\n")
-
-        # Oxirida qayta ishlash xabarini o‘chirish
-        try:
-            await bot.delete_message(chat_id, processing_msg.message_id)
-        except Exception:
-            pass
-
-    except Exception as e:
-        await bot.send_message(chat_id, f"⚠️ Rasmni qayta ishlashda xatolik:\n{e}")
-
-def extract_text_from_image(image_bytes: bytes, lang_code: str) -> str:
-    if lang_code not in OCR_LANGS:
-        return None  # bu holda foydalanuvchiga "til qo‘llab-quvvatlanmaydi" deb aytiladi
-
-    reader = easyocr.Reader([lang_code], gpu=False)
-    result = reader.readtext(image_bytes, detail=0)
-    return "\n".join(result).strip()
-
-@translate_router.message(F.photo | F.document)
-async def handle_image(msg: Message):
-    user_langs = get_user_langs(msg.from_user.id)
-    if not user_langs:
-        await msg.answer("❗ Avval /languages buyrug‘i orqali tillarni tanlang.")
-        return
-
-    from_lang, to_lang = user_langs
-    if not to_lang:
-        await msg.answer("❗ Chiquvchi til tanlanmagan.")
-        return
-
-    try:
-        # Faylni olish
-        file_id = msg.photo[-1].file_id if msg.photo else msg.document.file_id
-        file = await msg.bot.get_file(file_id)
-        file_bytes_io = await msg.bot.download(file.file_id, destination=BytesIO())
-        image_bytes = file_bytes_io.getvalue()
-
-        # Orqa fon vazifa
-        asyncio.create_task(
-            process_image_task(
-                msg.bot,
-                msg.chat.id,
-                image_bytes,
-                from_lang or "auto",
-                to_lang
-            )
-        )
-
-        await msg.answer("🖼 Rasm qabul qilindi, qayta ishlash boshlanmoqda...")
-
-    except Exception as e:
-        await msg.answer(f"⚠️ Rasmni yuklashda xatolik:\n{e}")
+# async def process_image_task(bot: Bot, chat_id: int, image_bytes: bytes, from_lang: str, to_lang: str):
+#     try:
+#         if from_lang not in OCR_LANGS:
+#             await bot.send_message(chat_id, "⚠️ Bu tilda OCR (rasmdan matn ajratish) hozircha qo‘llab-quvvatlanmaydi.")
+#             return
+#
+#         processing_msg = await bot.send_message(chat_id, "⏳ Rasm qayta ishlanmoqda, iltimos kuting...")
+#
+#         text = extract_text_from_image(image_bytes, from_lang)
+#
+#         if not text:
+#             await bot.edit_message_text(
+#                 chat_id=chat_id,
+#                 message_id=processing_msg.message_id,
+#                 text="⚠️ Rasm ichida matn topilmadi."
+#             )
+#             return
+#
+#         await bot.edit_message_text(
+#             chat_id=chat_id,
+#             message_id=processing_msg.message_id,
+#             text="✅ Rasmdan matn ajratildi, tarjima qilinmoqda..."
+#         )
+#
+#         await answer_in_chunks_bot(bot, chat_id, text, prefix="📄 <b>Ajratilgan matn:</b>\n")
+#
+#         translated = (
+#             translate_auto(to_lang, text) if from_lang == "auto"
+#             else translate_text(from_lang, to_lang, text)
+#         )
+#         await answer_in_chunks_bot(bot, chat_id, translated, prefix="🌐 <b>Tarjima:</b>\n")
+#
+#         # Oxirida qayta ishlash xabarini o‘chirish
+#         try:
+#             await bot.delete_message(chat_id, processing_msg.message_id)
+#         except Exception:
+#             pass
+#
+#     except Exception as e:
+#         await bot.send_message(chat_id, f"⚠️ Rasmni qayta ishlashda xatolik:\n{e}")
+#
+# def extract_text_from_image(image_bytes: bytes, lang_code: str) -> str:
+#     if lang_code not in OCR_LANGS:
+#         return None  # bu holda foydalanuvchiga "til qo‘llab-quvvatlanmaydi" deb aytiladi
+#
+#     reader = easyocr.Reader([lang_code], gpu=False)
+#     result = reader.readtext(image_bytes, detail=0)
+#     return "\n".join(result).strip()
+#
+# @translate_router.message(F.photo | F.document)
+# async def handle_image(msg: Message):
+#     user_langs = get_user_langs(msg.from_user.id)
+#     if not user_langs:
+#         await msg.answer("❗ Avval /languages buyrug‘i orqali tillarni tanlang.")
+#         return
+#
+#     from_lang, to_lang = user_langs
+#     if not to_lang:
+#         await msg.answer("❗ Chiquvchi til tanlanmagan.")
+#         return
+#
+#     try:
+#         # Faylni olish
+#         file_id = msg.photo[-1].file_id if msg.photo else msg.document.file_id
+#         file = await msg.bot.get_file(file_id)
+#         file_bytes_io = await msg.bot.download(file.file_id, destination=BytesIO())
+#         image_bytes = file_bytes_io.getvalue()
+#
+#         # Orqa fon vazifa
+#         asyncio.create_task(
+#             process_image_task(
+#                 msg.bot,
+#                 msg.chat.id,
+#                 image_bytes,
+#                 from_lang or "auto",
+#                 to_lang
+#             )
+#         )
+#
+#         await msg.answer("🖼 Rasm qabul qilindi, qayta ishlash boshlanmoqda...")
+#
+#     except Exception as e:
+#         await msg.answer(f"⚠️ Rasmni yuklashda xatolik:\n{e}")
