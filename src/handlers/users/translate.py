@@ -15,8 +15,10 @@ from deep_translator import GoogleTranslator
 from concurrent.futures import ThreadPoolExecutor
 
 from whisper import load_model
+import easyocr
 
 from config import sql, db
+
 
 executor = ThreadPoolExecutor()
 translate_router = Router()
@@ -44,6 +46,24 @@ LANGUAGES = {
     "az": {"name": "Ozarbayjon", "flag": "🇦🇿"},
     "tk": {"name": "Turkman", "flag": "🇹🇰"},
     "tg": {"name": "Tojik", "flag": "🇹🇯"},
+}
+OCR_LANGS = {
+    "am": "amharic",
+    "en": "english",
+    "ru": "russian",
+    "uz": "latin",     # yoki "cyrillic" agar o‘zbek kirill
+    "tr": "turkish",
+    "ar": "arabic",
+    "fr": "french",
+    "de": "german",
+    "zh": "chinese_tra",  # yoki "chinese_simplified"
+    "ja": "japanese",
+    "ko": "korean",
+    "hi": "hindi",
+    "id": "indonesian",
+    "fa": "persian",
+    "es": "spanish",
+    "it": "italian",
 }
 
 
@@ -209,6 +229,30 @@ async def handle_caption(msg: Message):
     except Exception as e:
         await msg.answer(f"⚠️ Foydani yuklashda xatolik:\n{e}")
 
+    if msg.photo or msg.document:
+        try:
+            # Faylni olish
+            file_id = msg.photo[-1].file_id if msg.photo else msg.document.file_id
+            file = await msg.bot.get_file(file_id)
+            file_bytes_io = await msg.bot.download(file.file_id, destination=BytesIO())
+            image_bytes = file_bytes_io.getvalue()
+
+            await msg.answer("🖼 Rasm qabul qilindi, matn ajratilmoqda...")
+
+            text = extract_text_from_image(image_bytes, from_lang)
+
+            if not text:
+                await msg.answer("⚠️ Rasm ichida matn topilmadi.")
+                return
+
+            await answer_in_chunks(msg, text, prefix="📄 <b>Ajratilgan matn:</b>\n")
+
+            translated = translate_auto(to_lang, text) if from_lang == "auto" else translate_text(from_lang, to_lang, text)
+            await answer_in_chunks(msg, translated, prefix="🌐 <b>Tarjima:</b>\n")
+
+        except Exception as e:
+            await msg.answer(f"⚠️ Rasmni qayta ishlashda xatolik:\n{e}")
+
 
 async def transcribe_audio_async(file_path: str) -> str:
     loop = asyncio.get_running_loop()
@@ -311,7 +355,53 @@ async def handle_media(msg: Message, bot: Bot):
             caption=msg.caption
         ))
 
-        await msg.answer("🔊 Audio qabul qilindi, qayta ishlash orqa fonda boshlandi...")
-
     except Exception as e:
         await msg.answer(f"⚠️ Foylni yuklashda xatolik:\n{e}")
+
+
+def extract_text_from_image(image_bytes: bytes, lang_code: str) -> str:
+    if lang_code not in OCR_LANGS:
+        return None  # bu holda foydalanuvchiga "til qo‘llab-quvvatlanmaydi" deb aytiladi
+
+    reader = easyocr.Reader([lang_code], gpu=False)
+    result = reader.readtext(image_bytes, detail=0)
+    return "\n".join(result).strip()
+
+@translate_router.message(F.photo | F.document)
+async def handle_image(msg: Message):
+    user_langs = get_user_langs(msg.from_user.id)
+    if not user_langs:
+        await msg.answer("❗ Avval /languages buyrug‘i orqali tillarni tanlang.")
+        return
+
+    from_lang, to_lang = user_langs
+    if not to_lang:
+        await msg.answer("❗ Chiquvchi til tanlanmagan.")
+        return
+
+    if from_lang not in OCR_LANGS:
+        await msg.answer("⚠️ Bu tilda OCR (rasmdan matn ajratish) hozircha qo‘llab-quvvatlanmaydi.")
+        return
+
+    try:
+        # Faylni olish
+        file_id = msg.photo[-1].file_id if msg.photo else msg.document.file_id
+        file = await msg.bot.get_file(file_id)
+        file_bytes_io = await msg.bot.download(file.file_id, destination=BytesIO())
+        image_bytes = file_bytes_io.getvalue()
+
+        await msg.answer("🖼 Rasm qabul qilindi, matn ajratilmoqda...")
+
+        text = extract_text_from_image(image_bytes, from_lang)
+
+        if not text:
+            await msg.answer("⚠️ Rasm ichida matn topilmadi.")
+            return
+
+        await answer_in_chunks(msg, text, prefix="📄 <b>Ajratilgan matn:</b>\n")
+
+        translated = translate_auto(to_lang, text) if from_lang == "auto" else translate_text(from_lang, to_lang, text)
+        await answer_in_chunks(msg, translated, prefix="🌐 <b>Tarjima:</b>\n")
+
+    except Exception as e:
+        await msg.answer(f"⚠️ Rasmni qayta ishlashda xatolik:\n{e}")
