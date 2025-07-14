@@ -44,7 +44,7 @@ async def backs(message: Message, state: FSMContext):
 
 
 # Statistika
-@admin_router.message(F.text == "📊Statistika", F.chat.type == ChatType.PRIVATE, F.from_user.id.in_(ADMIN_ID))
+@admin_router.message(F.text == "📊Statistika", F.chat.type == ChatType.PRIVATE, F.from_user.id.in_(adminPanel))
 async def new(message: Message):
     now = datetime.now(pytz.timezone("Asia/Tashkent")).date()
 
@@ -56,18 +56,18 @@ async def new(message: Message):
     cur = conn.cursor()
 
     # Jami foydalanuvchilar
-    cur.execute("SELECT COUNT(*) FROM accounts")
+    cur.execute("SELECT COUNT(*) FROM users_status")
     all_users = cur.fetchone()[0]
 
     # Oxirgi 3 oydagi jami foydalanuvchilar
-    cur.execute("SELECT COUNT(*) FROM accounts WHERE date >= %s", (months[-1],))
+    cur.execute("SELECT COUNT(*) FROM users_status WHERE date >= %s", (months[-1],))
     last_3_months = cur.fetchone()[0]
 
     # Har bir oy bo‘yicha statistikalar
     month_counts = {}
     for month in months:
         cur.execute(
-            "SELECT COUNT(*) FROM accounts WHERE date >= %s AND date < %s",
+            "SELECT COUNT(*) FROM users_status WHERE date >= %s AND date < %s",
             (month, month + relativedelta(months=1))
         )
         month_counts[month.strftime("%B")] = cur.fetchone()[0] or 0  # Oy nomlari
@@ -76,7 +76,7 @@ async def new(message: Message):
     last_7_days = {}
     for i in range(7):
         date_str = (now - timedelta(days=i)).strftime("%Y-%m-%d")
-        cur.execute("SELECT COUNT(*) FROM accounts WHERE date = %s", (date_str,))
+        cur.execute("SELECT COUNT(*) FROM users_status WHERE date = %s", (date_str,))
         last_7_days[date_str] = cur.fetchone()[0] or 0
 
     cur.close()
@@ -96,6 +96,7 @@ async def new(message: Message):
         stats_text += f" - {day}: {count} ta\n"
 
     await message.answer(stats_text, parse_mode="Markdown")
+
 
 
 # Kanallar bo'limi
