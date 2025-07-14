@@ -220,6 +220,7 @@ async def process_audio_task(bot: Bot, chat_id: int, file_bytes: bytes, from_lan
     try:
         processing_msg = await bot.send_message(chat_id, "⏳ Audio qayta ishlanmoqda, iltimos kuting...")
 
+        # Caption tarjimasi
         if caption:
             try:
                 cap_trans = (translate_auto(to_lang, caption) if from_lang == "auto"
@@ -228,25 +229,49 @@ async def process_audio_task(bot: Bot, chat_id: int, file_bytes: bytes, from_lan
             except Exception as e:
                 await bot.send_message(chat_id, f"⚠️ Caption tarjima xatoligi: {e}")
 
+        # Faylni vaqtincha saqlaymiz
         with tempfile.NamedTemporaryFile(suffix=".ogg", delete=False) as tmp:
             tmp.write(file_bytes)
             tmp_path = tmp.name
 
+        # Transkripsiya
         transcript = await transcribe_audio_async(tmp_path)
-        os.unlink(tmp_path)  # faylni o'chiramiz
+        os.unlink(tmp_path)  # vaqtinchalik faylni o‘chirish
 
         if not transcript:
-            await bot.edit_message_text("⚠️ Hech qanday matn aniqlanmadi.", chat_id, processing_msg.message_id)
+            try:
+                await bot.edit_message_text(
+                    chat_id=chat_id,
+                    message_id=processing_msg.message_id,
+                    text="⚠️ Hech qanday matn aniqlanmadi."
+                )
+            except Exception:
+                await bot.send_message(chat_id, "⚠️ Hech qanday matn aniqlanmadi.")
             return
 
-        await bot.edit_message_text("✅ Audio transkripsiya qilindi, tarjima qilinmoqda...", chat_id, processing_msg.message_id)
+        # Xabarni tahrirlash — muvaffaqiyatli
+        try:
+            await bot.edit_message_text(
+                chat_id=chat_id,
+                message_id=processing_msg.message_id,
+                text="✅ Audio transkripsiya qilindi, tarjima qilinmoqda..."
+            )
+        except Exception:
+            await bot.send_message(chat_id, "✅ Audio transkripsiya qilindi, tarjima qilinmoqda...")
+
+        # Transkripsiya matni
         await answer_in_chunks_bot(bot, chat_id, transcript, prefix="🎙 <b>Transkripsiya:</b>\n")
 
+        # Tarjimasi
         translated = (translate_auto(to_lang, transcript) if from_lang == "auto"
                       else translate_text(from_lang, to_lang, transcript))
         await answer_in_chunks_bot(bot, chat_id, translated, prefix="🌐 <b>Tarjima:</b>\n")
 
-        await bot.delete_message(chat_id, processing_msg.message_id)
+        # Ortiqcha xabarni o‘chirish
+        try:
+            await bot.delete_message(chat_id, processing_msg.message_id)
+        except Exception:
+            pass
 
     except Exception as e:
         await bot.send_message(chat_id, f"⚠️ Xatolik yuz berdi:\n{e}")
