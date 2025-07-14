@@ -34,7 +34,7 @@ async def main():
     #for user
     dp.include_router(user_router)
     dp.include_router(translate_router)
-    dp.include_router(media_router)
+    # dp.include_router(media_router)
 
     #for other
     dp.include_router(group_router)

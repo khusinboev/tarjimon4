@@ -3,7 +3,7 @@ import tempfile
 import asyncio
 from io import BytesIO
 
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.filters import Command
 from aiogram.types import (
     Message,
@@ -12,10 +12,13 @@ from aiogram.types import (
     InlineKeyboardMarkup,
 )
 from deep_translator import GoogleTranslator
+from concurrent.futures import ThreadPoolExecutor
+
 from whisper import load_model
 
 from config import sql, db
 
+executor = ThreadPoolExecutor()
 translate_router = Router()
 model = load_model("tiny")
 
@@ -107,10 +110,18 @@ def translate_auto(to_lang: str, text: str) -> str:
 
 
 async def answer_in_chunks(msg: Message, text: str, prefix: str = ""):
-    """Uzun matnlarni bo'laklarga bo'lib jo'natish"""
+    """msg.answer() asosida uzun matnlarni yuborish"""
     chunk_size = 3500
     for i in range(0, len(text), chunk_size):
         await msg.answer(prefix + text[i:i + chunk_size], parse_mode="HTML")
+        prefix = ""
+
+
+async def answer_in_chunks_bot(bot: Bot, chat_id: int, text: str, prefix: str = ""):
+    """bot.send_message() asosida uzun matnlarni yuborish"""
+    chunk_size = 3500
+    for i in range(0, len(text), chunk_size):
+        await bot.send_message(chat_id, prefix + text[i:i + chunk_size], parse_mode="HTML")
         prefix = ""
 
 
@@ -168,63 +179,83 @@ async def handle_caption(msg: Message):
     except Exception as e:
         await msg.answer(f"⚠️ Xatolik yuz berdi:\n{e}")
 
-
-async def transcribe_audio(file_bytes: bytes) -> str:
-    """Audioni matnga aylantirish (transkripsiya qilish)"""
     try:
-        with tempfile.NamedTemporaryFile(suffix=".ogg") as tmp:
-            tmp.write(file_bytes)
-            tmp.flush()  # Ma'lumotlarni diskga yozishni ta'minlash
-            result = model.transcribe(tmp.name)
-            return result.get("text", "").strip()
+        if msg.voice or msg.audio or msg.video_note:
+            # Faylni yuklab olish
+            if msg.voice:
+                file_id = msg.voice.file_id
+            elif msg.audio:
+                file_id = msg.audio.file_id
+            else:  # video_note
+                file_id = msg.video_note.file_id
+
+            file = await msg.bot.get_file(file_id)
+            file_bytes = await msg.bot.download(file.file_id, destination=BytesIO())
+
+            # Orqa fonda ishlash uchun task yaratish
+            asyncio.create_task(
+                process_audio_task(
+                    msg,
+                    file_bytes.getvalue(),
+                    from_lang or "auto",
+                    to_lang,
+                    caption=msg.caption
+                )
+            )
+
+            # Darhol javob qaytarish
+            await msg.answer("🔊 Audio qabul qilindi, qayta ishlash boshlandi...")
+
     except Exception as e:
-        return f"⚠️ Transkripsiya xatosi: {e}"
+        await msg.answer(f"⚠️ Foydani yuklashda xatolik:\n{e}")
 
 
-async def process_audio_task(msg: Message, file_bytes: bytes, from_lang: str, to_lang: str, caption: str = None):
-    """Audioni orqa fonda qayta ishlash"""
+async def transcribe_audio_async(file_path: str) -> str:
+    loop = asyncio.get_running_loop()
+    result = await loop.run_in_executor(executor, lambda: model.transcribe(file_path))
+    return result.get("text", "").strip()
+
+
+async def process_audio_task(bot: Bot, chat_id: int, file_bytes: bytes, from_lang: str, to_lang: str, caption: str = None):
     try:
-        # Jarayon boshlanganligi haqida xabar
-        processing_msg = await msg.answer("⏳ Audio qayta ishlanmoqda, iltimos kuting...")
+        processing_msg = await bot.send_message(chat_id, "⏳ Audio qayta ishlanmoqda, iltimos kuting...")
 
-        # Agar caption bo'lsa, avval uni tarjima qilish
         if caption:
             try:
-                cap_trans = (translate_auto(to_lang, caption) if from_lang == "auto" 
-                          else translate_text(from_lang, to_lang, caption))
-                await answer_in_chunks(msg, cap_trans, prefix="📝 <b>Caption tarjimasi:</b>\n")
+                cap_trans = (translate_auto(to_lang, caption) if from_lang == "auto"
+                             else translate_text(from_lang, to_lang, caption))
+                await bot.send_message(chat_id, f"📝 <b>Caption tarjimasi:</b>\n{cap_trans}", parse_mode="HTML")
             except Exception as e:
-                await msg.answer(f"⚠️ Caption tarjima xatoligi: {e}")
+                await bot.send_message(chat_id, f"⚠️ Caption tarjima xatoligi: {e}")
 
-        # Transkripsiya qilish
-        transcript = await transcribe_audio(file_bytes)
+        with tempfile.NamedTemporaryFile(suffix=".ogg", delete=False) as tmp:
+            tmp.write(file_bytes)
+            tmp_path = tmp.name
+
+        transcript = await transcribe_audio_async(tmp_path)
+        os.unlink(tmp_path)  # faylni o'chiramiz
+
         if not transcript:
-            await processing_msg.edit_text("⚠️ Hech qanday matn aniqlanmadi.")
+            await bot.edit_message_text("⚠️ Hech qanday matn aniqlanmadi.", chat_id, processing_msg.message_id)
             return
 
-        await processing_msg.edit_text("✅ Audio transkripsiya qilindi, tarjima qilinmoqda...")
-        await answer_in_chunks(msg, transcript, prefix="🎙 <b>Transkripsiya:</b>\n")
+        await bot.edit_message_text("✅ Audio transkripsiya qilindi, tarjima qilinmoqda...", chat_id, processing_msg.message_id)
+        await answer_in_chunks_bot(bot, chat_id, transcript, prefix="🎙 <b>Transkripsiya:</b>\n")
 
-        # Tarjima qilish
-        try:
-            translated = (translate_auto(to_lang, transcript) if from_lang == "auto" 
-                        else translate_text(from_lang, to_lang, transcript))
-            await answer_in_chunks(msg, translated, prefix="🌐 <b>Tarjima:</b>\n")
-            await processing_msg.delete()  # Jarayon tugaganligi haqidagi xabarni o'chirish
-        except Exception as e:
-            await processing_msg.edit_text(f"⚠️ Tarjima xatoligi: {e}")
+        translated = (translate_auto(to_lang, transcript) if from_lang == "auto"
+                      else translate_text(from_lang, to_lang, transcript))
+        await answer_in_chunks_bot(bot, chat_id, translated, prefix="🌐 <b>Tarjima:</b>\n")
+
+        await bot.delete_message(chat_id, processing_msg.message_id)
 
     except Exception as e:
-        error_msg = f"⚠️ Xatolik yuz berdi: {str(e)}"
-        if 'processing_msg' in locals():
-            await processing_msg.edit_text(error_msg)
-        else:
-            await msg.answer(error_msg)
+        await bot.send_message(chat_id, f"⚠️ Xatolik yuz berdi:\n{e}")
 
+
+from aiogram import Bot
 
 @translate_router.message(F.voice | F.audio | F.video_note)
-async def handle_media(msg: Message):
-    """Audio fayllarni qayta ishlash"""
+async def handle_media(msg: Message, bot: Bot):
     user_langs = get_user_langs(msg.from_user.id)
     if not user_langs:
         await msg.answer("❗ Avval /languages buyrug‘i orqali tillarni tanlang.")
@@ -236,30 +267,26 @@ async def handle_media(msg: Message):
         return
 
     try:
-        # Faylni yuklab olish
         if msg.voice:
             file_id = msg.voice.file_id
         elif msg.audio:
             file_id = msg.audio.file_id
-        else:  # video_note
+        else:
             file_id = msg.video_note.file_id
 
-        file = await msg.bot.get_file(file_id)
-        file_bytes = await msg.bot.download(file.file_id, destination=BytesIO())
+        file = await bot.get_file(file_id)
+        file_bytes = await bot.download(file.file_id, destination=BytesIO())
 
-        # Orqa fonda ishlash uchun task yaratish
-        asyncio.create_task(
-            process_audio_task(
-                msg, 
-                file_bytes.getvalue(), 
-                from_lang or "auto", 
-                to_lang, 
-                caption=msg.caption
-            )
-        )
+        asyncio.create_task(process_audio_task(
+            bot,
+            msg.chat.id,
+            file_bytes.getvalue(),
+            from_lang or "auto",
+            to_lang,
+            caption=msg.caption
+        ))
 
-        # Darhol javob qaytarish
-        await msg.answer("🔊 Audio qabul qilindi, qayta ishlash boshlandi...")
+        await msg.answer("🔊 Audio qabul qilindi, qayta ishlash orqa fonda boshlandi...")
 
     except Exception as e:
-        await msg.answer(f"⚠️ Foydani yuklashda xatolik:\n{e}")
+        await msg.answer(f"⚠️ Foylni yuklashda xatolik:\n{e}")
