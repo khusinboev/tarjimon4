@@ -44,7 +44,7 @@ LANGUAGES = {
     "kk": {"name": "Qozoq", "flag": "🇰🇿"},
     "ky": {"name": "Qirg'iz", "flag": "🇰🇬"},
     "az": {"name": "Ozarbayjon", "flag": "🇦🇿"},
-    "tk": {"name": "Turkman", "flag": "🇹🇰"},
+    "tk": {"name": "Turkman", "flag": "🇹🇲"},
     "tg": {"name": "Tojik", "flag": "🇹🇯"},
 }
 OCR_LANGS = {
