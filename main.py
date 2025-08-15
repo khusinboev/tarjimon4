@@ -4,7 +4,6 @@ from aiogram import Bot, Dispatcher
 
 from config import BOT_TOKEN, dp, bot
 from src.db.init_db import create_all_base
-from src.handlers.admins.add_admin import add_router
 from src.handlers.admins.admin import admin_router
 from src.handlers.admins.messages import msg_router
 from src.handlers.others.channels import channel_router
@@ -27,7 +26,6 @@ async def main():
 
     #for admin
     dp.include_router(admin_router)
-    dp.include_router(add_router)
     dp.include_router(msg_router)
 
     #for user
