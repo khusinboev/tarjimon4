@@ -96,6 +96,30 @@ def translate_text(from_lang: str, to_lang: str, text: str):
 
     return f"⚠️ Tarjima xatosi: {error_msg}"
 
+def get_translation_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="🌐 Tilni tanlash", callback_data="translate:setlang"),
+                InlineKeyboardButton(text="🔄 Almashtirish", callback_data="translate:switch")
+            ]
+        ]
+    )
+
+# --- Switch tillar funksiyasi ---
+def switch_user_langs(user_id: int):
+    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id=%s", (user_id,))
+    langs = sql.fetchone()
+    if langs:
+        from_lang, to_lang = langs
+        sql.execute(
+            "UPDATE user_languages SET from_lang=%s, to_lang=%s WHERE user_id=%s",
+            (to_lang, from_lang, user_id)
+        )
+        db.commit()
+        return True
+    return False
+
 # --- Handlers ---
 @translate_router.message(Command("lang"))
 async def cmd_lang(msg: Message):
@@ -129,6 +153,24 @@ async def cb_lang(callback: CallbackQuery):
         await callback.message.edit_reply_markup(reply_markup=get_language_keyboard(callback.from_user.id))
         await callback.answer("✅ Til yangilandi")
 
+# --- Callback handler ---
+@translate_router.callback_query(F.data.startswith("translate:"))
+async def cb_translate_options(callback: CallbackQuery):
+    action = callback.data.split(":")[1]
+
+    if action == "setlang":
+        # Tillarning to'liq menyusini chiqarish
+        kb = get_language_keyboard(callback.from_user.id)
+        await callback.message.reply("🌤 Tillarni tanlang:\nChap: Kiruvchi | O‘ng: Chiquvchi", reply_markup=kb)
+        await callback.answer()
+
+    elif action == "switch":
+        if switch_user_langs(callback.from_user.id):
+            await callback.answer("✅ Tillar almashtirildi")
+        else:
+            await callback.answer("⚠️ Tillar topilmadi", show_alert=True)
+
+# --- Tarjima funksiyasini yangilash ---
 @translate_router.message(F.text)
 async def handle_text(msg: Message):
     langs = get_user_langs(msg.from_user.id)
@@ -137,8 +179,9 @@ async def handle_text(msg: Message):
     from_lang, to_lang = langs
     if not to_lang:
         return await msg.answer("❗ Chiquvchi til tanlanmagan.")
+
     result = translate_text("auto" if from_lang == "auto" else from_lang, to_lang, msg.text)
-    await msg.answer(result)
+    await msg.answer(result, reply_markup=get_translation_keyboard())  # Inline tugmalar qo'shildi
 
 @translate_router.message(F.voice | F.audio | F.video_note)
 async def handle_audio(msg: Message):
