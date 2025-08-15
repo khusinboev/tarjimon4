@@ -14,10 +14,7 @@ class AdminPanel:
                             KeyboardButton(text="🔧Kanallar")
                         ],
                         [
-                            KeyboardButton(text="🔧Adminlar👨‍💻"),
-                            KeyboardButton(text="✍Xabarlar")
-                        ],
-                        [
+                            KeyboardButton(text="✍Xabarlar"),
                             KeyboardButton(text="📊Tillar")
                         ]
                     ],
