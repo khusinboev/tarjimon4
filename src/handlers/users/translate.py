@@ -63,7 +63,7 @@ def get_language_keyboard(user_id: int):
             text=f"{'✅ ' if from_lang == 'auto' else ''}🌐 Auto",
             callback_data="setlang:from:auto"
         ),
-        InlineKeyboardButton(text=" ", callback_data="ignore")
+        InlineKeyboardButton(text=" ", callback_data="setlang:ignore")
     ]]
     for code, data in LANGUAGES.items():
         if code == "auto": continue
@@ -121,10 +121,13 @@ async def cmd_help(msg: Message):
 
 @translate_router.callback_query(F.data.startswith("setlang:"))
 async def cb_lang(callback: CallbackQuery):
-    _, direction, lang_code = callback.data.split(":")
-    update_user_lang(callback.from_user.id, lang_code, direction)
-    await callback.message.edit_reply_markup(reply_markup=get_language_keyboard(callback.from_user.id))
-    await callback.answer("✅ Til yangilandi")
+    if callback.data == "setlang:ignore":
+        await callback.answer("🛑Mumkinmas")
+    else:
+        _, direction, lang_code = callback.data.split(":")
+        update_user_lang(callback.from_user.id, lang_code, direction)
+        await callback.message.edit_reply_markup(reply_markup=get_language_keyboard(callback.from_user.id))
+        await callback.answer("✅ Til yangilandi")
 
 @translate_router.message(F.text)
 async def handle_text(msg: Message):
