@@ -185,17 +185,9 @@ async def handle_text(msg: Message):
 
     # Agar foydalanuvchi a'zo bo'lmasa
     if not check_status:
-        try:
-            await call.answer(
-            show_alert=True,
-            text="Botimizdan foydalanish uchun barcha kanallarga a'zo bo'ling"
-        )
-        except:
-            try:
-                await call.answer()
-            except:
-                pass
-        return  # boshqa kodlarga o'tmaslik uchun
+        await msg.answer("Botimizdan foydalanish uchun barcha kanallarga a'zo bo'ling")
+        return  
+
     langs = get_user_langs(msg.from_user.id)
     if not langs:
         return await msg.answer("❗ Avval /lang orqali tillarni tanlang.\n❗ Please select languages via /lang.")
@@ -211,21 +203,20 @@ async def handle_audio(msg: Message):
 
     # Agar foydalanuvchi a'zo bo'lmasa
     if not check_status:
-        try:
-            await call.answer(
-            show_alert=True,
-            text="Botimizdan foydalanish uchun barcha kanallarga a'zo bo'ling"
-        )
-        except:
-            try:
-                await call.answer()
-            except:
-                pass
-        return  # boshqa kodlarga o'tmaslik uchun
+        await msg.answer("Botimizdan foydalanish uchun barcha kanallarga a'zo bo'ling")
+        return  
+
     await msg.answer("🔊 Audio tarjimasi tez orada qo‘shiladi 😉\n🔊 Audio translation coming soon 😉")
 
 @translate_router.message(F.caption)
 async def handle_caption(msg: Message):
+    check_status, channels = await CheckData.check_member(bot, msg.from_user.id)
+
+    # Agar foydalanuvchi a'zo bo'lmasa
+    if not check_status:
+        await msg.answer("Botimizdan foydalanish uchun barcha kanallarga a'zo bo'ling")
+        return  
+
     langs = get_user_langs(msg.from_user.id)
     if not langs:
         return
