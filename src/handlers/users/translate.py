@@ -6,7 +6,10 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from deep_translator import GoogleTranslator
 from googletrans import Translator as GoogleTransFallback  # pip install googletrans==4.0.0-rc1
-from config import sql, db
+
+from config import sql, db, bot, ADMIN_ID 
+from src.keyboards.buttons import UserPanels
+from src.keyboards.keyboard_func import CheckData
 
 translate_router = Router()
 
