@@ -14,7 +14,7 @@ from dateutil.relativedelta import relativedelta
 
 from src.db.init_db import init_languages_table
 from src.keyboards.buttons import AdminPanel
-from config import sql, ADMIN_ID, DB_CONFIG, bot, LANG_FLAGS
+from config import sql, ADMIN_ID, DB_CONFIG, bot
 from src.keyboards.keyboard_func import PanelFunc
 
 admin_router = Router()
@@ -43,14 +43,11 @@ async def backs(message: Message, state: FSMContext):
     await state.clear()
 
 def get_flag(lang_code: str) -> str:
-    if not lang_code:
+    """Lang code asosida bayroq chiqarish (agar mumkin bo‘lsa)"""
+    if not lang_code or len(lang_code) != 2:
         return "🌐"
-    code = lang_code.lower().split("-")[0]  # pt-br -> pt, zh-hans -> zh
-    if code in LANG_FLAGS:
-        return LANG_FLAGS[code]
-    if len(code) == 2:  # avtomatik bayroq yasash
-        return chr(127397 + ord(code[0].upper())) + chr(127397 + ord(code[1].upper()))
-    return "🌐"
+    lang_code = lang_code.upper()
+    return chr(127397 + ord(lang_code[0])) + chr(127397 + ord(lang_code[1]))
 # Statistika
 @admin_router.message(F.text == "📊Statistika", F.chat.type == ChatType.PRIVATE, F.from_user.id.in_(ADMIN_ID))
 async def new(message: Message):
