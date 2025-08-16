@@ -37,6 +37,7 @@ LANGUAGES = {
     "tg": {"name": "Tojik", "flag": "🇹🇯"},
     "pl": {"name": "Polyak", "flag": "🇵🇱"},
     "pt": {"name": "Portugal", "flag": "🇵🇹"},
+    "am": {"name": "Amxar", "flag": "🇪🇹"},
 }
 
 fallback_translator = GoogleTransFallback()

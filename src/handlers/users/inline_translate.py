@@ -20,10 +20,26 @@ async def safe_translate(from_lang: str, to_lang: str, text: str):
 async def inline_translate(query: InlineQuery):
     user_id = query.from_user.id
     text = query.query.strip()
+
+    # ❌ Agar foydalanuvchi hech narsa yozmagan bo‘lsa
     if not text:
+        await query.answer(
+            [
+                InlineQueryResultArticle(
+                    id=str(uuid4()),
+                    title="ℹ️ Matn kiriting",
+                    description="🇺🇿 yoki 🇬🇧 tillarida tarjima uchun matn yozing",
+                    input_message_content=InputTextMessageContent(
+                        message_text="✍️ Tarjima qilish uchun matn kiriting."
+                    ),
+                )
+            ],
+            cache_time=10,
+            is_personal=True
+        )
         return
 
-    # Foydalanuvchi sozlamalari
+    # ✅ Foydalanuvchi sozlamalari
     langs = get_user_langs(user_id)
     if not langs:
         from_lang, to_lang = "auto", "uz"
