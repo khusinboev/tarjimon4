@@ -157,9 +157,12 @@ async def cb_lang(callback: CallbackQuery):
     if callback.data == "setlang:ignore":
         await callback.answer("🛑 Mumkin emas / Not allowed")
     else:
-        _, direction, lang_code = callback.data.split(":")
-        update_user_lang(callback.from_user.id, lang_code, direction)
-        await callback.message.edit_reply_markup(reply_markup=get_language_keyboard(callback.from_user.id))
+        try:
+            _, direction, lang_code = callback.data.split(":")
+            update_user_lang(callback.from_user.id, lang_code, direction)
+            await callback.message.edit_reply_markup(reply_markup=get_language_keyboard(callback.from_user.id))
+        except Exception as e:
+            print(e)
         await callback.answer("✅ Til yangilandi / Language updated")
 
 @translate_router.callback_query(F.data.startswith("translate:"))
