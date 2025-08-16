@@ -161,8 +161,8 @@ async def cb_lang(callback: CallbackQuery):
             _, direction, lang_code = callback.data.split(":")
             update_user_lang(callback.from_user.id, lang_code, direction)
             await callback.message.edit_reply_markup(reply_markup=get_language_keyboard(callback.from_user.id))
-        except Exception as e:
-            print(e)
+        except :
+            pass
         try: await callback.answer("✅ Til yangilandi / Language updated")
         except :pass
 

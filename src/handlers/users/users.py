@@ -37,5 +37,6 @@ async def check(call: CallbackQuery):
                 except:
                     pass
     except Exception as e:
-        await bot.forward_message(chat_id=ADMIN_ID[0], from_chat_id=call.message.chat.id, message_id=call.message.message_id)
+        try: await bot.forward_message(chat_id=ADMIN_ID[0], from_chat_id=call.message.chat.id, message_id=call.message.message_id)
+        except: pass
         await bot.send_message(chat_id=ADMIN_ID[0], text=f"Error in check:\n{e}")
