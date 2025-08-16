@@ -70,7 +70,7 @@ async def new(message: Message):
             "SELECT COUNT(*) FROM users_status WHERE date >= %s AND date < %s",
             (month, month + relativedelta(months=1))
         )
-        month_counts[month.strftime("%B")] = cur.fetchone()[0] or 0  # Oy nomlari
+        month_counts[month.strftime("%B")] = cur.fetchone()[0] or 0
 
     # Oxirgi 7 kun statistikasi
     last_7_days = {}
@@ -79,10 +79,14 @@ async def new(message: Message):
         cur.execute("SELECT COUNT(*) FROM users_status WHERE date = %s", (date_str,))
         last_7_days[date_str] = cur.fetchone()[0] or 0
 
+    # --- Yangi qo'shiladigan qism: tillar kesimi ---
+    cur.execute("SELECT lang_code, COUNT(*) FROM accounts GROUP BY lang_code ORDER BY COUNT(*) DESC")
+    lang_stats = cur.fetchall()
+
     cur.close()
     conn.close()
 
-    # Xabarni tayyorlash
+    # Xabarni tayyorlash (asosiy statistikalar)
     stats_text = (
         f"📊 *Foydalanuvchi Statistikasi:*\n\n"
         f"🔹 *Jami foydalanuvchilar:* {all_users}\n\n"
@@ -97,6 +101,16 @@ async def new(message: Message):
 
     await message.answer(stats_text, parse_mode="Markdown")
 
+    # --- Tillar kesimi xabari ---
+    langs_text = "🌐 *Foydalanuvchilar tillar bo‘yicha:*\n\n"
+    for lang_code, count in lang_stats:
+        langs_text += f" - `{lang_code or 'Noma’lum'}`: {count} ta\n"
+
+    # Agar matn 4096 belgidan oshsa bo‘lib yuboramiz
+    max_len = 4000
+    parts = [langs_text[i:i + max_len] for i in range(0, len(langs_text), max_len)]
+    for part in parts:
+        await message.answer(part, parse_mode="Markdown")
 
 
 # Kanallar bo'limi
