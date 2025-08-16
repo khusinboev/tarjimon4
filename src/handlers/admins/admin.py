@@ -42,7 +42,12 @@ async def backs(message: Message, state: FSMContext):
     await message.reply("Orqaga qaytildi", reply_markup=await AdminPanel.admin_menu())
     await state.clear()
 
-
+def get_flag(lang_code: str) -> str:
+    """Lang code asosida bayroq chiqarish (agar mumkin bo‘lsa)"""
+    if not lang_code or len(lang_code) != 2:
+        return "🌐"
+    lang_code = lang_code.upper()
+    return chr(127397 + ord(lang_code[0])) + chr(127397 + ord(lang_code[1]))
 # Statistika
 @admin_router.message(F.text == "📊Statistika", F.chat.type == ChatType.PRIVATE, F.from_user.id.in_(ADMIN_ID))
 async def new(message: Message):
@@ -104,12 +109,8 @@ async def new(message: Message):
     # --- Tillar kesimi xabari ---
     langs_text = "🌐 *Foydalanuvchilar tillar bo‘yicha:*\n\n"
     for lang_code, count in lang_stats:
-        if lang_code and lang_code in LANGUAGES:
-            flag = LANGUAGES[lang_code]["flag"]
-            name = LANGUAGES[lang_code]["name"]
-            langs_text += f" - {flag} {name}: {count} ta\n"
-        else:
-            langs_text += f" - 🌐 `{lang_code or 'Noma’lum'}`: {count} ta\n"
+        flag = get_flag(lang_code) if lang_code else "🌐"
+        langs_text += f" - {flag} {lang_code or 'None'}: {count} ta\n"
 
     # Agar matn 4096 belgidan oshsa bo‘lib yuboramiz
     max_len = 4000
