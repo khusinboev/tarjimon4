@@ -189,7 +189,8 @@ async def handle_text(msg: Message):
 
     # Agar foydalanuvchi a'zo bo'lmasa
     if not check_status:
-        await msg.answer("Botimizdan foydalanish uchun barcha kanallarga a'zo bo'ling", reply_markup=await UserPanels.join_btn(msg.from_user.id))
+        try: await msg.answer("Kanallarimizga obuna bo'ling \n\nSubscribe to our channels", reply_markup=await UserPanels.join_btn(msg.from_user.id))
+        except :pass
         return  
 
     langs = get_user_langs(msg.from_user.id)
@@ -207,8 +208,12 @@ async def handle_audio(msg: Message):
 
     # Agar foydalanuvchi a'zo bo'lmasa
     if not check_status:
-        await msg.answer("Botimizdan foydalanish uchun barcha kanallarga a'zo bo'ling", reply_markup=await UserPanels.join_btn(msg.from_user.id))
-        return  
+        try:
+            await msg.answer("Kanallarimizga obuna bo'ling \n\nSubscribe to our channels",
+                             reply_markup=await UserPanels.join_btn(msg.from_user.id))
+        except:
+            pass
+        return
 
     await msg.answer("🔊 Audio tarjimasi tez orada qo‘shiladi 😉\n🔊 Audio translation coming soon 😉")
 
@@ -218,7 +223,11 @@ async def handle_caption(msg: Message):
 
     # Agar foydalanuvchi a'zo bo'lmasa
     if not check_status:
-        await msg.answer("Botimizdan foydalanish uchun barcha kanallarga a'zo bo'ling", reply_markup=await UserPanels.join_btn(msg.from_user.id))
+        try:
+            await msg.answer("Kanallarimizga obuna bo'ling \n\nSubscribe to our channels",
+                             reply_markup=await UserPanels.join_btn(msg.from_user.id))
+        except:
+            pass
         return
 
     langs = get_user_langs(msg.from_user.id)
