@@ -44,7 +44,7 @@ async def inline_translate(query: InlineQuery):
                 title=f"{LANGUAGES[to_lang]['flag']} {LANGUAGES[to_lang]['name']}",
                 description=main_translation,
                 input_message_content=InputTextMessageContent(
-                    message_text=f"<b>{main_translation}</b>\n\n<i>{text}</i>",
+                    message_text=f"<i>{text}</i>\n\n<b>{main_translation}</b>",
                     parse_mode="HTML"
                 )
             )
@@ -75,7 +75,7 @@ async def inline_translate(query: InlineQuery):
                 title=f"{LANGUAGES[lang]['flag']} {LANGUAGES[lang]['name']}",
                 description=translated,
                 input_message_content=InputTextMessageContent(
-                    message_text=f"<b>{translated}</b>\n\n<i>{text}</i>",
+                    message_text=f"<i>{text}</i>\n\n<b>{translated}</b>",
                     parse_mode="HTML"
                 )
             )
