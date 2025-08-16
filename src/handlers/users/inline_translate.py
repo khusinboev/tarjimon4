@@ -1,9 +1,19 @@
+import asyncio
 from aiogram import Router
 from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent
 from src.handlers.users.translate import get_user_langs, LANGUAGES, translate_text
 from uuid import uuid4
 
 inline_router = Router()
+
+
+# Tarjimani fon thread’da ishlatish uchun
+async def safe_translate(from_lang: str, to_lang: str, text: str):
+    loop = asyncio.get_running_loop()
+    try:
+        return await loop.run_in_executor(None, lambda: translate_text(from_lang, to_lang, text))
+    except Exception:
+        return None
 
 
 @inline_router.inline_query()
@@ -23,62 +33,54 @@ async def inline_translate(query: InlineQuery):
             to_lang = "uz"
 
     results = []
+    added_langs = set()
 
     # 1) Asosiy tarjima (foydalanuvchi to_lang)
-    main_translation = translate_text("auto" if from_lang == "auto" else from_lang, to_lang, text)
-    results.append(
-        InlineQueryResultArticle(
-            id=str(uuid4()),
-            title=f"{LANGUAGES[to_lang]['flag']} {LANGUAGES[to_lang]['name']}",
-            description=main_translation,
-            input_message_content=InputTextMessageContent(
-                message_text=f"<b>{main_translation}</b>\n\n<i>{text}</i>",
-                parse_mode="HTML"
+    main_translation = await safe_translate("auto" if from_lang == "auto" else from_lang, to_lang, text)
+    if main_translation:
+        results.append(
+            InlineQueryResultArticle(
+                id=str(uuid4()),
+                title=f"{LANGUAGES[to_lang]['flag']} {LANGUAGES[to_lang]['name']}",
+                description=main_translation,
+                input_message_content=InputTextMessageContent(
+                    message_text=f"<b>{main_translation}</b>\n\n<i>{text}</i>",
+                    parse_mode="HTML"
+                )
             )
         )
-    )
+        added_langs.add(to_lang)
 
-    # 2) Qo‘shimcha tillar — dinamik shaklda, takrorlanmasin
-    # Masalan, asosan ishlatiladigan tillar
+    # 2) Qo‘shimcha tillar (takrorlanmasin)
     preferred_langs = ["en", "ru", "tr", "ar"]
-    added_langs = {to_lang}  # allaqachon ishlatilgan tillar
-
+    tasks = []
     for lang in preferred_langs:
-        if lang in added_langs:  # agar allaqachon ishlatilgan bo‘lsa — o‘tkazib yuboramiz
+        if lang in added_langs:
             continue
-        try:
-            translated = translate_text("auto", lang, text)
-            results.append(
-                InlineQueryResultArticle(
-                    id=str(uuid4()),
-                    title=f"{LANGUAGES[lang]['flag']} {LANGUAGES[lang]['name']}",
-                    description=translated,
-                    input_message_content=InputTextMessageContent(
-                        message_text=f"<b>{translated}</b>\n\n<i>{text}</i>",
-                        parse_mode="HTML"
-                    )
+        tasks.append((lang, safe_translate("auto", lang, text)))
+
+    # 3) Agar `uz` yo‘q bo‘lsa → majburan qo‘shamiz
+    if "uz" not in added_langs and "uz" not in [l for l, _ in tasks]:
+        tasks.append(("uz", safe_translate("auto", "uz", text)))
+
+    # Parallel bajarish
+    translations = await asyncio.gather(*[task for _, task in tasks], return_exceptions=True)
+
+    for (lang, _), translated in zip(tasks, translations):
+        if not translated or isinstance(translated, Exception):
+            continue
+        results.append(
+            InlineQueryResultArticle(
+                id=str(uuid4()),
+                title=f"{LANGUAGES[lang]['flag']} {LANGUAGES[lang]['name']}",
+                description=translated,
+                input_message_content=InputTextMessageContent(
+                    message_text=f"<b>{translated}</b>\n\n<i>{text}</i>",
+                    parse_mode="HTML"
                 )
             )
-            added_langs.add(lang)
-        except Exception:
-            continue
+        )
+        added_langs.add(lang)
 
-    # 3) Agar `uz` yo‘q bo‘lsa — majburan qo‘shib qo‘yamiz
-    if "uz" not in added_langs:
-        try:
-            uz_translation = translate_text("auto", "uz", text)
-            results.append(
-                InlineQueryResultArticle(
-                    id=str(uuid4()),
-                    title=f"{LANGUAGES['uz']['flag']} {LANGUAGES['uz']['name']}",
-                    description=uz_translation,
-                    input_message_content=InputTextMessageContent(
-                        message_text=f"<b>{uz_translation}</b>\n\n<i>{text}</i>",
-                        parse_mode="HTML"
-                    )
-                )
-            )
-        except Exception:
-            pass
-
-    await query.answer(results, cache_time=1, is_personal=True)
+    # Javob qaytarish
+    await query.answer(results, cache_time=30, is_personal=True)
