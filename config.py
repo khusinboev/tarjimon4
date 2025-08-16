@@ -35,3 +35,41 @@ ADMIN_ID = ADMINS = [int(admin_id) for admin_id in os.getenv("ADMINS_ID").split(
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(link_preview_is_disabled=True))
 storage = MemoryStorage()
 dp = Dispatcher(storage=storage)
+
+
+LANG_FLAGS = {
+    "uz": "🇺🇿",  # O‘zbek
+    "en": "🇺🇸",  # Ingliz (default USA)
+    "ru": "🇷🇺",  # Rus
+    "id": "🇮🇩",  # Indonez
+    "ar": "🇸🇦",  # Arab (Saudiya)
+    "tr": "🇹🇷",  # Turk
+    "fa": "🇮🇷",  # Fors (Eron)
+    "ms": "🇲🇾",  # Malay (Malayziya)
+    "fr": "🇫🇷",  # Fransuz
+    "es": "🇪🇸",  # Ispan
+    "pt": "🇵🇹",  # Portugal (pt-br bo‘lsa ham asosiy qismini olamiz)
+    "km": "🇰🇲",  # Khmer/Comoros
+    "de": "🇩🇪",  # Nemis
+    "am": "🇪🇹",  # Amxar (Efiopiya)
+    "kk": "🇰🇿",  # Qozoq
+    "uk": "🇺🇦",  # Ukraina
+    "ko": "🇰🇷",  # Koreys
+    "he": "🇮🇱",  # Ibroniy
+    "ro": "🇷🇴",  # Rumin
+    "it": "🇮🇹",  # Italyan
+    "az": "🇦🇿",  # Ozarbayjon
+    "hy": "🇦🇲",  # Arman
+    "zh": "🇨🇳",  # Xitoy (oddiy yozuvi uchun)
+    "hi": "🇮🇳",  # Hind
+    "nl": "🇳🇱",  # Niderland
+    "bg": "🇧🇬",  # Bolgar
+    "vi": "🇻🇳",  # Vetnam
+    "mn": "🇲🇳",  # Mo‘g‘ul
+    "nb": "🇳🇴",  # Norveg
+    "hr": "🇭🇷",  # Xorvat
+    "sv": "🇸🇪",  # Shved
+    "be": "🇧🇾",  # Belarus
+    "th": "🇹🇭",  # Tailand
+    "gu": "🇮🇳",  # Gujarati (Hindiston)
+}
