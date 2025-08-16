@@ -104,7 +104,12 @@ async def new(message: Message):
     # --- Tillar kesimi xabari ---
     langs_text = "🌐 *Foydalanuvchilar tillar bo‘yicha:*\n\n"
     for lang_code, count in lang_stats:
-        langs_text += f" - `{lang_code or 'Noma’lum'}`: {count} ta\n"
+        if lang_code and lang_code in LANGUAGES:
+            flag = LANGUAGES[lang_code]["flag"]
+            name = LANGUAGES[lang_code]["name"]
+            langs_text += f" - {flag} {name}: {count} ta\n"
+        else:
+            langs_text += f" - 🌐 `{lang_code or 'Noma’lum'}`: {count} ta\n"
 
     # Agar matn 4096 belgidan oshsa bo‘lib yuboramiz
     max_len = 4000
