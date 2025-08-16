@@ -163,7 +163,8 @@ async def cb_lang(callback: CallbackQuery):
             await callback.message.edit_reply_markup(reply_markup=get_language_keyboard(callback.from_user.id))
         except Exception as e:
             print(e)
-        await callback.answer("✅ Til yangilandi / Language updated")
+        try: await callback.answer("✅ Til yangilandi / Language updated")
+        except :pass
 
 @translate_router.callback_query(F.data.startswith("translate:"))
 async def cb_translate_options(callback: CallbackQuery):
