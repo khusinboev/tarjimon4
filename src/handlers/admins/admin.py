@@ -106,17 +106,17 @@ async def new(message: Message):
 
     await message.answer(stats_text, parse_mode="Markdown")
 
-    # --- Tillar kesimi xabari ---
-    langs_text = "🌐 *Foydalanuvchilar tillar bo‘yicha:*\n\n"
-    for lang_code, count in lang_stats:
-        flag = get_flag(lang_code) if lang_code else "🌐"
-        langs_text += f" - {flag} {lang_code or 'None'}: {count} ta\n"
-
-    # Agar matn 4096 belgidan oshsa bo‘lib yuboramiz
-    max_len = 4000
-    parts = [langs_text[i:i + max_len] for i in range(0, len(langs_text), max_len)]
-    for part in parts:
-        await message.answer(part, parse_mode="Markdown")
+    # # --- Tillar kesimi xabari ---
+    # langs_text = "🌐 *Foydalanuvchilar tillar bo‘yicha:*\n\n"
+    # for lang_code, count in lang_stats:
+    #     flag = get_flag(lang_code) if lang_code else "🌐"
+    #     langs_text += f" - {flag} {lang_code or 'None'}: {count} ta\n"
+    #
+    # # Agar matn 4096 belgidan oshsa bo‘lib yuboramiz
+    # max_len = 4000
+    # parts = [langs_text[i:i + max_len] for i in range(0, len(langs_text), max_len)]
+    # for part in parts:
+    #     await message.answer(part, parse_mode="Markdown")
 
 
 # Kanallar bo'limi
