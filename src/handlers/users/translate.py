@@ -85,23 +85,6 @@ def get_language_keyboard(user_id: int):
         ])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
-# --- Translation with fallback ---
-def translate_text(from_lang: str, to_lang: str, text: str):
-    translators = ["deep", "googletrans"]
-    random.shuffle(translators)  # tasodifiy ishlash tartibi
-
-    for method in translators:
-        try:
-            if method == "deep":
-                return GoogleTranslator(source=from_lang, target=to_lang).translate(text)
-            elif method == "googletrans":
-                res = fallback_translator.translate(text, src=from_lang if from_lang != "auto" else "auto", dest=to_lang)
-                return res.text
-        except Exception as e:
-            error_msg = str(e)
-
-    return f"⚠️ Tarjima xatosi: {error_msg}"
-
 def get_translation_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -111,6 +94,25 @@ def get_translation_keyboard():
             ]
         ]
     )
+
+# --- Translation with fallback ---
+def translate_text(from_lang: str, to_lang: str, text: str):
+    translators = ["deep", "googletrans"]
+    random.shuffle(translators)
+
+    for method in translators:
+        try:
+            if method == "deep":
+                return GoogleTranslator(source=from_lang, target=to_lang).translate(text)
+            elif method == "googletrans":
+                res = fallback_translator.translate(
+                    text, src=from_lang if from_lang != "auto" else "auto", dest=to_lang
+                )
+                return res.text
+        except Exception as e:
+            error_msg = str(e)
+
+    return f"⚠️ Tarjima xatosi: {error_msg}"
 
 # --- Switch tillar funksiyasi ---
 def switch_user_langs(user_id: int):
@@ -125,6 +127,17 @@ def switch_user_langs(user_id: int):
         db.commit()
         return True
     return False
+
+# --- Helper: uzun matnlarni bo‘lib yuborish ---
+async def split_and_send(msg: Message, text: str, reply_markup=None):
+    limit = 4096
+    parts = [text[i:i+limit] for i in range(0, len(text), limit)]
+    for i, part in enumerate(parts):
+        # Tugma faqat birinchi xabarda chiqadi
+        if i == 0:
+            await msg.answer(part, reply_markup=reply_markup)
+        else:
+            await msg.answer(part)
 
 # --- Handlers ---
 @translate_router.message(Command("lang"))
@@ -161,11 +174,15 @@ async def cb_lang(callback: CallbackQuery):
         try:
             _, direction, lang_code = callback.data.split(":")
             update_user_lang(callback.from_user.id, lang_code, direction)
-            await callback.message.edit_reply_markup(reply_markup=get_language_keyboard(callback.from_user.id))
-        except :
+            await callback.message.edit_reply_markup(
+                reply_markup=get_language_keyboard(callback.from_user.id)
+            )
+        except:
             pass
-        try: await callback.answer("✅ Til yangilandi / Language updated")
-        except :pass
+        try:
+            await callback.answer("✅ Til yangilandi / Language updated")
+        except:
+            pass
 
 @translate_router.callback_query(F.data.startswith("translate:"))
 async def cb_translate_options(callback: CallbackQuery):
@@ -188,10 +205,14 @@ async def cb_translate_options(callback: CallbackQuery):
 async def handle_text(msg: Message):
     check_status, channels = await CheckData.check_member(bot, msg.from_user.id)
 
-    # Agar foydalanuvchi a'zo bo'lmasa
     if not check_status:
-        try: await msg.answer("Kanallarimizga obuna bo'ling \n\nSubscribe to our channels", reply_markup=await UserPanels.join_btn(msg.from_user.id))
-        except :pass
+        try:
+            await msg.answer(
+                "Kanallarimizga obuna bo'ling \n\nSubscribe to our channels",
+                reply_markup=await UserPanels.join_btn(msg.from_user.id)
+            )
+        except:
+            pass
         return  
 
     langs = get_user_langs(msg.from_user.id)
@@ -200,18 +221,22 @@ async def handle_text(msg: Message):
     from_lang, to_lang = langs
     if not to_lang:
         return await msg.answer("❗ Chiquvchi til tanlanmagan.\n❗ Output language not selected.")
+
     result = translate_text("auto" if from_lang == "auto" else from_lang, to_lang, msg.text)
-    await msg.answer(result, reply_markup=get_translation_keyboard())
+
+    # Uzun matnni bo‘lib yuborish
+    await split_and_send(msg, result, reply_markup=get_translation_keyboard())
 
 @translate_router.message(F.voice | F.audio | F.video_note)
 async def handle_audio(msg: Message):
     check_status, channels = await CheckData.check_member(bot, msg.from_user.id)
 
-    # Agar foydalanuvchi a'zo bo'lmasa
     if not check_status:
         try:
-            await msg.answer("Kanallarimizga obuna bo'ling \n\nSubscribe to our channels",
-                             reply_markup=await UserPanels.join_btn(msg.from_user.id))
+            await msg.answer(
+                "Kanallarimizga obuna bo'ling \n\nSubscribe to our channels",
+                reply_markup=await UserPanels.join_btn(msg.from_user.id)
+            )
         except:
             pass
         return
@@ -222,11 +247,12 @@ async def handle_audio(msg: Message):
 async def handle_caption(msg: Message):
     check_status, channels = await CheckData.check_member(bot, msg.from_user.id)
 
-    # Agar foydalanuvchi a'zo bo'lmasa
     if not check_status:
         try:
-            await msg.answer("Kanallarimizga obuna bo'ling \n\nSubscribe to our channels",
-                             reply_markup=await UserPanels.join_btn(msg.from_user.id))
+            await msg.answer(
+                "Kanallarimizga obuna bo'ling \n\nSubscribe to our channels",
+                reply_markup=await UserPanels.join_btn(msg.from_user.id)
+            )
         except:
             pass
         return
@@ -237,5 +263,8 @@ async def handle_caption(msg: Message):
     from_lang, to_lang = langs
     if not to_lang:
         return
+
     result = translate_text("auto" if from_lang == "auto" else from_lang, to_lang, msg.caption)
-    await msg.answer(result, reply_markup=get_translation_keyboard())
+
+    # Uzun matnni bo‘lib yuborish
+    await split_and_send(msg, result, reply_markup=get_translation_keyboard())
