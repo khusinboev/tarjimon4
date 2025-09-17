@@ -88,8 +88,6 @@ async def new(message: Message):
     cur.execute("SELECT lang_code, COUNT(*) FROM accounts GROUP BY lang_code ORDER BY COUNT(*) DESC")
     lang_stats = cur.fetchall()
 
-    cur.close()
-    conn.close()
 
     # Xabarni tayyorlash (asosiy statistikalar)
     stats_text = (
