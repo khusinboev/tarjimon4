@@ -117,6 +117,24 @@ async def new(message: Message):
     # parts = [langs_text[i:i + max_len] for i in range(0, len(langs_text), max_len)]
     # for part in parts:
     #     await message.answer(part, parse_mode="Markdown")
+    # --- Oxirgi 48 soatda tillar kesimi (TOP 10) ---
+    cur.execute("""
+        SELECT lang_code, COUNT(*) 
+        FROM accounts 
+        WHERE date >= NOW() - interval '48 hours'
+        GROUP BY lang_code 
+        ORDER BY COUNT(*) DESC 
+        LIMIT 10
+    """)
+    lang_last_48 = cur.fetchall()
+
+    # --- Xabar matni ---
+    langs_48_text = "⏰ *Oxirgi 48 soatda qo‘shilganlar (TOP 10 tillar):*\n\n"
+    for lang_code, count in lang_last_48:
+        flag = get_flag(lang_code) if lang_code else "🌐"
+        langs_48_text += f" - {flag} {lang_code or 'None'}: {count} ta\n"
+
+    await message.answer(langs_48_text, parse_mode="Markdown") 
 
 
 # Kanallar bo'limi
