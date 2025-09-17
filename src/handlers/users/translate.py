@@ -13,7 +13,7 @@ from src.keyboards.keyboard_func import CheckData
 
 translate_router = Router()
 
-LANGUAGES_NATIVE = {
+LANGUAGES = {
     "auto": {"name": "Avto", "flag": "🌐"},
     "uz": {"name": "O‘zbek", "flag": "🇺🇿"},
     "en": {"name": "English", "flag": "🇬🇧"},
@@ -30,8 +30,8 @@ LANGUAGES_NATIVE = {
     "fa": {"name": "فارسی", "flag": "🇮🇷"},
     "es": {"name": "Español", "flag": "🇪🇸"},
     "it": {"name": "Italiano", "flag": "🇮🇹"},
-    "kk": {"name": "Қазақша", "flag": "🇰🇿"},
-    "ky": {"name": "Кыргызча", "flag": "🇰🇬"},
+    "kk": {"name": "Qazaqşa", "flag": "🇰🇿"},   # lotin alifbosida
+    "ky": {"name": "Кыргызча", "flag": "🇰🇬"}, # faqat kirill
     "az": {"name": "Azərbaycan dili", "flag": "🇦🇿"},
     "tk": {"name": "Türkmençe", "flag": "🇹🇲"},
     "tg": {"name": "Тоҷикӣ", "flag": "🇹🇯"},
