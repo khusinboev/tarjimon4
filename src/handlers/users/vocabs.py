@@ -1,408 +1,374 @@
-"""
-src/handlers/users/vocabs_fixed.py
-
-Tahrirlangan va tozalangan versiya — ilgari yuborilgan kodni chuqur tahlil qilib,
-aniq xatolar va noaniqliklar tuzatildi.
-
-Qisqacha o'zgartirishlar:
-- FSMContext to'g'ri ishlatildi (state paramlarini handlerlarda qabul qilinadi)
-- Global PENDING_BOOK_ADDITION olib tashlandi; o'rniga FSMContext storage ishlatiladi
-- DB adapter toza, async wrapperlar bilan ishlaydi
-- practice_sessions.meta ga current_question JSONB sifatida to'g'ri yozish va o'qish
-- JSONB maydonlarga SQL da %s::jsonb cast qo'yildi, choices JSON sifatida yoziladi
-- Xatoliklarni tekshiruvchi istisno va fallbacklar qo'shildi
-
-Integratsiya:
-- main.py ga: `from src.handlers.users.vocabs_fixed import router as vocab_router` va `dp.include_router(vocab_router)` qo'shing
-- `psycopg2-binary` ni o'rnating va DATABASE_DSN muhit o'zgaruvchisini to'g'ri sozlang
-"""
-
+# src/handlers/users/vocabs.py
 import os
 import json
 import asyncio
-import re
 import random
 from datetime import datetime
-from typing import List, Tuple, Optional
+from typing import List, Optional, Dict, Any
 
 import psycopg2
-import psycopg2.extras
+from psycopg2.extras import RealDictCursor
+from contextlib import closing
 
 from aiogram import Router
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 router = Router()
 
-# FSM states
+# ---- CONFIG: DSN (psycopg2 expects "postgresql://user:pass@host:port/dbname" or "dbname=...") ----
+DATABASE_DSN = os.getenv("DATABASE_DSN") or os.getenv("DATABASE_URL")
+if not DATABASE_DSN:
+    raise RuntimeError("DATABASE_DSN yoki DATABASE_URL muhit o'zgaruvchisi aniqlanmadi. .env sozlang (postgresql://... format).")
+
+# ---- Async wrapper for blocking psycopg2 calls ----
+async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: bool = False) -> Optional[Any]:
+    """
+    - fetch=False: bajaradi va None qaytaradi
+    - fetch=True, many=False: bitta qator dict (RealDictCursor) yoki None
+    - fetch=True, many=True: ro'yxat (har element dict) yoki []
+    """
+    def run():
+        with closing(psycopg2.connect(DATABASE_DSN)) as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute(query, params or ())
+                if fetch:
+                    if many:
+                        return cur.fetchall()
+                    return cur.fetchone()
+                conn.commit()
+                # agar INSERT ... RETURNING ishlatilsa, fetch=True bilan qayta chaqiring
+                return None
+    return await asyncio.to_thread(run)
+
+# ---- FSM states ----
 class VocabStates(StatesGroup):
     waiting_book_name = State()
     waiting_word_list = State()
+    practicing = State()
 
-# Config
-DATABASE_DSN = "dbname=tarjimon user=postgres password=parol host=localhost port=5432"
-
-# Simple blocking DB adapter with async wrappers
-class DB:
-    def __init__(self, dsn: str):
-        self.dsn = dsn
-        self._conn = None
-
-    def connect_sync(self):
-        if self._conn is None or getattr(self._conn, 'closed', False):
-            # create normal connection; we'll use RealDictCursor when fetching
-            self._conn = psycopg2.connect(self.dsn)
-            self._conn.autocommit = True
-        return self._conn
-
-    def fetchall_sync(self, query: str, args: tuple = ()):  # returns list[dict]
-        conn = self.connect_sync()
-        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute(query, args)
-            return cur.fetchall()
-
-    def fetchone_sync(self, query: str, args: tuple = ()):  # returns dict or None
-        conn = self.connect_sync()
-        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute(query, args)
-            return cur.fetchone()
-
-    def execute_sync(self, query: str, args: tuple = ()):  # for INSERT ... RETURNING etc
-        conn = self.connect_sync()
-        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute(query, args)
-            try:
-                return cur.fetchone()
-            except Exception:
-                return None
-
-    def executemany_sync(self, query: str, seq_of_args: list):
-        conn = self.connect_sync()
-        with conn.cursor() as cur:
-            cur.executemany(query, seq_of_args)
-
-    # Async wrappers
-    async def fetchall(self, query: str, args: tuple = ()):  # pragma: no cover
-        return await asyncio.to_thread(self.fetchall_sync, query, args)
-
-    async def fetchone(self, query: str, args: tuple = ()):  # pragma: no cover
-        return await asyncio.to_thread(self.fetchone_sync, query, args)
-
-    async def execute(self, query: str, args: tuple = ()):  # pragma: no cover
-        return await asyncio.to_thread(self.execute_sync, query, args)
-
-    async def executemany(self, query: str, seq_of_args: list):  # pragma: no cover
-        return await asyncio.to_thread(self.executemany_sync, query, seq_of_args)
-
-
-db = DB(DATABASE_DSN)
-
-# Parsing
-SEP_PATTERN = re.compile(r"\s*[-—:|]\s*")
-
-def parse_pairs_from_text(text: str) -> List[Tuple[str, str]]:
-    pairs: List[Tuple[str, str]] = []
+# ---- Helper: parse user-provided lines "word-translation" ----
+def parse_pairs_from_text(text: str) -> List[tuple]:
+    pairs: List[tuple] = []
     if not text:
         return pairs
-    tokens = []
-    for line in re.split(r"[\n,]+", text):
-        tok = line.strip()
-        if tok:
-            tokens.append(tok)
-    for tok in tokens:
-        parts = SEP_PATTERN.split(tok, maxsplit=1)
-        if len(parts) >= 2:
-            left = parts[0].strip()
-            right = parts[1].strip()
-            if left and right:
-                pairs.append((left, right))
+    for line in text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        # allow formats: "word - translation" or "word:translation" or "word|translation"
+        for sep in ("-", ":", "|"):
+            if sep in line:
+                left, right = [p.strip() for p in line.split(sep, 1)]
+                if left and right:
+                    pairs.append((left, right))
+                break
         else:
-            if ' ' in tok:
-                a, b = tok.split(None, 1)
+            # fallback: if space separated two words
+            if " " in line:
+                a, b = line.split(None, 1)
                 pairs.append((a.strip(), b.strip()))
     return pairs
 
-# DB helpers
-async def create_book(user_id: int, name: str, src_lang: Optional[str] = None, trg_lang: Optional[str] = None) -> int:
+# ---- DB helpers for domain logic ----
+async def create_book(user_id: int, name: str) -> int:
     q = """
-    INSERT INTO vocab_books (user_id, name, src_lang, trg_lang, created_at, updated_at)
-      VALUES (%s, %s, %s, %s, now(), now())
+    INSERT INTO vocab_books (user_id, name, created_at, updated_at)
+    VALUES (%s, %s, now(), now())
     ON CONFLICT (user_id, name) DO NOTHING
-    RETURNING id;
+    RETURNING id
     """
-    row = await db.execute(q, (user_id, name, src_lang, trg_lang))
-    if row and isinstance(row, dict) and 'id' in row:
-        return row['id']
-    r = await db.fetchone('SELECT id FROM vocab_books WHERE user_id = %s AND name = %s', (user_id, name))
-    return r['id'] if r else 0
+    row = await db_exec(q, (user_id, name), fetch=True)
+    if row and "id" in row:
+        return row["id"]
+    # conflict => fetch existing
+    row2 = await db_exec("SELECT id FROM vocab_books WHERE user_id=%s AND name=%s", (user_id, name), fetch=True)
+    return row2["id"] if row2 else 0
 
-async def list_books(user_id: int) -> List[dict]:
-    return await db.fetchall('SELECT id, name, description, src_lang, trg_lang, created_at FROM vocab_books WHERE user_id = %s ORDER BY created_at DESC', (user_id,))
+async def list_books(user_id: int) -> List[Dict[str, Any]]:
+    rows = await db_exec("SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC", (user_id,), fetch=True, many=True)
+    return rows or []
 
-async def add_entries_bulk(book_id: int, pairs: List[Tuple[str, str]], src_lang: Optional[str] = None, trg_lang: Optional[str] = None) -> int:
+async def add_entries_bulk(book_id: int, pairs: List[tuple]) -> int:
     if not pairs:
         return 0
+    # build batched insert
     args = []
     for left, right in pairs:
-        args.append((book_id, left, right, src_lang, trg_lang, 0, True))
-    q = """
-    INSERT INTO vocab_entries (book_id, word_src, word_trg, src_lang, trg_lang, position, is_active, created_at, updated_at)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, now(), now()) ON CONFLICT DO NOTHING
-    """
-    await db.executemany(q, args)
+        args.append((book_id, left, right))
+    # execute many inside a thread to avoid many roundtrips
+    def run_many():
+        with closing(psycopg2.connect(DATABASE_DSN)) as conn:
+            with conn.cursor() as cur:
+                cur.executemany(
+                    "INSERT INTO vocab_entries (book_id, word_src, word_trg, created_at, updated_at) VALUES (%s, %s, %s, now(), now()) ON CONFLICT DO NOTHING",
+                    args
+                )
+                conn.commit()
+    await asyncio.to_thread(run_many)
     return len(args)
 
-async def get_random_entry(book_id: int) -> Optional[dict]:
-    return await db.fetchone('SELECT id, word_src, word_trg FROM vocab_entries WHERE book_id = %s AND is_active = true ORDER BY random() LIMIT 1', (book_id,))
-
-async def get_distractors(book_id: int, exclude_id: int, n: int = 3, direction: str = 'trg') -> List[str]:
-    col = 'word_trg' if direction == 'trg' else 'word_src'
-    q = f"SELECT {col} as val FROM vocab_entries WHERE book_id = %s AND id != %s ORDER BY random() LIMIT %s"
-    rows = await db.fetchall(q, (book_id, exclude_id, n))
-    res = [r['val'] for r in rows] if rows else []
-    if len(res) < n:
-        q2 = f"SELECT e.{col} as val FROM vocab_entries e JOIN vocab_books b ON e.book_id = b.id WHERE b.user_id = (SELECT user_id FROM vocab_books WHERE id = %s) AND e.book_id != %s ORDER BY random() LIMIT %s"
-        rows2 = await db.fetchall(q2, (book_id, book_id, n - len(res)))
-        res.extend([r['val'] for r in rows2])
-    if len(res) < n:
-        q3 = f"SELECT {col} as val FROM vocab_entries WHERE id != %s ORDER BY random() LIMIT %s"
-        rows3 = await db.fetchall(q3, (exclude_id, n - len(res)))
-        res.extend([r['val'] for r in rows3])
-    return res[:n]
-
 async def start_session(user_id: int, book_id: int) -> int:
-    row = await db.fetchone("INSERT INTO practice_sessions (user_id, book_id, started_at, total_questions, correct_count, wrong_count, meta) VALUES (%s, %s, now(), 0, 0, 0, '{}'::jsonb) RETURNING id", (user_id, book_id))
-    return row['id'] if row else 0
+    row = await db_exec(
+        "INSERT INTO practice_sessions (user_id, book_id, started_at, meta) VALUES (%s, %s, now(), '{}'::jsonb) RETURNING id",
+        (user_id, book_id),
+        fetch=True
+    )
+    return row["id"] if row else 0
 
-async def record_question(session_id: int, entry_id: Optional[int], presented_text: str, correct_translation: str, choices: List[str], chosen_option: Optional[str], is_correct: Optional[bool]):
+async def record_question(session_id: int, entry_id: int, presented: str, correct: str, choices: List[str], chosen: Optional[str], is_correct: Optional[bool]):
     choices_json = json.dumps(choices, ensure_ascii=False)
-    q = """
-    INSERT INTO practice_questions (session_id, entry_id, presented_text, correct_translation, choices, chosen_option, is_correct, asked_at, answered_at)
-    VALUES (%s, %s, %s, %s, %s::jsonb, %s, %s, now(), %s)
-    """
-    await db.execute(q, (session_id, entry_id, presented_text, correct_translation, choices_json, chosen_option, is_correct, (datetime.now() if chosen_option is not None else None)))
-    if chosen_option is not None:
+    await db_exec(
+        "INSERT INTO practice_questions (session_id, entry_id, presented_text, correct_translation, choices, chosen_option, is_correct, asked_at, answered_at) VALUES (%s,%s,%s,%s,%s::jsonb,%s,%s,now(),%s)",
+        (session_id, entry_id, presented, correct, choices_json, chosen, is_correct, (datetime.now() if chosen is not None else None))
+    )
+    if chosen is not None:
         if is_correct:
-            q2 = "UPDATE practice_sessions SET total_questions = total_questions + 1, correct_count = correct_count + 1 WHERE id = %s"
+            await db_exec("UPDATE practice_sessions SET total_questions = total_questions + 1, correct_count = correct_count + 1 WHERE id = %s", (session_id,))
         else:
-            q2 = "UPDATE practice_sessions SET total_questions = total_questions + 1, wrong_count = wrong_count + 1 WHERE id = %s"
-        await db.execute(q2, (session_id,))
+            await db_exec("UPDATE practice_sessions SET total_questions = total_questions + 1, wrong_count = wrong_count + 1 WHERE id = %s", (session_id,))
 
 async def finish_session(session_id: int):
-    await db.execute('UPDATE practice_sessions SET finished_at = now() WHERE id = %s', (session_id,))
+    await db_exec("UPDATE practice_sessions SET finished_at = now() WHERE id = %s", (session_id,))
 
-async def get_session(session_id: int) -> Optional[dict]:
-    return await db.fetchone('SELECT * FROM practice_sessions WHERE id = %s', (session_id,))
+async def get_session(session_id: int) -> Optional[Dict[str, Any]]:
+    return await db_exec("SELECT * FROM practice_sessions WHERE id = %s", (session_id,), fetch=True)
 
-# UI helpers
+# ---- UI helpers ----
+def make_books_kb(rows: List[Dict[str, Any]]) -> InlineKeyboardMarkup:
+    # one button per row
+    buttons = []
+    for r in rows:
+        buttons.append([InlineKeyboardButton(text=r["name"], callback_data=f"book:{r['id']}")])
+    # add create new
+    buttons.insert(0, [InlineKeyboardButton(text="➕ Yangi lug'at yaratish", callback_data="create_book")])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
 
-def make_books_keyboard(books: List[dict]) -> InlineKeyboardMarkup:
-    kb = InlineKeyboardMarkup(row_width=1)
-    kb.add(InlineKeyboardButton(text='➕ Yangi lug`at yaratish', callback_data='vb:create'))
-    for b in books:
-        kb.add(InlineKeyboardButton(text=f"📚 {b['name']}", callback_data=f"vb:b:{b['id']}:menu"))
-    return kb
+def make_book_menu_kb(book_id: int) -> InlineKeyboardMarkup:
+    buttons = [
+        [InlineKeyboardButton(text="▶ Mashq", callback_data=f"practice:{book_id}")],
+        [InlineKeyboardButton(text="➕ So'z qo'shish", callback_data=f"add:{book_id}")],
+        [InlineKeyboardButton(text="🔙 Orqaga", callback_data="back")]
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
 
-
-def make_book_menu(book_id: int) -> InlineKeyboardMarkup:
-    kb = InlineKeyboardMarkup(row_width=2)
-    kb.add(
-        InlineKeyboardButton(text='▶ Mashq', callback_data=f'vb:b:{book_id}:practice'),
-        InlineKeyboardButton(text='➕ So`z qo`shish', callback_data=f'vb:b:{book_id}:add'),
-    )
-    kb.add(InlineKeyboardButton(text='🔙 Orqaga', callback_data='vb:back'))
-    return kb
-
-async def send_question_for_session(chat_id: int, session_id: int, book_id: int, bot):
-    entry = await get_random_entry(book_id)
-    if not entry:
-        await bot.send_message(chat_id, "Bu lug'atda hali so'z yo'q. Avval so'z qo'shing.")
+# ---- Handlers ----
+@router.message(Command("mybooks"))
+async def cmd_mybooks(msg: Message):
+    rows = await list_books(msg.from_user.id)
+    if not rows:
+        await msg.answer("Sizda hali lug'at yo'q. /newbook bilan yarating.")
         return
-    direction = 'src2trg' if random.choice([True, False]) else 'trg2src'
-    if direction == 'src2trg':
-        presented = entry['word_src']
-        correct = entry['word_trg']
-        distractors = await get_distractors(book_id, entry['id'], n=3, direction='trg')
-        choices = [correct] + distractors
+    kb = make_books_kb(rows)
+    await msg.answer("Sizning lug'atlaringiz:", reply_markup=kb)
+
+@router.message(Command("newbook"))
+async def cmd_newbook(msg: Message):
+    parts = msg.text.split(maxsplit=1)
+    if len(parts) < 2:
+        await msg.answer("Iltimos: /newbook <nom> formatida yuboring. Misol: /newbook Inglizcha")
+        return
+    name = parts[1].strip()
+    book_id = await create_book(msg.from_user.id, name)
+    if book_id:
+        await msg.answer(f"✅ '{name}' lug'ati yaratildi (id={book_id}).")
     else:
-        presented = entry['word_trg']
-        correct = entry['word_src']
-        distractors = await get_distractors(book_id, entry['id'], n=3, direction='src')
-        choices = [correct] + distractors
-    random.shuffle(choices)
-    kb = InlineKeyboardMarkup(row_width=2)
-    for idx, ch in enumerate(choices):
-        cb = f"vb:ans:{session_id}:{entry['id']}:{idx}"
-        kb.add(InlineKeyboardButton(text=ch, callback_data=cb))
-    kb.add(InlineKeyboardButton(text='🏁 Tugatish', callback_data=f'vb:finish:{session_id}'))
-    await bot.send_message(chat_id, f"Savol: {presented}", reply_markup=kb)
-    current = {
-        'entry_id': entry['id'],
-        'presented': presented,
-        'choices': choices,
-        'direction': direction,
-    }
-    await db.execute("UPDATE practice_sessions SET meta = jsonb_set(coalesce(meta, '{}'::jsonb), '{current_question}', %s::jsonb, true) WHERE id = %s", (json.dumps(current, ensure_ascii=False), session_id))
+        await msg.answer("Lug'at yaratilishda muammo bo'ldi yoki shunday nom bilan lug'at mavjud.")
 
-# Handlers
-@router.message(Command('mybooks'))
-async def cmd_mybooks(message: Message):
-    user_id = message.from_user.id
-    books = await list_books(user_id)
-    kb = make_books_keyboard(books)
-    await message.answer("Sizning lug'atlar:", reply_markup=kb)
-
-@router.callback_query(lambda c: c.data == 'vb:create')
-async def cb_create_book(query: CallbackQuery, state: FSMContext):
-    await query.message.answer("Yangi lug`at nomini kiriting:")
+@router.callback_query(lambda c: c.data == "create_book")
+async def cb_create_book(cb: CallbackQuery, state: FSMContext):
+    await cb.message.answer("Yangi lug'at nomini kiriting:")
     await state.set_state(VocabStates.waiting_book_name)
-    await query.answer()
+    await cb.answer()
 
 @router.message(VocabStates.waiting_book_name)
 async def process_book_name(message: Message, state: FSMContext):
-    user_id = message.from_user.id
     name = message.text.strip()
     if not name:
-        await message.reply("Nom bo`sh bo`lishi mumkin emas, qayta kiriting:")
+        await message.reply("Nomi bo'sh bo'lishi mumkin emas. Qaytadan kiriting:")
         return
-    book_id = await create_book(user_id, name)
-    await message.answer(f"Lug`at yaratildi: {name} (id={book_id})")
+    bid = await create_book(message.from_user.id, name)
+    await message.answer(f"Lug'at yaratildi: {name} (id={bid})")
     await state.clear()
 
-@router.callback_query(lambda c: c.data and c.data.startswith('vb:b:'))
-async def cb_book_menu(query: CallbackQuery, state: FSMContext):
-    data = query.data.split(':')
-    if len(data) < 4:
-        await query.answer()
-        return
-    book_id = int(data[2])
-    action = data[3]
-    if action == 'menu':
-        kb = make_book_menu(book_id)
-        await query.message.answer("Lug' at menyusi:", reply_markup=kb)
-        await query.answer()
-        return
-    if action == 'add':
-        await state.update_data(book_id=book_id)
-        await state.set_state(VocabStates.waiting_word_list)
-        await query.message.answer("So`zlarni quyidagi shaklda yuboring (har bir juftlik yangi qatorda yoki vergul bilan):\n`book-kitob, pen-qalam, ...`")
-        await query.answer()
-        return
-    if action == 'practice':
-        user_id = query.from_user.id
-        session_id = await start_session(user_id, book_id)
-        await send_question_for_session(query.message.chat.id, session_id, book_id, query.bot)
-        await query.answer()
-        return
+@router.callback_query(lambda c: c.data and c.data.startswith("book:"))
+async def cb_book_menu(cb: CallbackQuery):
+    book_id = int(cb.data.split(":", 1)[1])
+    kb = make_book_menu_kb(book_id)
+    await cb.message.answer("Lug'at menyusi:", reply_markup=kb)
+    await cb.answer()
 
-@router.message(Command('addwords'))
-async def cmd_addwords(message: Message, state: FSMContext):
-    parts = message.text.strip().split()
-    if len(parts) < 2:
-        await message.reply('Iltimos: /addwords <book_id> formatida yuboring.')
-        return
-    try:
-        book_id = int(parts[1])
-    except ValueError:
-        await message.reply("Noto`g`ri book_id")
-        return
-    row = await db.fetchone('SELECT id FROM vocab_books WHERE id = %s AND user_id = %s', (book_id, message.from_user.id))
-    if not row:
-        await message.reply("Bunday lug' at topilmadi yoki sizga tegishli emas.")
-        return
+@router.callback_query(lambda c: c.data and c.data.startswith("add:"))
+async def cb_add_from_menu(cb: CallbackQuery, state: FSMContext):
+    book_id = int(cb.data.split(":", 1)[1])
     await state.update_data(book_id=book_id)
     await state.set_state(VocabStates.waiting_word_list)
-    await message.answer("So`zlarni yuboring (har bir juftlik yangi qatorda yoki vergul bilan):\n`book-kitob, pen-qalam, ...`")
+    await cb.message.answer("So'zlarni yuboring (har qatorda: word-translation yoki word:translation).")
+    await cb.answer()
 
 @router.message(VocabStates.waiting_word_list)
 async def process_word_list(message: Message, state: FSMContext):
     data = await state.get_data()
-    book_id = data.get('book_id')
+    book_id = data.get("book_id")
     if not book_id:
-        await message.reply("Qaysi lug`atga qo`shayotganingiz noma`lum. /addwords <book_id> orqali boshlang yoki lug'at menyusidan Add tanlang.")
+        await message.reply("Qaysi lug'atga qo'shish kerakligi noma'lum. /mybooks orqali tanlang yoki /addwords <book_id> bilan boshlang.")
         await state.clear()
         return
-    text = message.text
-    pairs = parse_pairs_from_text(text)
+    pairs = parse_pairs_from_text(message.text)
     if not pairs:
-        await message.reply("Hech qanday to`g`ri juftlik topilmadi. Format: `word1-word2`")
+        await message.reply("Hech qanday to'g'ri juftlik topilmadi. Format: word-translation")
         return
     n = await add_entries_bulk(book_id, pairs)
-    await message.answer(f"{n} ta juftlik lug`atga qo`shildi.")
+    await message.answer(f"✅ {n} ta juftlik lug'atga qo'shildi.")
     await state.clear()
 
-@router.callback_query(lambda c: c.data and c.data.startswith('vb:ans:'))
-async def cb_answer(query: CallbackQuery):
-    parts = query.data.split(':')
-    if len(parts) != 5:
-        await query.answer()
+@router.message(Command("addwords"))
+async def cmd_addwords(msg: Message, state: FSMContext):
+    parts = msg.text.strip().split()
+    if len(parts) < 2:
+        await msg.reply("Iltimos: /addwords <book_id>")
         return
-    _, _, session_id_s, entry_id_s, choice_idx_s = parts
     try:
-        session_id = int(session_id_s)
+        book_id = int(parts[1])
+    except ValueError:
+        await msg.reply("Noto'g'ri book_id.")
+        return
+    # boshqalar tekshirish: owner tekshirish
+    owner = await db_exec("SELECT id FROM vocab_books WHERE id=%s AND user_id=%s", (book_id, msg.from_user.id), fetch=True)
+    if not owner:
+        await msg.reply("Bunday lug'at topilmadi yoki sizga tegishli emas.")
+        return
+    await state.update_data(book_id=book_id)
+    await state.set_state(VocabStates.waiting_word_list)
+    await msg.answer("So'zlarni yuboring (har qatorda: word-translation).")
+
+# ---- Practice handlers ----
+@router.callback_query(lambda c: c.data and c.data.startswith("practice:"))
+async def start_practice(cb: CallbackQuery, state: FSMContext):
+    book_id = int(cb.data.split(":", 1)[1])
+    session = await start_session(cb.from_user.id, book_id)
+    if not session:
+        await cb.answer("Sessiya yaratib bo'lmadi.", show_alert=True)
+        return
+    await state.update_data(session_id=session, book_id=book_id)
+    await state.set_state(VocabStates.practicing)
+    await cb.answer()
+    await send_question(cb.message, state)
+
+async def send_question(msg: Message, state: FSMContext):
+    data = await state.get_data()
+    book_id = data.get("book_id")
+    session_id = data.get("session_id")
+    if not book_id or not session_id:
+        await msg.answer("Sessiya ma'lumotlari yo'q.")
+        return
+    entries = await db_exec("SELECT id, word_src, word_trg FROM vocab_entries WHERE book_id=%s AND is_active=TRUE", (book_id,), fetch=True, many=True)
+    if not entries:
+        await msg.answer("❌ Bu lug'at bo'sh. Avval so'z qo'shing.")
+        await state.clear()
+        return
+    entry = random.choice(entries)
+    ask_src = random.choice([True, False])
+    presented = entry["word_src"] if ask_src else entry["word_trg"]
+    correct = entry["word_trg"] if ask_src else entry["word_src"]
+
+    # prepare distractors
+    pool = [e["word_trg"] if ask_src else e["word_src"] for e in entries if e["id"] != entry["id"]]
+    wrongs = random.sample(pool, min(3, len(pool))) if pool else []
+    # if not enough wrongs, get additional from DB global pool
+    if len(wrongs) < 3:
+        more = await db_exec(
+            ("SELECT word_trg as val FROM vocab_entries WHERE id != %s ORDER BY random() LIMIT %s") if ask_src else
+            ("SELECT word_src as val FROM vocab_entries WHERE id != %s ORDER BY random() LIMIT %s"),
+            (entry["id"], 3 - len(wrongs)), fetch=True, many=True
+        )
+        if more:
+            wrongs.extend([m["val"] for m in more])
+
+    choices = wrongs + [correct]
+    random.shuffle(choices)
+
+    # save current question to session.meta
+    current = {"entry_id": entry["id"], "presented": presented, "choices": choices, "direction": "src2trg" if ask_src else "trg2src"}
+    await db_exec("UPDATE practice_sessions SET meta = jsonb_set(coalesce(meta, '{}'::jsonb), '{current_question}', %s::jsonb, true) WHERE id = %s", (json.dumps(current, ensure_ascii=False), session_id))
+
+    # build keyboard
+    buttons = [[InlineKeyboardButton(text=opt, callback_data=f"ans:{entry['id']}:{idx}")] for idx, opt in enumerate(choices)]
+    buttons.append([InlineKeyboardButton(text="🏁 Tugatish", callback_data="end")])
+    kb = InlineKeyboardMarkup(inline_keyboard=buttons)
+
+    # persist question record (without chosen yet)
+    await db_exec(
+        "INSERT INTO practice_questions (session_id, entry_id, presented_text, correct_translation, choices, asked_at) VALUES (%s,%s,%s,%s,%s::jsonb,now())",
+        (session_id, entry["id"], presented, correct, json.dumps(choices, ensure_ascii=False))
+    )
+
+    await msg.answer(f"❓ {presented}", reply_markup=kb)
+
+@router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
+async def answer_question(cb: CallbackQuery, state: FSMContext):
+    # data: ans:{entry_id}:{choice_idx}
+    parts = cb.data.split(":", 2)
+    if len(parts) != 3:
+        await cb.answer()
+        return
+    _, entry_id_s, choice_idx_s = parts
+    try:
         entry_id = int(entry_id_s)
         choice_idx = int(choice_idx_s)
     except ValueError:
-        await query.answer()
+        await cb.answer()
         return
-    sess = await get_session(session_id)
-    if not sess:
-        await query.answer('Sessiya topilmadi')
+
+    data = await state.get_data()
+    session_id = data.get("session_id")
+    if not session_id:
+        await cb.answer("Sessiya topilmadi.", show_alert=True)
         return
-    meta = sess.get('meta') or {}
-    current = meta.get('current_question') if isinstance(meta, dict) else None
-    if not current:
-        await query.answer("Savol ma'lumotlari topilmadi, davom etilmaydi.")
+
+    # get last question record for this entry and session
+    q = await db_exec("SELECT id, correct_translation, choices FROM practice_questions WHERE session_id=%s AND entry_id=%s ORDER BY id DESC LIMIT 1", (session_id, entry_id), fetch=True)
+    if not q:
+        await cb.answer("Savol topilmadi yoki muddati o'tgan.", show_alert=True)
         return
-    choices = current.get('choices')
-    direction = current.get('direction')
-    presented = current.get('presented')
-    row = await db.fetchone('SELECT word_trg, word_src FROM vocab_entries WHERE id = %s', (entry_id,))
-    if not row:
-        await query.answer('Savol entry topilmadi')
-        return
-    correct_text = row['word_trg'] if direction == 'src2trg' else row['word_src']
+
+    qid = q["id"]
+    correct = q["correct_translation"]
+    choices = json.loads(q["choices"]) if isinstance(q["choices"], str) else q["choices"]
     try:
         chosen_text = choices[choice_idx]
     except Exception:
-        await query.answer('Noto`g`ri javob tanlandi')
+        await cb.answer("Noto'g'ri javob tanlandi.", show_alert=True)
         return
-    is_correct = (chosen_text == correct_text)
-    await record_question(session_id, entry_id, presented, correct_text, choices, chosen_text, is_correct)
+
+    is_correct = (chosen_text == correct)
+    # update question row with answer
+    await db_exec("UPDATE practice_questions SET chosen_option=%s, is_correct=%s, answered_at=now() WHERE id=%s", (chosen_text, is_correct, qid))
+    # update session stats
     if is_correct:
-        await query.answer('✅ To`g`ri')
+        await db_exec("UPDATE practice_sessions SET correct_count = correct_count + 1, total_questions = total_questions + 1 WHERE id = %s", (session_id,))
+        await cb.answer("✅ To'g'ri")
     else:
-        await query.answer(f"❌ Noto`g`ri. To`g`ri javob: {correct_text}")
-    s = await get_session(session_id)
-    book_id = s.get('book_id') if s else None
-    if book_id:
-        await send_question_for_session(query.message.chat.id, session_id, book_id, query.bot)
-    else:
-        await query.message.answer('Sessiya davom ettirilmaydi (book topilmadi).')
+        await db_exec("UPDATE practice_sessions SET wrong_count = wrong_count + 1, total_questions = total_questions + 1 WHERE id = %s", (session_id,))
+        await cb.answer(f"❌ Noto'g'ri. To'g'ri: {correct}")
 
-@router.callback_query(lambda c: c.data and c.data.startswith('vb:finish:'))
-async def cb_finish(query: CallbackQuery):
-    parts = query.data.split(':')
-    if len(parts) < 3:
-        await query.answer()
-        return
-    try:
-        session_id = int(parts[2])
-    except ValueError:
-        await query.answer()
-        return
-    await finish_session(session_id)
-    s = await get_session(session_id)
-    if not s:
-        await query.answer('Sessiya topilmadi')
-        return
-    correct = s.get('correct_count', 0)
-    wrong = s.get('wrong_count', 0)
-    total = s.get('total_questions', 0)
-    pct = int((correct / total) * 100) if total else 0
-    await query.message.answer(f"Sessiya tugadi. Natija: {correct}/{total} ({pct}%) — To'g'ri: {correct}, Noto'g'ri: {wrong}")
-    await query.answer()
+    # send next question
+    await send_question(cb.message, state)
 
-__all__ = ['router']
+@router.callback_query(lambda c: c.data == "end")
+async def end_practice(cb: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    session_id = data.get("session_id")
+    if not session_id:
+        await cb.answer("Sessiya topilmadi.", show_alert=True)
+        return
+    s = await db_exec("SELECT total_questions, correct_count, wrong_count FROM practice_sessions WHERE id=%s", (session_id,), fetch=True)
+    if s:
+        await cb.message.answer(f"📊 Natijalar:\nJami: {s['total_questions']}\nTo'g'ri: {s['correct_count']}\nXato: {s['wrong_count']}")
+    await state.clear()
+    await cb.answer("Mashq tugadi.")
+
+# Export router
+__all__ = ["router"]
