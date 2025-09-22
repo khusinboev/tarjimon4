@@ -236,56 +236,68 @@ async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
         await cb.message.edit_text(L["empty_book"], reply_markup=book_kb(book_id, lang))
         return
 
-    random.shuffle(words)
     await state.set_state(VocabStates.practicing)
-    await state.update_data(words=words, idx=0, correct=0, wrong=0, book_id=book_id)
+    await state.update_data(book_id=book_id, words=words)
 
-    await ask_question(cb.message, words[0], lang)
+    await ask_question(cb.message, words, lang)
 
-async def ask_question(msg: Message, word_row: Dict[str, Any], lang: str):
+
+async def ask_question(msg: Message, words: List[Dict[str, Any]], lang: str):
+    """Savol yuborish: random tanlov, random til yo‘nalishi"""
     L = LOCALES[lang]
-    options = [word_row["word_trg"]]
-    all_words = await db_exec("SELECT word_trg FROM vocab_entries ORDER BY random() LIMIT 3", fetch=True, many=True)
-    options.extend([r["word_trg"] for r in all_words if r["word_trg"] != word_row["word_trg"]])
+    entry = random.choice(words)
+    ask_src = random.choice([True, False])  # qaysi tildan so‘raladi
+
+    presented = entry["word_src"] if ask_src else entry["word_trg"]
+    correct = entry["word_trg"] if ask_src else entry["word_src"]
+
+    # Distraktorlarni tanlash
+    if ask_src:
+        pool = [w["word_trg"] for w in words if w["id"] != entry["id"]]
+    else:
+        pool = [w["word_src"] for w in words if w["id"] != entry["id"]]
+
+    wrongs = random.sample(pool, min(3, len(pool)))
+    options = wrongs + [correct]
     random.shuffle(options)
 
-    buttons = [[InlineKeyboardButton(text=o, callback_data=f"ans:{word_row['id']}:{o}")] for o in options]
+    # Tugmalarni 2 ustunda joylashtirish
+    buttons = []
+    row = []
+    for i, opt in enumerate(options, start=1):
+        row.append(InlineKeyboardButton(text=opt, callback_data=f"ans:{entry['id']}:{opt}:{correct}"))
+        if i % 2 == 0:
+            buttons.append(row)
+            row = []
+    if row:
+        buttons.append(row)
+
+    # Tugatish tugmasi
     buttons.append([InlineKeyboardButton(text=L["finish"], callback_data="practice:finish")])
 
-    await msg.edit_text(L["question"].format(word=word_row["word_src"]), reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await msg.edit_text(L["question"].format(word=presented), reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
 
 @router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
 async def cb_answer(cb: CallbackQuery, state: FSMContext):
-    _, wid, ans = cb.data.split(":", 2)
-    wid = int(wid)
+    # data: ans:{entry_id}:{chosen}:{correct}
+    _, eid, chosen, correct = cb.data.split(":", 3)
 
     user_id = cb.from_user.id
     lang = await get_user_lang(user_id)
     L = LOCALES[lang]
 
-    data = await state.get_data()
-    words = data["words"]
-    idx = data["idx"]
-
-    current = words[idx]
-    correct = data["correct"]
-    wrong = data["wrong"]
-
-    if ans == current["word_trg"]:
-        correct += 1
+    if chosen == correct:
         await cb.answer(L["correct"])
     else:
-        wrong += 1
-        await cb.answer(L["wrong"].format(correct=current["word_trg"]))
+        await cb.answer(L["wrong"].format(correct=correct))
 
-    idx += 1
-    if idx >= len(words):
-        await cb.message.edit_text(L["results"].format(total=idx, correct=correct, wrong=wrong), reply_markup=None)
-        await state.clear()
-        return
+    data = await state.get_data()
+    words = data["words"]
 
-    await state.update_data(idx=idx, correct=correct, wrong=wrong)
-    await ask_question(cb.message, words[idx], lang)
+    # Keyingi savolni darhol chiqaramiz (cheksiz aylanish)
+    await ask_question(cb.message, words, lang)
+
 
 @router.callback_query(lambda c: c.data == "practice:finish")
 async def cb_finish(cb: CallbackQuery, state: FSMContext):
@@ -293,13 +305,5 @@ async def cb_finish(cb: CallbackQuery, state: FSMContext):
     lang = await get_user_lang(user_id)
     L = LOCALES[lang]
 
-    data = await state.get_data()
-    if not data:
-        await cb.message.edit_text(L["session_end"])
-        return
-
-    idx = data.get("idx", 0)
-    correct = data.get("correct", 0)
-    wrong = data.get("wrong", 0)
-    await cb.message.edit_text(L["results"].format(total=idx, correct=correct, wrong=wrong))
+    await cb.message.edit_text(L["session_end"])
     await state.clear()
