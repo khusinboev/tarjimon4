@@ -216,14 +216,23 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
             "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
             (user_id,), fetch=True, many=True
         )
+
+        # 🔑 Agar lug‘atlar bo‘lmasa
         if not rows:
             await cb.message.edit_text(L["no_books"], reply_markup=cabinet_kb(lang))
             return
 
-        buttons = [[InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}")] for r in rows]
+        # 🔑 Aks holda lug‘atlar ro‘yxatini chiqaramiz
+        buttons = [
+            [InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}")]
+            for r in rows
+        ]
         buttons.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
 
-        await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await cb.message.edit_text(
+            L["my_books"],
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons)
+        )
 
 
 @router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
