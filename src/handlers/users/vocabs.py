@@ -1,22 +1,21 @@
-# src/handlers/users/vocabs_ui_improved.py
+# src/handlers/users/vocabs.py
 import asyncio
+import json
 import random
 from typing import List, Dict, Any, Optional
-
 from aiogram import Router
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-
-from config import db  # psycopg2 connection
+from config import db
 
 router = Router()
 
 # -------------------- Localization --------------------
 LOCALES = {
     "uz": {
-        "cabinet_title": "📚 Kabinet",
+        "cabinet": "📚 Kabinet",
         "choose_lang": "Tilni tanlang:",
         "my_books": "📖 Mening lug'atlarim",
         "new_book": "➕ Yangi lug'at",
@@ -39,7 +38,7 @@ LOCALES = {
         "session_end": "Mashq tugadi."
     },
     "en": {
-        "cabinet_title": "📚 Cabinet",
+        "cabinet": "📚 Cabinet",
         "choose_lang": "Choose your language:",
         "my_books": "📖 My books",
         "new_book": "➕ New book",
@@ -63,7 +62,6 @@ LOCALES = {
     }
 }
 
-
 # -------------------- DB helpers --------------------
 async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: bool = False):
     def run():
@@ -84,34 +82,22 @@ async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: b
         return None
     return await asyncio.to_thread(run)
 
-
 async def get_user_lang(user_id: int) -> str:
-    row = await db_exec("SELECT language FROM user_settings WHERE user_id=%s", (user_id,), fetch=True)
-    return row["language"] if row else "uz"
-
+    row = await db_exec("SELECT lang_code FROM accounts WHERE user_id=%s ORDER BY id DESC LIMIT 1", (user_id,), fetch=True)
+    return row["lang_code"] if row and row.get("lang_code") else "uz"
 
 async def set_user_lang(user_id: int, lang: str):
     await db_exec(
-        "INSERT INTO user_settings (user_id, language) VALUES (%s,%s) "
-        "ON CONFLICT (user_id) DO UPDATE SET language=EXCLUDED.language",
+        "INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s) "
+        "ON CONFLICT (user_id) DO UPDATE SET lang_code=EXCLUDED.lang_code",
         (user_id, lang)
     )
-
-
-async def save_menu_message(user_id: int, chat_id: int, message_id: int):
-    await db_exec(
-        "INSERT INTO user_settings (user_id, last_menu_chat_id, last_menu_message_id) VALUES (%s,%s,%s) "
-        "ON CONFLICT (user_id) DO UPDATE SET last_menu_chat_id=EXCLUDED.last_menu_chat_id, last_menu_message_id=EXCLUDED.last_menu_message_id",
-        (user_id, chat_id, message_id)
-    )
-
 
 # -------------------- FSM --------------------
 class VocabStates(StatesGroup):
     waiting_book_name = State()
     waiting_word_list = State()
     practicing = State()
-
 
 # -------------------- UI builders --------------------
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
@@ -122,14 +108,12 @@ def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")]
     ])
 
-
 def settings_kb(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🇺🇿 O'zbek", callback_data="lang:uz"),
          InlineKeyboardButton(text="🇬🇧 English", callback_data="lang:en")],
         [InlineKeyboardButton(text=LOCALES[lang]["back"], callback_data="cab:back")]
     ])
-
 
 def book_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
     L = LOCALES[lang]
@@ -139,15 +123,12 @@ def book_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=L["back"], callback_data="cab:books")]
     ])
 
-
-# -------------------- Cabinet Handlers --------------------
+# -------------------- Cabinet --------------------
 @router.message(Command("cabinet"))
 async def cmd_cabinet(msg: Message):
     lang = await get_user_lang(msg.from_user.id)
     L = LOCALES[lang]
-    m = await msg.answer(L["cabinet_title"], reply_markup=cabinet_kb(lang))
-    await save_menu_message(msg.from_user.id, m.chat.id, m.message_id)
-
+    await msg.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
 
 @router.callback_query(lambda c: c.data and c.data.startswith("cab:"))
 async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
@@ -159,7 +140,7 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
         await cb.message.edit_text(L["choose_lang"], reply_markup=settings_kb(lang))
 
     elif cb.data == "cab:back":
-        await cb.message.edit_text(L["cabinet_title"], reply_markup=cabinet_kb(lang))
+        await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
 
     elif cb.data == "cab:new":
         await cb.message.edit_text(L["enter_book_name"])
@@ -174,17 +155,15 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
         buttons.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
         await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
-
 @router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
 async def cb_change_lang(cb: CallbackQuery):
     lang = cb.data.split(":")[1]
     await set_user_lang(cb.from_user.id, lang)
     L = LOCALES[lang]
-    await cb.message.edit_text(L["cabinet_title"], reply_markup=cabinet_kb(lang))
+    await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
     await cb.answer("Language changed ✅")
 
-
-# -------------------- Book handlers --------------------
+# -------------------- Books --------------------
 @router.message(VocabStates.waiting_book_name)
 async def add_book(msg: Message, state: FSMContext):
     user_id = msg.from_user.id
@@ -202,13 +181,11 @@ async def add_book(msg: Message, state: FSMContext):
     await msg.answer(L["book_created"].format(name=name, id=row["id"]), reply_markup=cabinet_kb(lang))
     await state.clear()
 
-
 @router.callback_query(lambda c: c.data and c.data.startswith("book:open:"))
 async def cb_book_open(cb: CallbackQuery):
     book_id = int(cb.data.split(":")[2])
     lang = await get_user_lang(cb.from_user.id)
     await cb.message.edit_text(f"📖 Book {book_id}", reply_markup=book_kb(book_id, lang))
-
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:add:"))
 async def cb_book_add(cb: CallbackQuery, state: FSMContext):
@@ -219,7 +196,6 @@ async def cb_book_add(cb: CallbackQuery, state: FSMContext):
     await cb.message.edit_text(L["send_pairs"])
     await state.update_data(book_id=book_id)
     await state.set_state(VocabStates.waiting_word_list)
-
 
 @router.message(VocabStates.waiting_word_list)
 async def add_words(msg: Message, state: FSMContext):
@@ -241,11 +217,10 @@ async def add_words(msg: Message, state: FSMContext):
         return
 
     for w, t in pairs:
-        await db_exec("INSERT INTO vocab_words (book_id, word, translation) VALUES (%s,%s,%s)", (book_id, w, t))
+        await db_exec("INSERT INTO vocab_entries (book_id, word_src, word_trg) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING", (book_id, w, t))
 
     await msg.answer(L["added_pairs"].format(n=len(pairs)))
     await state.clear()
-
 
 # -------------------- Practice --------------------
 @router.callback_query(lambda c: c.data and c.data.startswith("book:practice:"))
@@ -255,7 +230,7 @@ async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
     lang = await get_user_lang(user_id)
     L = LOCALES[lang]
 
-    words = await db_exec("SELECT id, word, translation FROM vocab_words WHERE book_id=%s", (book_id,), fetch=True, many=True)
+    words = await db_exec("SELECT id, word_src, word_trg FROM vocab_entries WHERE book_id=%s AND is_active=TRUE", (book_id,), fetch=True, many=True)
     if not words:
         await cb.message.edit_text(L["empty_book"], reply_markup=book_kb(book_id, lang))
         return
@@ -266,19 +241,17 @@ async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
 
     await ask_question(cb.message, words[0], lang)
 
-
 async def ask_question(msg: Message, word_row: Dict[str, Any], lang: str):
     L = LOCALES[lang]
-    options = [word_row["translation"]]
-    all_words = await db_exec("SELECT translation FROM vocab_words ORDER BY random() LIMIT 3", fetch=True, many=True)
-    options.extend([r["translation"] for r in all_words if r["translation"] != word_row["translation"]])
+    options = [word_row["word_trg"]]
+    all_words = await db_exec("SELECT word_trg FROM vocab_entries ORDER BY random() LIMIT 3", fetch=True, many=True)
+    options.extend([r["word_trg"] for r in all_words if r["word_trg"] != word_row["word_trg"]])
     random.shuffle(options)
 
     buttons = [[InlineKeyboardButton(text=o, callback_data=f"ans:{word_row['id']}:{o}")] for o in options]
     buttons.append([InlineKeyboardButton(text=L["finish"], callback_data="practice:finish")])
 
-    await msg.edit_text(L["question"].format(word=word_row["word"]), reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-
+    await msg.edit_text(L["question"].format(word=word_row["word_src"]), reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 @router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
 async def cb_answer(cb: CallbackQuery, state: FSMContext):
@@ -297,12 +270,12 @@ async def cb_answer(cb: CallbackQuery, state: FSMContext):
     correct = data["correct"]
     wrong = data["wrong"]
 
-    if ans == current["translation"]:
+    if ans == current["word_trg"]:
         correct += 1
         await cb.answer(L["correct"])
     else:
         wrong += 1
-        await cb.answer(L["wrong"].format(correct=current["translation"]))
+        await cb.answer(L["wrong"].format(correct=current["word_trg"]))
 
     idx += 1
     if idx >= len(words):
@@ -312,7 +285,6 @@ async def cb_answer(cb: CallbackQuery, state: FSMContext):
 
     await state.update_data(idx=idx, correct=correct, wrong=wrong)
     await ask_question(cb.message, words[idx], lang)
-
 
 @router.callback_query(lambda c: c.data == "practice:finish")
 async def cb_finish(cb: CallbackQuery, state: FSMContext):
