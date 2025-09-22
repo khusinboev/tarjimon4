@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS practice_questions (
 CREATE INDEX IF NOT EXISTS idx_vocab_books_user ON vocab_books(user_id);
 CREATE INDEX IF NOT EXISTS idx_vocab_entries_book ON vocab_entries(book_id);
 CREATE INDEX IF NOT EXISTS idx_practice_sessions_user ON practice_sessions(user_id);""") 
-    dc.commit()
+    db.commit()
 
 
 def init_languages_table():
