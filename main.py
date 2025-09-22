@@ -31,11 +31,11 @@ async def main():
     dp.include_router(msg_router)
 
     #for user
+    dp.include_router(vocab_router)
     dp.include_router(user_router)
     dp.include_router(translate_router)
     dp.include_router(inline_router)
-    dp.include_router(vocab_router)
-
+    
     #for other
     dp.include_router(group_router)
     dp.include_router(channel_router)
