@@ -87,11 +87,12 @@ async def get_user_lang(user_id: int) -> str:
     return row["lang_code"] if row and row.get("lang_code") else "uz"
 
 async def set_user_lang(user_id: int, lang: str):
-    await db_exec(
-        "INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s) "
-        "ON CONFLICT (user_id) DO UPDATE SET lang_code=EXCLUDED.lang_code",
-        (user_id, lang)
-    )
+    # Avval foydalanuvchi mavjudmi?
+    row = await db_exec("SELECT id FROM accounts WHERE user_id=%s ORDER BY id DESC LIMIT 1", (user_id,), fetch=True)
+    if row:
+        await db_exec("UPDATE accounts SET lang_code=%s WHERE id=%s", (lang, row["id"]))
+    else:
+        await db_exec("INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s)", (user_id, lang))
 
 # -------------------- FSM --------------------
 class VocabStates(StatesGroup):
