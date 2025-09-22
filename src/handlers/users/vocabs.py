@@ -366,4 +366,9 @@ async def cb_finish(cb: CallbackQuery, state: FSMContext):
     text = L["results"].format(total=total, correct=data.get("correct", 0), wrong=data.get("wrong", 0))
 
     try:
-        await cb
+        await cb.message.edit_text(text, reply_markup=main_menu_kb(lang))
+    except Exception:
+        await cb.message.answer(text, reply_markup=main_menu_kb(lang))
+
+    await state.clear()
+    await cb.answer(L["session_end"])
