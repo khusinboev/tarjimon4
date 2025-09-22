@@ -212,27 +212,27 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
         await state.set_state(VocabStates.waiting_book_name)
 
     elif cb.data == "cab:books":
-        rows = await db_exec(
-            "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
-            (user_id,), fetch=True, many=True
-        )
+    rows = await db_exec(
+        "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
+        (user_id,), fetch=True, many=True
+    )
 
-        # 🔑 Agar lug‘atlar bo‘lmasa
-        if not rows:
-            await cb.message.edit_text(L["no_books"], reply_markup=cabinet_kb(lang))
-            return
+    # 🔑 Agar lug‘atlar bo‘lmasa -> alert ko‘rsatamiz
+    if not rows:
+        await cb.answer(L["no_books"], show_alert=True)
+        return
 
-        # 🔑 Aks holda lug‘atlar ro‘yxatini chiqaramiz
-        buttons = [
-            [InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}")]
-            for r in rows
-        ]
-        buttons.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
+    # 🔑 Aks holda lug‘atlar ro‘yxatini chiqaramiz
+    buttons = [
+        [InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}")]
+        for r in rows
+    ]
+    buttons.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
 
-        await cb.message.edit_text(
-            L["my_books"],
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons)
-        )
+    await cb.message.edit_text(
+        L["my_books"],
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons)
+    )
 
 
 @router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
