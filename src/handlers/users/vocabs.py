@@ -367,3 +367,124 @@ async def add_words(msg: Message, state: FSMContext):
         )
 
     await msg.answer(L["added_pairs"].format(n=len(pairs)), reply_markup=add_words_back_kb(book_id, lang))
+
+
+# -------- Practice --------
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:practice:"))
+async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
+    """Start practice session if enough words"""
+    book_id = int(cb.data.split(":")[2])
+    user_id = cb.from_user.id
+    lang = await get_user_lang(user_id)
+    L = LOCALES[lang]
+
+    # Kitobdagi so‘zlarni olish
+    rows = await db_exec(
+        "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s",
+        (book_id,), fetch=True, many=True
+    )
+
+    if not rows or len(rows) < 4:
+        await cb.answer("❌ " + L["empty_book"], show_alert=True)
+        return
+
+    # Mashq uchun aralashtirib tayyorlaymiz
+    random.shuffle(rows)
+
+    await state.update_data(
+        book_id=book_id,
+        words=rows,
+        index=0,
+        correct=0,
+        wrong=0,
+        total=len(rows)
+    )
+    await state.set_state(VocabStates.practicing)
+
+    await send_next_question(cb.message, state, lang)
+
+
+async def send_next_question(msg: Message, state: FSMContext, lang: str):
+    """Helper: send next practice question"""
+    data = await state.get_data()
+    words = data["words"]
+    index = data["index"]
+    L = LOCALES[lang]
+
+    # Agar mashq tugagan bo‘lsa
+    if index >= len(words):
+        results = L["results"].format(
+            total=data["total"],
+            correct=data["correct"],
+            wrong=data["wrong"]
+        )
+        await msg.edit_text(results, reply_markup=main_menu_kb(lang))
+        await state.clear()
+        return
+
+    current = words[index]
+    correct_answer = current["word_trg"]
+
+    # 4 ta variant tayyorlash
+    options = [correct_answer]
+    while len(options) < 4 and len(options) < len(words):
+        candidate = random.choice(words)["word_trg"]
+        if candidate not in options:
+            options.append(candidate)
+    random.shuffle(options)
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=o, callback_data=f"ans:{index}:{o}")]
+        for o in options
+    ] + [[InlineKeyboardButton(text=L["finish"], callback_data="practice:finish")]])
+
+    await msg.edit_text(L["question"].format(word=current["word_src"]),
+                        reply_markup=keyboard)
+
+
+@router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
+async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
+    """Check practice answer"""
+    user_id = cb.from_user.id
+    lang = await get_user_lang(user_id)
+    L = LOCALES[lang]
+
+    data = await state.get_data()
+    words = data["words"]
+    index = data["index"]
+
+    _, idx, chosen = cb.data.split(":", 2)
+    idx = int(idx)
+    current = words[idx]
+    correct_answer = current["word_trg"]
+
+    if chosen == correct_answer:
+        data["correct"] += 1
+        await cb.answer(L["correct"])
+    else:
+        data["wrong"] += 1
+        await cb.answer(L["wrong"].format(correct=correct_answer), show_alert=True)
+
+    data["index"] = index + 1
+    await state.update_data(**data)
+
+    await send_next_question(cb.message, state, lang)
+
+
+@router.callback_query(lambda c: c.data == "practice:finish")
+async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
+    """Finish practice session"""
+    user_id = cb.from_user.id
+    lang = await get_user_lang(user_id)
+    L = LOCALES[lang]
+
+    data = await state.get_data()
+
+    results = L["results"].format(
+        total=data.get("total", 0),
+        correct=data.get("correct", 0),
+        wrong=data.get("wrong", 0)
+    )
+    await cb.message.edit_text(results, reply_markup=main_menu_kb(lang))
+    await state.clear()
