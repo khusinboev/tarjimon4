@@ -146,7 +146,35 @@ async def cmd_cabinet(msg: Message):
     L = LOCALES[lang]
     await msg.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
 
-# (cabinet va settings callbacklari o‘zgarmagan)
+@router.callback_query(lambda c: c.data and c.data.startswith("cab:"))
+async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
+    user_id = cb.from_user.id
+    lang = await get_user_lang(user_id)
+    L = LOCALES[lang]
+
+    if cb.data == "cab:settings":
+        await cb.message.edit_text(L["choose_lang"], reply_markup=settings_kb(lang))
+    elif cb.data == "cab:back":
+        await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
+    elif cb.data == "cab:new":
+        await cb.message.edit_text(L["enter_book_name"])
+        await state.set_state(VocabStates.waiting_book_name)
+    elif cb.data == "cab:books":
+        rows = await db_exec("SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC", (user_id,), fetch=True, many=True)
+        if not rows:
+            await cb.message.edit_text(L["no_books"], reply_markup=cabinet_kb(lang))
+            return
+        buttons = [[InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}")] for r in rows]
+        buttons.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
+        await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+@router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
+async def cb_change_lang(cb: CallbackQuery):
+    lang = cb.data.split(":")[1]
+    await set_user_lang(cb.from_user.id, lang)
+    L = LOCALES[lang]
+    await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
+    await cb.answer("Language changed ✅")
 
 # -------------------- Books --------------------
 @router.message(VocabStates.waiting_book_name)
@@ -165,6 +193,29 @@ async def add_book(msg: Message, state: FSMContext):
     row = await db_exec("INSERT INTO vocab_books (user_id, name) VALUES (%s,%s) RETURNING id", (user_id, name), fetch=True)
     await msg.answer(L["book_created"].format(name=name, id=row["id"]), reply_markup=main_menu_kb(lang))
     await state.clear()
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:open:"))
+async def cb_book_open(cb: CallbackQuery):
+    book_id = int(cb.data.split(":")[2])
+    lang = await get_user_lang(cb.from_user.id)
+    try:
+        await cb.message.edit_text(f"📖 Book {book_id}", reply_markup=book_kb(book_id, lang))
+    except Exception:
+        await cb.message.answer(f"📖 Book {book_id}", reply_markup=book_kb(book_id, lang))
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:add:"))
+async def cb_book_add(cb: CallbackQuery, state: FSMContext):
+    book_id = int(cb.data.split(":")[2])
+    lang = await get_user_lang(cb.from_user.id)
+    L = LOCALES[lang]
+
+    try:
+        await cb.message.edit_text(L["send_pairs"])
+    except Exception:
+        await cb.message.answer(L["send_pairs"])
+
+    await state.update_data(book_id=book_id)
+    await state.set_state(VocabStates.waiting_word_list)
 
 @router.message(VocabStates.waiting_word_list)
 async def add_words(msg: Message, state: FSMContext):
@@ -267,5 +318,9 @@ async def cb_finish(cb: CallbackQuery, state: FSMContext):
     total = data.get("correct", 0) + data.get("wrong", 0)
     text = L["results"].format(total=total, correct=data.get("correct", 0), wrong=data.get("wrong", 0))
 
-    await cb.message.edit_text(text, reply_markup=main_menu_kb(lang))
+    try:
+        await cb.message.edit_text(text, reply_markup=main_menu_kb(lang))
+    except Exception:
+        await cb.message.answer(text, reply_markup=main_menu_kb(lang))
+
     await state.clear()
