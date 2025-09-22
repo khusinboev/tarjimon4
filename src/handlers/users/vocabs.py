@@ -42,7 +42,7 @@ class VocabStates(StatesGroup):
     waiting_word_list = State()
 
 # Config
-DATABASE_DSN = "postgresql+psycopg2://postgres:parol@localhost:5432/tarjimon" 
+DATABASE_DSN = "dbname=tarjimon user=postgres password=parol host=localhost port=5432"
 
 # Simple blocking DB adapter with async wrappers
 class DB:
