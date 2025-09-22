@@ -139,6 +139,16 @@ def main_menu_kb(lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=LOCALES[lang]["main_menu"], callback_data="cab:back")]
     ])
 
+def back_to_cabinet_kb(lang: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=LOCALES[lang]["back"], callback_data="cab:back")]
+    ])
+
+def back_to_book_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=LOCALES[lang]["back_to_book"], callback_data=f"book:open:{book_id}")]
+    ])
+
 # -------------------- Cabinet --------------------
 @router.message(Command("cabinet"))
 async def cmd_cabinet(msg: Message):
@@ -157,7 +167,7 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
     elif cb.data == "cab:back":
         await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
     elif cb.data == "cab:new":
-        await cb.message.edit_text(L["enter_book_name"])
+        await cb.message.edit_text(L["enter_book_name"], reply_markup=back_to_cabinet_kb(lang))
         await state.set_state(VocabStates.waiting_book_name)
     elif cb.data == "cab:books":
         rows = await db_exec("SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC", (user_id,), fetch=True, many=True)
@@ -210,9 +220,9 @@ async def cb_book_add(cb: CallbackQuery, state: FSMContext):
     L = LOCALES[lang]
 
     try:
-        await cb.message.edit_text(L["send_pairs"])
+        await cb.message.edit_text(L["send_pairs"], reply_markup=back_to_book_kb(book_id, lang))
     except Exception:
-        await cb.message.answer(L["send_pairs"])
+        await cb.message.answer(L["send_pairs"], reply_markup=back_to_book_kb(book_id, lang))
 
     await state.update_data(book_id=book_id)
     await state.set_state(VocabStates.waiting_word_list)
