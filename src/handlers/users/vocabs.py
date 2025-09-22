@@ -1,4 +1,4 @@
-# src/handlers/users/vocabs.py
+# # src/handlers/users/vocabs.py
 import os
 import json
 import asyncio
@@ -6,41 +6,39 @@ import random
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 
-import psycopg2
-from psycopg2.extras import RealDictCursor
 from contextlib import closing
-
 from aiogram import Router
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
-router = Router()
+# 🔹 config.py dan tortamiz
+from config import sql, db  
 
-# ---- CONFIG: DSN (psycopg2 expects "postgresql://user:pass@host:port/dbname" or "dbname=...") ----
-DATABASE_DSN = os.getenv("DATABASE_DSN") or os.getenv("DATABASE_URL")
-if not DATABASE_DSN:
-    raise RuntimeError("DATABASE_DSN yoki DATABASE_URL muhit o'zgaruvchisi aniqlanmadi. .env sozlang (postgresql://... format).")
+router = Router()
 
 # ---- Async wrapper for blocking psycopg2 calls ----
 async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: bool = False) -> Optional[Any]:
     """
-    - fetch=False: bajaradi va None qaytaradi
-    - fetch=True, many=False: bitta qator dict (RealDictCursor) yoki None
-    - fetch=True, many=True: ro'yxat (har element dict) yoki []
+    sql va db (config.py) orqali so‘rov bajaradi
     """
     def run():
-        with closing(psycopg2.connect(DATABASE_DSN)) as conn:
-            with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                cur.execute(query, params or ())
-                if fetch:
-                    if many:
-                        return cur.fetchall()
-                    return cur.fetchone()
-                conn.commit()
-                # agar INSERT ... RETURNING ishlatilsa, fetch=True bilan qayta chaqiring
-                return None
+        cur = db.cursor()
+        cur.execute(query, params or ())
+        if fetch:
+            if many:
+                rows = cur.fetchall()
+                # agar RealDictCursor ishlatilmagan bo‘lsa -> dict qilib qaytaramiz
+                cols = [desc[0] for desc in cur.description]
+                return [dict(zip(cols, row)) for row in rows]
+            else:
+                row = cur.fetchone()
+                if not row:
+                    return None
+                cols = [desc[0] for desc in cur.description]
+                return dict(zip(cols, row))
+        return None
     return await asyncio.to_thread(run)
 
 # ---- FSM states ----
@@ -58,7 +56,6 @@ def parse_pairs_from_text(text: str) -> List[tuple]:
         line = line.strip()
         if not line:
             continue
-        # allow formats: "word - translation" or "word:translation" or "word|translation"
         for sep in ("-", ":", "|"):
             if sep in line:
                 left, right = [p.strip() for p in line.split(sep, 1)]
@@ -66,7 +63,6 @@ def parse_pairs_from_text(text: str) -> List[tuple]:
                     pairs.append((left, right))
                 break
         else:
-            # fallback: if space separated two words
             if " " in line:
                 a, b = line.split(None, 1)
                 pairs.append((a.strip(), b.strip()))
@@ -83,7 +79,6 @@ async def create_book(user_id: int, name: str) -> int:
     row = await db_exec(q, (user_id, name), fetch=True)
     if row and "id" in row:
         return row["id"]
-    # conflict => fetch existing
     row2 = await db_exec("SELECT id FROM vocab_books WHERE user_id=%s AND name=%s", (user_id, name), fetch=True)
     return row2["id"] if row2 else 0
 
@@ -94,19 +89,16 @@ async def list_books(user_id: int) -> List[Dict[str, Any]]:
 async def add_entries_bulk(book_id: int, pairs: List[tuple]) -> int:
     if not pairs:
         return 0
-    # build batched insert
-    args = []
-    for left, right in pairs:
-        args.append((book_id, left, right))
-    # execute many inside a thread to avoid many roundtrips
+    args = [(book_id, left, right) for left, right in pairs]
+
     def run_many():
-        with closing(psycopg2.connect(DATABASE_DSN)) as conn:
-            with conn.cursor() as cur:
-                cur.executemany(
-                    "INSERT INTO vocab_entries (book_id, word_src, word_trg, created_at, updated_at) VALUES (%s, %s, %s, now(), now()) ON CONFLICT DO NOTHING",
-                    args
-                )
-                conn.commit()
+        cur = db.cursor()
+        cur.executemany(
+            "INSERT INTO vocab_entries (book_id, word_src, word_trg, created_at, updated_at) "
+            "VALUES (%s, %s, %s, now(), now()) ON CONFLICT DO NOTHING",
+            args
+        )
+        db.commit()
     await asyncio.to_thread(run_many)
     return len(args)
 
@@ -121,7 +113,8 @@ async def start_session(user_id: int, book_id: int) -> int:
 async def record_question(session_id: int, entry_id: int, presented: str, correct: str, choices: List[str], chosen: Optional[str], is_correct: Optional[bool]):
     choices_json = json.dumps(choices, ensure_ascii=False)
     await db_exec(
-        "INSERT INTO practice_questions (session_id, entry_id, presented_text, correct_translation, choices, chosen_option, is_correct, asked_at, answered_at) VALUES (%s,%s,%s,%s,%s::jsonb,%s,%s,now(),%s)",
+        "INSERT INTO practice_questions (session_id, entry_id, presented_text, correct_translation, choices, chosen_option, is_correct, asked_at, answered_at) "
+        "VALUES (%s,%s,%s,%s,%s::jsonb,%s,%s,now(),%s)",
         (session_id, entry_id, presented, correct, choices_json, chosen, is_correct, (datetime.now() if chosen is not None else None))
     )
     if chosen is not None:
@@ -135,6 +128,9 @@ async def finish_session(session_id: int):
 
 async def get_session(session_id: int) -> Optional[Dict[str, Any]]:
     return await db_exec("SELECT * FROM practice_sessions WHERE id = %s", (session_id,), fetch=True)
+
+# ---- UI helpers va Handlers (o‘zgarmagan) ----
+# ... qolgan kodingiz xuddi o‘sha holda ishlaydi ...
 
 # ---- UI helpers ----
 def make_books_kb(rows: List[Dict[str, Any]]) -> InlineKeyboardMarkup:
