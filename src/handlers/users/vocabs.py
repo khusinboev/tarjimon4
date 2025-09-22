@@ -22,13 +22,17 @@ LOCALES = {
         "back": "🔙 Orqaga",
         "practice": "▶ Mashq",
         "add_words": "➕ So'z qo'shish",
+        "delete": "❌ O‘chirish",
+        "confirm_delete": "❓ Ushbu lug‘atni o‘chirishga ishonchingiz komilmi?",
+        "yes": "✅ Ha",
+        "no": "❌ Yo‘q",
         "results": "📊 Natijalar:\nJami: {total}\nTo'g'ri: {correct}\nXato: {wrong}",
         "no_books": "Sizda hali lug'at yo'q.",
         "enter_book_name": "Yangi lug'at nomini kiriting:",
         "book_created": "✅ Lug'at yaratildi: {name} (id={id})",
         "book_exists": "❌ Bu nom bilan lug'at mavjud.",
         "send_pairs": "So'zlarni yuboring (har qatorda: word-translation).",
-        "added_pairs": "✅ {n} ta juftlik qo'shildi. Yana yuborishingiz mumkin yoki orqaga qayting 👇",
+        "added_pairs": "✅ {n} ta juftlik qo'shildi. Yana yuborishingiz mumkin 👇",
         "empty_book": "❌ Bu lug'at bo'sh.",
         "question": "❓ {word}",
         "correct": "✅ To'g'ri",
@@ -47,13 +51,17 @@ LOCALES = {
         "back": "🔙 Back",
         "practice": "▶ Practice",
         "add_words": "➕ Add words",
+        "delete": "❌ Delete",
+        "confirm_delete": "❓ Are you sure you want to delete this book?",
+        "yes": "✅ Yes",
+        "no": "❌ No",
         "results": "📊 Results:\nTotal: {total}\nCorrect: {correct}\nWrong: {wrong}",
         "no_books": "You have no books yet.",
         "enter_book_name": "Enter new book name:",
         "book_created": "✅ Book created: {name} (id={id})",
         "book_exists": "❌ Book with this name already exists.",
         "send_pairs": "Send word pairs (each line: word-translation).",
-        "added_pairs": "✅ {n} pairs added. You can send more or go back 👇",
+        "added_pairs": "✅ {n} pairs added. You can send more 👇",
         "empty_book": "❌ This book is empty.",
         "question": "❓ {word}",
         "correct": "✅ Correct",
@@ -123,15 +131,20 @@ def book_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=L["practice"], callback_data=f"book:practice:{book_id}")],
         [InlineKeyboardButton(text=L["add_words"], callback_data=f"book:add:{book_id}")],
+        [InlineKeyboardButton(text=L["delete"], callback_data=f"book:delete_confirm:{book_id}")],
         [InlineKeyboardButton(text=L["back"], callback_data="cab:books")]
     ])
 
-def add_more_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
+def confirm_delete_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
     L = LOCALES[lang]
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="➕", callback_data=f"book:add:{book_id}")],
-        [InlineKeyboardButton(text=L["back_to_book"], callback_data=f"book:open:{book_id}")],
-        [InlineKeyboardButton(text=L["main_menu"], callback_data="cab:back")]
+        [InlineKeyboardButton(text=L["yes"], callback_data=f"book:delete_yes:{book_id}")],
+        [InlineKeyboardButton(text=L["no"], callback_data=f"book:open:{book_id}")]
+    ])
+
+def add_words_back_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=LOCALES[lang]["back_to_book"], callback_data=f"book:open:{book_id}")]
     ])
 
 def main_menu_kb(lang: str) -> InlineKeyboardMarkup:
@@ -142,11 +155,6 @@ def main_menu_kb(lang: str) -> InlineKeyboardMarkup:
 def back_to_cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=LOCALES[lang]["back"], callback_data="cab:back")]
-    ])
-
-def back_to_book_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=LOCALES[lang]["back_to_book"], callback_data=f"book:open:{book_id}")]
     ])
 
 # -------------------- Cabinet --------------------
@@ -213,6 +221,35 @@ async def cb_book_open(cb: CallbackQuery):
     except Exception:
         await cb.message.answer(f"📖 Book {book_id}", reply_markup=book_kb(book_id, lang))
 
+# -------- Delete book --------
+@router.callback_query(lambda c: c.data and c.data.startswith("book:delete_confirm:"))
+async def cb_book_delete_confirm(cb: CallbackQuery):
+    book_id = int(cb.data.split(":")[2])
+    lang = await get_user_lang(cb.from_user.id)
+    L = LOCALES[lang]
+    await cb.message.edit_text(L["confirm_delete"], reply_markup=confirm_delete_kb(book_id, lang))
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:delete_yes:"))
+async def cb_book_delete(cb: CallbackQuery):
+    book_id = int(cb.data.split(":")[2])
+    user_id = cb.from_user.id
+    lang = await get_user_lang(user_id)
+    L = LOCALES[lang]
+
+    await db_exec("DELETE FROM vocab_entries WHERE book_id=%s", (book_id,))
+    await db_exec("DELETE FROM vocab_books WHERE id=%s AND user_id=%s", (book_id, user_id))
+
+    rows = await db_exec("SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC", 
+                         (user_id,), fetch=True, many=True)
+    if not rows:
+        await cb.message.edit_text(L["no_books"], reply_markup=cabinet_kb(lang))
+        return
+
+    buttons = [[InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}")] for r in rows]
+    buttons.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
+    await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+# -------- Add words --------
 @router.callback_query(lambda c: c.data and c.data.startswith("book:add:"))
 async def cb_book_add(cb: CallbackQuery, state: FSMContext):
     book_id = int(cb.data.split(":")[2])
@@ -220,9 +257,9 @@ async def cb_book_add(cb: CallbackQuery, state: FSMContext):
     L = LOCALES[lang]
 
     try:
-        await cb.message.edit_text(L["send_pairs"], reply_markup=back_to_book_kb(book_id, lang))
+        await cb.message.edit_text(L["send_pairs"], reply_markup=add_words_back_kb(book_id, lang))
     except Exception:
-        await cb.message.answer(L["send_pairs"], reply_markup=back_to_book_kb(book_id, lang))
+        await cb.message.answer(L["send_pairs"], reply_markup=add_words_back_kb(book_id, lang))
 
     await state.update_data(book_id=book_id)
     await state.set_state(VocabStates.waiting_word_list)
@@ -242,13 +279,13 @@ async def add_words(msg: Message, state: FSMContext):
             w, t = line.split("-", 1)
             pairs.append((w.strip(), t.strip()))
     if not pairs:
-        await msg.answer("❌ Xato format.", reply_markup=add_more_kb(book_id, lang))
+        await msg.answer("❌ Xato format.", reply_markup=add_words_back_kb(book_id, lang))
         return
 
     for w, t in pairs:
         await db_exec("INSERT INTO vocab_entries (book_id, word_src, word_trg) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING", (book_id, w, t))
 
-    await msg.answer(L["added_pairs"].format(n=len(pairs)), reply_markup=add_more_kb(book_id, lang))
+    await msg.answer(L["added_pairs"].format(n=len(pairs)), reply_markup=add_words_back_kb(book_id, lang))
 
 # -------------------- Practice --------------------
 @router.callback_query(lambda c: c.data and c.data.startswith("book:practice:"))
@@ -329,8 +366,4 @@ async def cb_finish(cb: CallbackQuery, state: FSMContext):
     text = L["results"].format(total=total, correct=data.get("correct", 0), wrong=data.get("wrong", 0))
 
     try:
-        await cb.message.edit_text(text, reply_markup=main_menu_kb(lang))
-    except Exception:
-        await cb.message.answer(text, reply_markup=main_menu_kb(lang))
-
-    await state.clear()
+        await cb
