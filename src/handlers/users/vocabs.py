@@ -33,13 +33,16 @@ LOCALES = {
         "yes": "✅ Ha",
         "no": "❌ Yo‘q",
         "results": "📊 Natijalar:\nJami: {total}\nTo'g'ri: {correct}\nXato: {wrong}",
+        "results_detailed_header": "📊 Batafsil natijalar:",
+        "results_detailed_lines": "Unikal savollar: {unique}\nTo'langan savollar (javob berilgan): {answers}\nAylanishlar (to'liq quiz): {cycles}\nTo'g'ri: {correct}\nXato: {wrong}\nO'rtacha to'g'ri/aylanish: {avg_correct_per_cycle:.2f}",
+        "results_cycle_item": " - Aylanma {i}: To'g'ri {c}, Xato {w}",
         "no_books": "Sizda hali lug'at yo'q.",
         "enter_book_name": "Yangi lug'at nomini kiriting:",
         "book_created": "✅ Lug'at yaratildi: {name} (id={id})",
         "book_exists": "❌ Bu nom bilan lug'at mavjud.",
         "send_pairs": "So'zlarni yuboring (har qatorda: word-translation).",
         "added_pairs": "✅ {n} ta juftlik qo'shildi. Yana yuborishingiz mumkin 👇",
-        "empty_book": "❌ Bu lug'at bo'sh.",
+        "empty_book": "❌ Bu lug'atda yetarli so'zlar yo'q (kamida 4 ta kerak).",
         "question": "❓ {word}",
         "correct": "✅ To'g'ri",
         "wrong": "❌ Xato. To‘g‘ri javob: {correct}",
@@ -62,13 +65,16 @@ LOCALES = {
         "yes": "✅ Yes",
         "no": "❌ No",
         "results": "📊 Results:\nTotal: {total}\nCorrect: {correct}\nWrong: {wrong}",
+        "results_detailed_header": "📊 Detailed results:",
+        "results_detailed_lines": "Unique questions: {unique}\nAnswered questions: {answers}\nFull cycles (quizzes): {cycles}\nCorrect: {correct}\nWrong: {wrong}\nAvg correct per cycle: {avg_correct_per_cycle:.2f}",
+        "results_cycle_item": " - Cycle {i}: Correct {c}, Wrong {w}",
         "no_books": "You have no books yet.",
         "enter_book_name": "Enter new book name:",
         "book_created": "✅ Book created: {name} (id={id})",
         "book_exists": "❌ Book with this name already exists.",
         "send_pairs": "Send word pairs (each line: word-translation).",
         "added_pairs": "✅ {n} pairs added. You can send more 👇",
-        "empty_book": "❌ This book is empty.",
+        "empty_book": "❌ This book doesn't have enough words (min 4).",
         "question": "❓ {word}",
         "correct": "✅ Correct",
         "wrong": "❌ Wrong. Correct: {correct}",
@@ -136,10 +142,11 @@ class VocabStates(StatesGroup):
 
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     L = LOCALES[lang]
+    # As requested: show Practice prominently, My books and Settings below
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=L["my_books"], callback_data="cab:books")],
-        [InlineKeyboardButton(text=L["new_book"], callback_data="cab:new")],
-        [InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")]
+        [InlineKeyboardButton(text=L["practice"], callback_data="cab:practice")],
+        [InlineKeyboardButton(text=L["my_books"], callback_data="cab:books"),
+         InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")]
     ])
 
 def settings_kb(lang: str) -> InlineKeyboardMarkup:
@@ -153,8 +160,8 @@ def settings_kb(lang: str) -> InlineKeyboardMarkup:
 
 def book_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
     L = LOCALES[lang]
+    # Removed 'practice' from book menu as requested
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=L["practice"], callback_data=f"book:practice:{book_id}")],
         [InlineKeyboardButton(text=L["add_words"], callback_data=f"book:add:{book_id}")],
         [InlineKeyboardButton(text=L["delete"], callback_data=f"book:delete_confirm:{book_id}")],
         [InlineKeyboardButton(text=L["back"], callback_data="cab:books")]
@@ -217,12 +224,12 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
             (user_id,), fetch=True, many=True
         )
 
-        # 🔑 Agar lug‘atlar bo‘lmasa -> alert chiqsin
+        # 🔑 If no books -> alert
         if not rows:
             await cb.answer(L["no_books"], show_alert=True)
             return
 
-        # 🔑 Aks holda lug‘atlar ro‘yxatini chiqaramiz
+        # Buttons: only open book (no practice in book menu)
         buttons = [
             [InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}")]
             for r in rows
@@ -233,6 +240,28 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
             L["my_books"],
             reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons)
         )
+
+    elif cb.data == "cab:practice":
+        # Show list of books to choose from for practice
+        rows = await db_exec(
+            "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
+            (user_id,), fetch=True, many=True
+        )
+        if not rows:
+            await cb.answer(L["no_books"], show_alert=True)
+            return
+
+        buttons = [
+            [InlineKeyboardButton(text=r["name"], callback_data=f"book:practice:{r['id']}")]
+            for r in rows
+        ]
+        buttons.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
+
+        try:
+            await cb.message.edit_text("📚 " + L["practice"], reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        except Exception:
+            await cb.message.answer("📚 " + L["practice"], reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
 
 @router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
 async def cb_change_lang(cb: CallbackQuery):
@@ -368,7 +397,6 @@ async def add_words(msg: Message, state: FSMContext):
 
     await msg.answer(L["added_pairs"].format(n=len(pairs)), reply_markup=add_words_back_kb(book_id, lang))
 
-
 # -------- Practice --------
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:practice:"))
@@ -379,7 +407,7 @@ async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
     lang = await get_user_lang(user_id)
     L = LOCALES[lang]
 
-    # Kitobdagi so‘zlarni olish
+    # Get book words
     rows = await db_exec(
         "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s",
         (book_id,), fetch=True, many=True
@@ -389,16 +417,22 @@ async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
         await cb.answer("❌ " + L["empty_book"], show_alert=True)
         return
 
-    # Mashq uchun aralashtirib tayyorlaymiz
+    # Prepare and shuffle
     random.shuffle(rows)
 
+    # Initialize richer stats:
     await state.update_data(
         book_id=book_id,
         words=rows,
         index=0,
         correct=0,
         wrong=0,
-        total=len(rows)
+        total=len(rows),
+        answers=0,              # total answered questions
+        cycles=0,               # completed full cycles
+        current_cycle_correct=0,
+        current_cycle_wrong=0,
+        cycles_stats=[]         # list of dicts {correct, wrong} per completed cycle
     )
     await state.set_state(VocabStates.practicing)
 
@@ -406,26 +440,41 @@ async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
 
 
 async def send_next_question(msg: Message, state: FSMContext, lang: str):
-    """Helper: send next practice question (infinite cycle until finish)"""
+    """Helper: send next practice question (goes in cycle; when reaches end, count cycle and reshuffle)"""
     data = await state.get_data()
     words = data["words"]
     index = data["index"]
     L = LOCALES[lang]
 
-    # Agar mashq oxiriga yetgan bo‘lsa, qaytadan boshlaymiz
+    # If reached end -> complete a cycle
     if index >= len(words):
-        random.shuffle(words)  # qayta aralashtiramiz
-        data["index"] = 0
-        await state.update_data(words=words, index=0)
-        index = 0
+        # store cycle stats
+        cycles = data.get("cycles", 0) + 1
+        c_corr = data.get("current_cycle_correct", 0)
+        c_wrong = data.get("current_cycle_wrong", 0)
+        cycles_stats = data.get("cycles_stats", [])
+        cycles_stats.append({"correct": c_corr, "wrong": c_wrong})
 
-    current = words[index]
+        # reset per-cycle counters and reshuffle
+        random.shuffle(words)
+        await state.update_data(
+            words=words,
+            index=0,
+            cycles=cycles,
+            current_cycle_correct=0,
+            current_cycle_wrong=0,
+            cycles_stats=cycles_stats
+        )
+        index = 0
+        data = await state.get_data()
+
+    current = data["words"][index]
     correct_answer = current["word_trg"]
 
-    # 4 ta variant tayyorlash
+    # Prepare options
     options = [correct_answer]
-    while len(options) < 4 and len(options) < len(words):
-        candidate = random.choice(words)["word_trg"]
+    while len(options) < 4 and len(options) < len(data["words"]):
+        candidate = random.choice(data["words"])["word_trg"]
         if candidate not in options:
             options.append(candidate)
     random.shuffle(options)
@@ -438,12 +487,17 @@ async def send_next_question(msg: Message, state: FSMContext, lang: str):
         [InlineKeyboardButton(text=L["main_menu"], callback_data="cab:back")]
     ])
 
-    await msg.edit_text(L["question"].format(word=current["word_src"]),
-                        reply_markup=keyboard)
+    # Use edit_text when possible, else send new
+    try:
+        await msg.edit_text(L["question"].format(word=current["word_src"]),
+                            reply_markup=keyboard)
+    except Exception:
+        await msg.answer(L["question"].format(word=current["word_src"]), reply_markup=keyboard)
+
 
 @router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
 async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
-    """Check practice answer"""
+    """Check practice answer and update enhanced stats"""
     user_id = cb.from_user.id
     lang = await get_user_lang(user_id)
     L = LOCALES[lang]
@@ -454,39 +508,93 @@ async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
 
     _, idx, chosen = cb.data.split(":", 2)
     idx = int(idx)
+    # Protect against index out of range (race)
+    if idx < 0 or idx >= len(words):
+        await cb.answer("❌", show_alert=True)
+        return
+
     current = words[idx]
     correct_answer = current["word_trg"]
 
+    # Update totals
+    data.setdefault("answers", 0)
+    data["answers"] += 1
+
     if chosen == correct_answer:
-        data["correct"] += 1
+        data["correct"] = data.get("correct", 0) + 1
+        data["current_cycle_correct"] = data.get("current_cycle_correct", 0) + 1
         await cb.answer(L["correct"])
     else:
-        data["wrong"] += 1
+        data["wrong"] = data.get("wrong", 0) + 1
+        data["current_cycle_wrong"] = data.get("current_cycle_wrong", 0) + 1
         await cb.answer(L["wrong"].format(correct=correct_answer), show_alert=True)
 
+    # Move forward
     data["index"] = index + 1
     await state.update_data(**data)
 
+    # Send next
     await send_next_question(cb.message, state, lang)
 
 
 @router.callback_query(lambda c: c.data == "practice:finish")
 async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
-    """Finish practice session and return to cabinet"""
+    """Finish practice session and return to cabinet with detailed stats"""
     user_id = cb.from_user.id
     lang = await get_user_lang(user_id)
     L = LOCALES[lang]
 
     data = await state.get_data()
 
-    results = L["results"].format(
-        total=data.get("total", 0),
-        correct=data.get("correct", 0),
-        wrong=data.get("wrong", 0)
+    # If currently in the middle of a cycle, include it in stats as 'partial' cycle
+    cycles = data.get("cycles", 0)
+    cycles_stats = data.get("cycles_stats", []).copy()
+    # If there is non-zero progress in current cycle, include it as incomplete final cycle
+    cur_corr = data.get("current_cycle_correct", 0)
+    cur_wrong = data.get("current_cycle_wrong", 0)
+    cur_answers = cur_corr + cur_wrong
+    if cur_answers > 0:
+        # Add as a final (partial) cycle with index cycles+1
+        cycles_stats.append({"correct": cur_corr, "wrong": cur_wrong})
+        # We count it as a cycle for reporting (user wanted 'quizlar soni' — include partial as one)
+        displayed_cycles = cycles + 1
+    else:
+        displayed_cycles = cycles
+
+    total_unique = data.get("total", 0)
+    total_answers = data.get("answers", 0)
+    total_correct = data.get("correct", 0)
+    total_wrong = data.get("wrong", 0)
+
+    # Average correct per completed cycle (use displayed_cycles if >0)
+    avg_correct_per_cycle = (total_correct / displayed_cycles) if displayed_cycles > 0 else 0.0
+
+    # Build breakdown lines
+    breakdown_lines = []
+    for i, cs in enumerate(cycles_stats, start=1):
+        breakdown_lines.append(L["results_cycle_item"].format(i=i, c=cs.get("correct", 0), w=cs.get("wrong", 0)))
+
+    # Compose message
+    header = L["results_detailed_header"]
+    main_lines = L["results_detailed_lines"].format(
+        unique=total_unique,
+        answers=total_answers,
+        cycles=displayed_cycles,
+        correct=total_correct,
+        wrong=total_wrong,
+        avg_correct_per_cycle=avg_correct_per_cycle
     )
 
+    full_text = header + "\n" + main_lines
+    if breakdown_lines:
+        full_text += "\n\n" + ("\n".join(breakdown_lines))
+
     await state.clear()
-    # 📌 Avval natija ko‘rsatamiz
-    await cb.message.edit_text(results)
-    # 📌 So‘ngra kabinet menyusiga qaytaramiz
+    # First show detailed results
+    try:
+        await cb.message.edit_text(full_text)
+    except Exception:
+        await cb.message.answer(full_text)
+
+    # Then show cabinet menu
     await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
