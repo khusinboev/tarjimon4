@@ -14,9 +14,9 @@ from config import db
 
 router = Router()
 
-=====================================================
+#=====================================================
 #📌 Localization
-=====================================================
+#=====================================================
 
 LOCALES = {
     "uz": {
@@ -97,9 +97,9 @@ LOCALES = {
     }
 }
 
-=====================================================
+#=====================================================
 #📌 Database helpers
-=====================================================
+#=====================================================
 
 async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: bool = False):
     """Universal DB executor"""
@@ -139,18 +139,18 @@ async def set_user_lang(user_id: int, lang: str):
     else:
         await db_exec("INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s)", (user_id, lang))
 
-=====================================================
+#=====================================================
 #📌 FSM States
-=====================================================
+#=====================================================
 
 class VocabStates(StatesGroup):
     waiting_book_name = State()
     waiting_word_list = State()
     practicing = State()
 
-=====================================================
+#=====================================================
 #📌 UI Builders
-=====================================================
+#=====================================================
 
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     L = LOCALES[lang]
@@ -200,9 +200,9 @@ def back_to_cabinet_kb(lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=LOCALES[lang]["back"], callback_data="cab:back")]
     ])
 
-=====================================================
+#=====================================================
 #📌 Export helper
-=====================================================
+#=====================================================
 
 async def export_book_to_excel(book_id: int, user_id: int) -> str:
     """Export vocab book to Excel and return file path"""
@@ -226,9 +226,9 @@ async def export_book_to_excel(book_id: int, user_id: int) -> str:
     wb.save(file_path)
     return file_path
 
-# =====================================================
+# #=====================================================
 # 📌 Cabinet menu
-# =====================================================
+# #=====================================================
 
 @router.message(Command("cabinet"))
 async def cmd_cabinet(msg: Message):
@@ -310,9 +310,9 @@ async def cb_change_lang(cb: CallbackQuery):
     await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
     await cb.answer("Language changed ✅")
 
-# =====================================================
+# #=====================================================
 # 📌 Books management
-# =====================================================
+# #=====================================================
 
 @router.message(VocabStates.waiting_book_name)
 async def add_book(msg: Message, state: FSMContext):
