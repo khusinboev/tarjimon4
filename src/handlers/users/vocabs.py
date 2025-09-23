@@ -170,8 +170,7 @@ def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=L["practice"], callback_data="cab:practice")],
         [InlineKeyboardButton(text=L["my_books"], callback_data="cab:books"),
-         InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")],
-        [InlineKeyboardButton(text=L["new_book"], callback_data="cab:new")]
+         InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")]
     ])
 
 def settings_kb(lang: str) -> InlineKeyboardMarkup:
