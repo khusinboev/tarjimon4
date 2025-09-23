@@ -33,7 +33,7 @@ LOCALES = {
         "yes": "✅ Ha",
         "no": "❌ Yo‘q",
         "results": "📊 Natijalar:\nJami: {total}\nTo'g'ri: {correct}\nXato: {wrong}",
-        results_header": "📊 Batafsil natijalar:",
+        "results_header": "📊 Batafsil natijalar:",
         "results_lines": (
             "🔹 Savollar soni: {unique}\n"
             "🔹 Jami berilgan savollar: {answers}\n"
