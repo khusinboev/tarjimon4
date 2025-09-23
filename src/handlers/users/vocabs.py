@@ -406,22 +406,18 @@ async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
 
 
 async def send_next_question(msg: Message, state: FSMContext, lang: str):
-    """Helper: send next practice question"""
+    """Helper: send next practice question (infinite cycle until finish)"""
     data = await state.get_data()
     words = data["words"]
     index = data["index"]
     L = LOCALES[lang]
 
-    # Agar mashq tugagan bo‘lsa
+    # Agar mashq oxiriga yetgan bo‘lsa, qaytadan boshlaymiz
     if index >= len(words):
-        results = L["results"].format(
-            total=data["total"],
-            correct=data["correct"],
-            wrong=data["wrong"]
-        )
-        await msg.edit_text(results, reply_markup=main_menu_kb(lang))
-        await state.clear()
-        return
+        random.shuffle(words)  # qayta aralashtiramiz
+        data["index"] = 0
+        await state.update_data(words=words, index=0)
+        index = 0
 
     current = words[index]
     correct_answer = current["word_trg"]
@@ -437,11 +433,13 @@ async def send_next_question(msg: Message, state: FSMContext, lang: str):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=o, callback_data=f"ans:{index}:{o}")]
         for o in options
-    ] + [[InlineKeyboardButton(text=L["finish"], callback_data="practice:finish")]])
+    ] + [
+        [InlineKeyboardButton(text=L["finish"], callback_data="practice:finish")],
+        [InlineKeyboardButton(text=L["main_menu"], callback_data="cab:back")]
+    ])
 
     await msg.edit_text(L["question"].format(word=current["word_src"]),
                         reply_markup=keyboard)
-
 
 @router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
 async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
@@ -474,7 +472,7 @@ async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == "practice:finish")
 async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
-    """Finish practice session"""
+    """Finish practice session and return to cabinet"""
     user_id = cb.from_user.id
     lang = await get_user_lang(user_id)
     L = LOCALES[lang]
@@ -486,5 +484,9 @@ async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
         correct=data.get("correct", 0),
         wrong=data.get("wrong", 0)
     )
-    await cb.message.edit_text(results, reply_markup=main_menu_kb(lang))
+
     await state.clear()
+    # 📌 Avval natija ko‘rsatamiz
+    await cb.message.edit_text(results)
+    # 📌 So‘ngra kabinet menyusiga qaytaramiz
+    await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
