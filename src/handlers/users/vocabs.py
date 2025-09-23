@@ -1,7 +1,6 @@
-# src/handlers/users/vocabs.py
-
 import asyncio
 import random
+import os
 from typing import List, Dict, Any
 
 from aiogram import Router
@@ -10,13 +9,14 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
+from openpyxl import Workbook
 from config import db
 
 router = Router()
 
-# =====================================================
-# 📌 Localization
-# =====================================================
+=====================================================
+📌 Localization
+=====================================================
 
 LOCALES = {
     "uz": {
@@ -29,6 +29,7 @@ LOCALES = {
         "practice": "▶ Mashq",
         "add_words": "➕ So'z qo'shish",
         "delete": "❌ O‘chirish",
+        "export": "📤 Eksport",
         "confirm_delete": "❓ Ushbu lug‘atni o‘chirishga ishonchingiz komilmi?",
         "yes": "✅ Ha",
         "no": "❌ Yo‘q",
@@ -66,6 +67,7 @@ LOCALES = {
         "practice": "▶ Practice",
         "add_words": "➕ Add words",
         "delete": "❌ Delete",
+        "export": "📤 Export",
         "confirm_delete": "❓ Are you sure you want to delete this book?",
         "yes": "✅ Yes",
         "no": "❌ No",
@@ -95,9 +97,9 @@ LOCALES = {
     }
 }
 
-# =====================================================
-# 📌 Database helpers
-# =====================================================
+=====================================================
+📌 Database helpers
+=====================================================
 
 async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: bool = False):
     """Universal DB executor"""
@@ -137,22 +139,21 @@ async def set_user_lang(user_id: int, lang: str):
     else:
         await db_exec("INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s)", (user_id, lang))
 
-# =====================================================
-# 📌 FSM States
-# =====================================================
+=====================================================
+📌 FSM States
+=====================================================
 
 class VocabStates(StatesGroup):
     waiting_book_name = State()
     waiting_word_list = State()
     practicing = State()
 
-# =====================================================
-# 📌 UI Builders
-# =====================================================
+=====================================================
+📌 UI Builders
+=====================================================
 
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     L = LOCALES[lang]
-    # As requested: show Practice prominently, My books and Settings below
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=L["practice"], callback_data="cab:practice")],
         [InlineKeyboardButton(text=L["my_books"], callback_data="cab:books"),
@@ -170,9 +171,9 @@ def settings_kb(lang: str) -> InlineKeyboardMarkup:
 
 def book_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
     L = LOCALES[lang]
-    # Removed 'practice' from book menu as requested
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=L["add_words"], callback_data=f"book:add:{book_id}")],
+        [InlineKeyboardButton(text=L["export"], callback_data=f"book:export:{book_id}")],
         [InlineKeyboardButton(text=L["delete"], callback_data=f"book:delete_confirm:{book_id}")],
         [InlineKeyboardButton(text=L["back"], callback_data="cab:books")]
     ])
@@ -198,6 +199,32 @@ def back_to_cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=LOCALES[lang]["back"], callback_data="cab:back")]
     ])
+
+=====================================================
+📌 Export helper
+=====================================================
+
+async def export_book_to_excel(book_id: int, user_id: int) -> str:
+    """Export vocab book to Excel and return file path"""
+    rows = await db_exec(
+        "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s ORDER BY id",
+        (book_id,), fetch=True, many=True
+    )
+    if not rows:
+        return None
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Vocabulary"
+
+    ws.append(["Word", "Translation"])  # header
+
+    for r in rows:
+        ws.append([r["word_src"], r["word_trg"]])
+
+    file_path = f"export_{user_id}_{book_id}.xlsx"
+    wb.save(file_path)
+    return file_path
 
 # =====================================================
 # 📌 Cabinet menu
@@ -406,6 +433,27 @@ async def add_words(msg: Message, state: FSMContext):
         )
 
     await msg.answer(L["added_pairs"].format(n=len(pairs)), reply_markup=add_words_back_kb(book_id, lang))
+
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:export:"))
+async def cb_book_export(cb: CallbackQuery):
+    """Export book words to Excel and send to user"""
+    book_id = int(cb.data.split(":")[2])
+    user_id = cb.from_user.id
+    lang = await get_user_lang(user_id)
+    L = LOCALES[lang]
+
+    file_path = await export_book_to_excel(book_id, user_id)
+    if not file_path:
+        await cb.answer("❌ " + L["empty_book"], show_alert=True)
+        return
+
+    try:
+        await cb.message.answer_document(open(file_path, "rb"))
+    finally:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
 
 # -------- Practice --------
 
