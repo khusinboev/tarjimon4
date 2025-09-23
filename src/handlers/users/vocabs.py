@@ -4,7 +4,7 @@ import os
 from typing import List, Dict, Any
 
 from aiogram import Router
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile 
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
@@ -449,11 +449,12 @@ async def cb_book_export(cb: CallbackQuery):
         return
 
     try:
-        await cb.message.answer_document(open(file_path, "rb"))
+        from aiogram.types import FSInputFile
+        file = FSInputFile(file_path, filename=os.path.basename(file_path))
+        await cb.message.answer_document(file)
     finally:
         if os.path.exists(file_path):
             os.remove(file_path)
-
 
 # -------- Practice --------
 
