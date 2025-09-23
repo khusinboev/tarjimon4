@@ -15,7 +15,7 @@ from config import db
 router = Router()
 
 =====================================================
-📌 Localization
+#📌 Localization
 =====================================================
 
 LOCALES = {
