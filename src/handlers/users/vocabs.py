@@ -549,62 +549,37 @@ async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == "practice:finish")
 async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
-    """Finish practice session and return to cabinet with detailed stats"""
+    """Finish practice session and show localized simple stats"""
     user_id = cb.from_user.id
     lang = await get_user_lang(user_id)
     L = LOCALES[lang]
 
     data = await state.get_data()
 
-    # If currently in the middle of a cycle, include it in stats as 'partial' cycle
-    cycles = data.get("cycles", 0)
-    cycles_stats = data.get("cycles_stats", []).copy()
-    # If there is non-zero progress in current cycle, include it as incomplete final cycle
-    cur_corr = data.get("current_cycle_correct", 0)
-    cur_wrong = data.get("current_cycle_wrong", 0)
-    cur_answers = cur_corr + cur_wrong
-    if cur_answers > 0:
-        # Add as a final (partial) cycle with index cycles+1
-        cycles_stats.append({"correct": cur_corr, "wrong": cur_wrong})
-        # We count it as a cycle for reporting (user wanted 'quizlar soni' — include partial as one)
-        displayed_cycles = cycles + 1
-    else:
-        displayed_cycles = cycles
+    total_unique = data.get("total", 0)       # Savollar soni
+    total_answers = data.get("answers", 0)    # Berilgan jami savollar
+    total_correct = data.get("correct", 0)    # To‘g‘ri javoblar
+    total_wrong = data.get("wrong", 0)        # Xato javoblar
 
-    total_unique = data.get("total", 0)
-    total_answers = data.get("answers", 0)
-    total_correct = data.get("correct", 0)
-    total_wrong = data.get("wrong", 0)
+    percent = (total_correct / total_answers * 100) if total_answers > 0 else 0.0
 
-    # Average correct per completed cycle (use displayed_cycles if >0)
-    avg_correct_per_cycle = (total_correct / displayed_cycles) if displayed_cycles > 0 else 0.0
-
-    # Build breakdown lines
-    breakdown_lines = []
-    for i, cs in enumerate(cycles_stats, start=1):
-        breakdown_lines.append(L["results_cycle_item"].format(i=i, c=cs.get("correct", 0), w=cs.get("wrong", 0)))
-
-    # Compose message
-    header = L["results_detailed_header"]
-    main_lines = L["results_detailed_lines"].format(
-        unique=total_unique,
-        answers=total_answers,
-        cycles=displayed_cycles,
-        correct=total_correct,
-        wrong=total_wrong,
-        avg_correct_per_cycle=avg_correct_per_cycle
+    full_text = (
+        f"{L['results_header']}\n\n" +
+        L['results_lines'].format(
+            unique=total_unique,
+            answers=total_answers,
+            correct=total_correct,
+            wrong=total_wrong,
+            percent=percent
+        )
     )
 
-    full_text = header + "\n" + main_lines
-    if breakdown_lines:
-        full_text += "\n\n" + ("\n".join(breakdown_lines))
-
     await state.clear()
-    # First show detailed results
+
     try:
         await cb.message.edit_text(full_text)
     except Exception:
         await cb.message.answer(full_text)
 
-    # Then show cabinet menu
+    # Show cabinet menu after results
     await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
