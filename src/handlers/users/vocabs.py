@@ -98,7 +98,7 @@ LOCALES = {
 }
 
 =====================================================
-📌 Database helpers
+#📌 Database helpers
 =====================================================
 
 async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: bool = False):
@@ -140,7 +140,7 @@ async def set_user_lang(user_id: int, lang: str):
         await db_exec("INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s)", (user_id, lang))
 
 =====================================================
-📌 FSM States
+#📌 FSM States
 =====================================================
 
 class VocabStates(StatesGroup):
@@ -149,7 +149,7 @@ class VocabStates(StatesGroup):
     practicing = State()
 
 =====================================================
-📌 UI Builders
+#📌 UI Builders
 =====================================================
 
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
@@ -201,7 +201,7 @@ def back_to_cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     ])
 
 =====================================================
-📌 Export helper
+#📌 Export helper
 =====================================================
 
 async def export_book_to_excel(book_id: int, user_id: int) -> str:
