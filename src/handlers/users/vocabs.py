@@ -33,9 +33,14 @@ LOCALES = {
         "yes": "✅ Ha",
         "no": "❌ Yo‘q",
         "results": "📊 Natijalar:\nJami: {total}\nTo'g'ri: {correct}\nXato: {wrong}",
-        "results_detailed_header": "📊 Batafsil natijalar:",
-        "results_detailed_lines": "Unikal savollar: {unique}\nTo'langan savollar (javob berilgan): {answers}\nAylanishlar (to'liq quiz): {cycles}\nTo'g'ri: {correct}\nXato: {wrong}\nO'rtacha to'g'ri/aylanish: {avg_correct_per_cycle:.2f}",
-        "results_cycle_item": " - Aylanma {i}: To'g'ri {c}, Xato {w}",
+        results_header": "📊 Batafsil natijalar:",
+        "results_lines": (
+            "🔹 Savollar soni: {unique}\n"
+            "🔹 Jami berilgan savollar: {answers}\n"
+            "✅ To‘g‘ri javoblar: {correct}\n"
+            "❌ Xato javoblar: {wrong}\n"
+            "📊 Natijaviy ko'rsatgich: {percent:.1f}%"
+        ),
         "no_books": "Sizda hali lug'at yo'q.",
         "enter_book_name": "Yangi lug'at nomini kiriting:",
         "book_created": "✅ Lug'at yaratildi: {name} (id={id})",
@@ -65,9 +70,14 @@ LOCALES = {
         "yes": "✅ Yes",
         "no": "❌ No",
         "results": "📊 Results:\nTotal: {total}\nCorrect: {correct}\nWrong: {wrong}",
-        "results_detailed_header": "📊 Detailed results:",
-        "results_detailed_lines": "Unique questions: {unique}\nAnswered questions: {answers}\nFull cycles (quizzes): {cycles}\nCorrect: {correct}\nWrong: {wrong}\nAvg correct per cycle: {avg_correct_per_cycle:.2f}",
-        "results_cycle_item": " - Cycle {i}: Correct {c}, Wrong {w}",
+        "results_header": "📊 Detailed Results:",
+        "results_lines": (
+            "🔹 Questions in set: {unique}\n"
+            "🔹 Total asked: {answers}\n"
+            "✅ Correct: {correct}\n"
+            "❌ Wrong: {wrong}\n"
+            "📊 Performance: {percent:.1f}%"
+        ),
         "no_books": "You have no books yet.",
         "enter_book_name": "Enter new book name:",
         "book_created": "✅ Book created: {name} (id={id})",
