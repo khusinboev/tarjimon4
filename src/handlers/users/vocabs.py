@@ -437,24 +437,53 @@ async def add_words(msg: Message, state: FSMContext):
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:export:"))
 async def cb_book_export(cb: CallbackQuery):
-    """Export book words to Excel and send to user"""
+    """Export book words to Excel, delete old message, send file, and show updated books"""
     book_id = int(cb.data.split(":")[2])
     user_id = cb.from_user.id
     lang = await get_user_lang(user_id)
     L = LOCALES[lang]
 
+    # ✅ Callback tugmasiga javob
+    await cb.answer("⏳ Fayl tayyorlanmoqda...")
+
+    # 🔎 Faylni tayyorlash
     file_path = await export_book_to_excel(book_id, user_id)
     if not file_path:
         await cb.answer("❌ " + L["empty_book"], show_alert=True)
         return
 
     try:
+        # ❌ Eski xabarni o‘chiramiz
+        await cb.message.delete()
+
+        # 📤 Excel yuborish
         from aiogram.types import FSInputFile
         file = FSInputFile(file_path, filename=os.path.basename(file_path))
-        await cb.message.answer_document(file)
+        await cb.message.answer_document(file, caption="📤 " + L["export"])
     finally:
+        # 🧹 Faylni vaqtinchalik joydan o‘chirish
         if os.path.exists(file_path):
             os.remove(file_path)
+
+    # 🔄 Bazadan yangilangan lug‘at ro‘yxatini olish
+    rows = await db_exec(
+        "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
+        (user_id,), fetch=True, many=True
+    )
+
+    if not rows:
+        await cb.message.answer(L["no_books"], reply_markup=cabinet_kb(lang))
+        return
+
+    # 📋 Tugmalarni yig‘ish
+    buttons = [[InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}")] for r in rows]
+    buttons.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
+
+    # ✅ Qayta "Mening lug'atlarim" menyusini chiqarish
+    await cb.message.answer(
+        L["my_books"],
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons)
+    )
 
 # -------- Practice --------
 
