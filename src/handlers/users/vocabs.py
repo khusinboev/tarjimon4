@@ -267,24 +267,24 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
     if cb.data == "cab:settings":
         try:
             await cb.message.edit_text(L["choose_lang"], reply_markup=settings_kb(lang))
-            await cb.message.delete()
         except:
+            await cb.message.delete()
             await cb.message.answer(L["choose_lang"], reply_markup=settings_kb(lang))
 
     elif cb.data == "cab:back":
         # Go back to main cabinet
         try:
             await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
-            await cb.message.delete()
         except:
+            await cb.message.delete()
             await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
 
     elif cb.data == "cab:new":
         # Ask for book name with cancel button under message
         try:
             await cb.message.edit_text(L["enter_book_name"], reply_markup=new_book_cancel_kb(lang))
-            await cb.message.delete()
         except:
+            await cb.message.delete()
             await cb.message.edit_text(L["enter_book_name"], reply_markup=new_book_cancel_kb(lang))
         await state.set_state(VocabStates.waiting_book_name)
 
@@ -304,8 +304,8 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
             kb_rows = two_col_rows(buttons)
             try:
                 await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
-                await cb.message.delete()
             except:
+                await cb.message.delete()
                 await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
             return
 
@@ -317,8 +317,8 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
         kb_rows = two_col_rows(btns)
         try:
             await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
-            await cb.message.delete()
         except:
+            await cb.message.delete()
             await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
 
     elif cb.data == "cab:practice":
@@ -336,8 +336,8 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
         kb_rows = two_col_rows(btns)
         try:
             await cb.message.edit_text("📚 " + L["practice"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
-            await cb.message.delete()
         except:
+            await cb.message.delete()
             await cb.message.answer("📚 " + L["practice"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
 
 
