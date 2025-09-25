@@ -539,7 +539,10 @@ async def cb_book_export(cb: CallbackQuery):
         await cb.message.answer(L["no_books"], reply_markup=cabinet_kb(lang))
         return
 
+    # Build two-column button layout for existing books
     btns = [InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}") for r in rows]
+    # Add a final row with New book and Back (two-column)
+    btns.append(InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"))
     btns.append(InlineKeyboardButton(text=L["back"], callback_data="cab:back"))
     kb_rows = two_col_rows(btns)
     await cb.message.answer(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
