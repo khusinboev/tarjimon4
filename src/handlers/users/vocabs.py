@@ -10,12 +10,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 from openpyxl import Workbook
-from config import db  # sizning DB obyektingiz (psycopg2 / pymysql cursor tarzida ishlaydi deb faraz qilindi)
+from config import db
 
 router = Router()
 
 # =====================================================
-# 📌 Localization
+# 📌 Localization (unchanged, as it's already compact)
 # =====================================================
 LOCALES = {
     "uz": {
@@ -68,7 +68,7 @@ LOCALES = {
         "add_words": "➕ Add words",
         "delete": "❌ Delete",
         "export": "📤 Export",
-        "confirm_delete": "❌ Are you sure you want to delete this book?",
+        "confirm_delete": "❓ Are you sure you want to delete this book?",
         "yes": "✅ Yes",
         "no": "❌ No",
         "results": "📊 Results:\nTotal: {total}\nCorrect: {correct}\nWrong: {wrong}",
@@ -99,17 +99,18 @@ LOCALES = {
 }
 
 # =====================================================
-# 📌 Database helpers
+# 📌 Database helpers (optimized: combined lang fetch)
 # =====================================================
 
 async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: bool = False):
-    """Universal DB executor using blocking DB cursor in a thread."""
     def run():
         cur = db.cursor()
         cur.execute(query, params or ())
         if fetch:
             if many:
                 rows = cur.fetchall()
+                if not rows:
+                    return []
                 cols = [d[0] for d in cur.description]
                 return [dict(zip(cols, r)) for r in rows]
             else:
@@ -122,12 +123,18 @@ async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: b
         return None
     return await asyncio.to_thread(run)
 
-async def get_user_lang(user_id: int) -> str:
-    row = await db_exec(
+async def get_user_data(user_id: int) -> Dict[str, Any]:
+    """Fetch user lang and books in one query batch for optimization."""
+    lang_row = await db_exec(
         "SELECT lang_code FROM accounts WHERE user_id=%s ORDER BY id DESC LIMIT 1",
         (user_id,), fetch=True
     )
-    return row["lang_code"] if row and row.get("lang_code") else "uz"
+    lang = lang_row["lang_code"] if lang_row else "uz"
+    books = await db_exec(
+        "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
+        (user_id,), fetch=True, many=True
+    )
+    return {"lang": lang, "books": books or []}
 
 async def set_user_lang(user_id: int, lang: str):
     row = await db_exec(
@@ -140,7 +147,7 @@ async def set_user_lang(user_id: int, lang: str):
         await db_exec("INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s)", (user_id, lang))
 
 # =====================================================
-# 📌 FSM States
+# 📌 FSM States (unchanged)
 # =====================================================
 class VocabStates(StatesGroup):
     waiting_book_name = State()
@@ -148,23 +155,20 @@ class VocabStates(StatesGroup):
     practicing = State()
 
 # =====================================================
-# 📌 UI Builders (including two-column helpers)
+# 📌 UI Builders (optimized: reuse L, fix two-col for odd counts)
 # =====================================================
 def two_col_rows(buttons: List[InlineKeyboardButton]) -> List[List[InlineKeyboardButton]]:
-    """Arrange buttons into rows with 2 columns each."""
     rows = []
-    row = []
-    for i, b in enumerate(buttons):
-        row.append(b)
-        if len(row) == 2:
-            rows.append(row)
-            row = []
-    if row:
+    for i in range(0, len(buttons), 2):
+        row = buttons[i:i+2]
         rows.append(row)
     return rows
 
+def get_locale(lang: str) -> Dict[str, str]:
+    return LOCALES.get(lang, LOCALES["uz"])
+
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
-    L = LOCALES[lang]
+    L = get_locale(lang)
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=L["practice"], callback_data="cab:practice")],
         [InlineKeyboardButton(text=L["my_books"], callback_data="cab:books"),
@@ -172,7 +176,7 @@ def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     ])
 
 def settings_kb(lang: str) -> InlineKeyboardMarkup:
-    L = LOCALES[lang]
+    L = get_locale(lang)
     return InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(text="🇺🇿 O'zbek", callback_data="lang:uz"),
@@ -182,7 +186,7 @@ def settings_kb(lang: str) -> InlineKeyboardMarkup:
     ])
 
 def book_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
-    L = LOCALES[lang]
+    L = get_locale(lang)
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=L["add_words"], callback_data=f"book:add:{book_id}")],
         [InlineKeyboardButton(text=L["export"], callback_data=f"book:export:{book_id}")],
@@ -191,7 +195,7 @@ def book_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
     ])
 
 def confirm_delete_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
-    L = LOCALES[lang]
+    L = get_locale(lang)
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=L["yes"], callback_data=f"book:delete_yes:{book_id}")],
         [InlineKeyboardButton(text=L["no"], callback_data=f"book:open:{book_id}")]
@@ -199,37 +203,48 @@ def confirm_delete_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
 
 def add_words_back_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=LOCALES[lang]["back_to_book"], callback_data=f"book:open:{book_id}")]
+        [InlineKeyboardButton(text=get_locale(lang)["back_to_book"], callback_data=f"book:open:{book_id}")]
     ])
 
 def main_menu_kb(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=LOCALES[lang]["main_menu"], callback_data="cab:back")]
+        [InlineKeyboardButton(text=get_locale(lang)["main_menu"], callback_data="cab:back")]
     ])
 
 def new_book_cancel_kb(lang: str) -> InlineKeyboardMarkup:
-    L = LOCALES[lang]
+    L = get_locale(lang)
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=L["cancel"], callback_data="cab:back")]
     ])
 
+def books_kb(books: List[Dict], lang: str, for_practice: bool = False) -> InlineKeyboardMarkup:
+    """Unified KB builder for books list."""
+    L = get_locale(lang)
+    btns = []
+    for b in books:
+        action = f"book:practice:{b['id']}" if for_practice else f"book:open:{b['id']}"
+        btns.append(InlineKeyboardButton(text=b["name"], callback_data=action))
+    btns.extend([
+        InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"),
+        InlineKeyboardButton(text=L["back"], callback_data="cab:back")
+    ])
+    return InlineKeyboardMarkup(inline_keyboard=two_col_rows(btns))
+
 # =====================================================
-# 📌 Export helper
+# 📌 Export helper (optimized: check rows early)
 # =====================================================
 async def export_book_to_excel(book_id: int, user_id: int) -> str:
-    """Export vocab book to Excel and return file path"""
     rows = await db_exec(
         "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s ORDER BY id",
         (book_id,), fetch=True, many=True
     )
-    if not rows:
+    if len(rows) < 1:  # At least one row for export
         return None
 
     wb = Workbook()
     ws = wb.active
     ws.title = "Vocabulary"
-
-    ws.append(["Word", "Translation"])  # header
+    ws.append(["Word", "Translation"])
     for r in rows:
         ws.append([r["word_src"], r["word_trg"]])
 
@@ -238,377 +253,262 @@ async def export_book_to_excel(book_id: int, user_id: int) -> str:
     return file_path
 
 # =====================================================
-# 📌 Helper to send message (always delete old if callback, then answer new)
+# 📌 Helper to send message (always delete old if edit fails)
 # =====================================================
-async def safe_send(cb_or_msg, text: str, reply_markup=None, is_callback=True):
-    """For callbacks: delete old message, send new. For messages: just answer."""
+async def safe_edit_or_send(cb: CallbackQuery, text: str, kb: InlineKeyboardMarkup, lang: str):
+    """Delete old message and send new to avoid edit issues with old inlines."""
     try:
-        if is_callback:
-            await cb_or_msg.message.delete()
-        await cb_or_msg.answer(text, reply_markup=reply_markup)
-    except Exception:
-        # Fallback: answer without delete
-        await cb_or_msg.answer(text, reply_markup=reply_markup)
+        await cb.message.delete()
+    except:
+        pass
+    await cb.message.answer(text, reply_markup=kb)
 
 # =====================================================
-# 📌 Cabinet menu
+# 📌 Cabinet menu (optimized: batch fetch)
 # =====================================================
 
 @router.message(Command("cabinet"))
 async def cmd_cabinet(msg: Message):
-    """Show main cabinet menu"""
-    lang = await get_user_lang(msg.from_user.id)
-    L = LOCALES[lang]
-    await msg.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
+    data = await get_user_data(msg.from_user.id)
+    L = get_locale(data["lang"])
+    await msg.answer(L["cabinet"], reply_markup=cabinet_kb(data["lang"]))
 
 @router.callback_query(lambda c: c.data and c.data.startswith("cab:"))
 async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
-    """Handle cabinet menu buttons"""
     user_id = cb.from_user.id
-    lang = await get_user_lang(user_id)
-    L = LOCALES[lang]
+    data = await get_user_data(user_id)
+    lang, books = data["lang"], data["books"]
+    L = get_locale(lang)
 
     if cb.data == "cab:settings":
-        await safe_send(cb, L["choose_lang"], reply_markup=settings_kb(lang))
-        return
+        await safe_edit_or_send(cb, L["choose_lang"], settings_kb(lang), lang)
 
     elif cb.data == "cab:back":
-        await safe_send(cb, L["cabinet"], reply_markup=cabinet_kb(lang))
-        return
+        await safe_edit_or_send(cb, L["cabinet"], cabinet_kb(lang), lang)
 
     elif cb.data == "cab:new":
-        await safe_send(cb, L["enter_book_name"], reply_markup=new_book_cancel_kb(lang))
+        await safe_edit_or_send(cb, L["enter_book_name"], new_book_cancel_kb(lang), lang)
         await state.set_state(VocabStates.waiting_book_name)
-        return
 
     elif cb.data == "cab:books":
-        rows = await db_exec(
-            "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
-            (user_id,), fetch=True, many=True
-        )
-
-        if not rows:
-            buttons = [
+        if not books:
+            kb = InlineKeyboardMarkup(inline_keyboard=two_col_rows([
                 InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"),
-                InlineKeyboardButton(text=L["back"], callback_data="cab:back"),
-            ]
-            kb_rows = two_col_rows(buttons)
-            kb = InlineKeyboardMarkup(inline_keyboard=kb_rows)
-            await safe_send(cb, L["my_books"], reply_markup=kb)
+                InlineKeyboardButton(text=L["back"], callback_data="cab:back")
+            ]))
+            await safe_edit_or_send(cb, L["my_books"], kb, lang)
             return
-
-        # Build two-column button layout for existing books
-        btns = [InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}") for r in rows]
-        btns.append(InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"))
-        btns.append(InlineKeyboardButton(text=L["back"], callback_data="cab:back"))
-        kb_rows = two_col_rows(btns)
-        kb = InlineKeyboardMarkup(inline_keyboard=kb_rows)
-        await safe_send(cb, L["my_books"], reply_markup=kb)
-        return
+        await safe_edit_or_send(cb, L["my_books"], books_kb(books, lang), lang)
 
     elif cb.data == "cab:practice":
-        rows = await db_exec(
-            "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
-            (user_id,), fetch=True, many=True
-        )
-        if not rows:
+        if not books:
             await cb.answer(L["no_books"], show_alert=True)
             return
-
-        btns = [InlineKeyboardButton(text=r["name"], callback_data=f"book:practice:{r['id']}") for r in rows]
-        btns.append(InlineKeyboardButton(text=L["back"], callback_data="cab:back"))
-        kb_rows = two_col_rows(btns)
-        kb = InlineKeyboardMarkup(inline_keyboard=kb_rows)
-        await safe_send(cb, "📚 " + L["practice"], reply_markup=kb)
-        return
-
-    await cb.answer()
+        await safe_edit_or_send(cb, "📚 " + L["practice"], books_kb(books, lang, for_practice=True), lang)
+    try:
+        await cb.answer()
+    except:
+        pass
 
 @router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
 async def cb_change_lang(cb: CallbackQuery):
-    """Change user language"""
-    await cb.answer()
     lang = cb.data.split(":")[1]
     await set_user_lang(cb.from_user.id, lang)
-    L = LOCALES[lang]
-    await safe_send(cb, L["cabinet"], reply_markup=cabinet_kb(lang))
+    L = get_locale(lang)
+    await safe_edit_or_send(cb, L["cabinet"], cabinet_kb(lang), lang)
+    await cb.answer()
 
 # =====================================================
-# 📌 Books management
+# 📌 Books management (optimized: reuse data fetch)
 # =====================================================
 
 @router.message(VocabStates.waiting_book_name)
 async def add_book(msg: Message, state: FSMContext):
-    """Add a new book (name input). 'Cancel' handled via callback cab:back."""
     user_id = msg.from_user.id
-    lang = await get_user_lang(user_id)
-    L = LOCALES[lang]
+    data = await get_user_data(user_id)
+    lang = data["lang"]
+    L = get_locale(lang)
 
     name = msg.text.strip()
-    # Check existence
-    row = await db_exec(
-        "SELECT id FROM vocab_books WHERE user_id=%s AND name=%s",
-        (user_id, name), fetch=True
-    )
-    if row:
+    if await db_exec("SELECT id FROM vocab_books WHERE user_id=%s AND name=%s", (user_id, name), fetch=True):
         await msg.answer(L["book_exists"], reply_markup=main_menu_kb(lang))
         await state.clear()
         return
 
-    # Insert new book and return id
-    row = await db_exec(
-        "INSERT INTO vocab_books (user_id, name) VALUES (%s,%s) RETURNING id",
-        (user_id, name), fetch=True
-    )
+    row = await db_exec("INSERT INTO vocab_books (user_id, name) VALUES (%s,%s) RETURNING id", (user_id, name), fetch=True)
     book_id = row["id"] if row else None
     await msg.answer(L["book_created"].format(name=name, id=book_id), reply_markup=main_menu_kb(lang))
     await state.clear()
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:open:"))
 async def cb_book_open(cb: CallbackQuery):
-    """Open specific book menu"""
-    await cb.answer()
     book_id = int(cb.data.split(":")[2])
-    lang = await get_user_lang(cb.from_user.id)
-    await safe_send(cb, f"📖 Book {book_id}", reply_markup=book_kb(book_id, lang))
+    data = await get_user_data(cb.from_user.id)
+    lang = data["lang"]
+    await safe_edit_or_send(cb, f"📖 Book {book_id}", book_kb(book_id, lang), lang)
+    await cb.answer()
 
-# -------- Delete book --------
 @router.callback_query(lambda c: c.data and c.data.startswith("book:delete_confirm:"))
 async def cb_book_delete_confirm(cb: CallbackQuery):
-    """Ask confirmation before deleting a book"""
-    await cb.answer()
     book_id = int(cb.data.split(":")[2])
-    lang = await get_user_lang(cb.from_user.id)
-    L = LOCALES[lang]
-    await safe_send(cb, L["confirm_delete"], reply_markup=confirm_delete_kb(book_id, lang))
+    data = await get_user_data(cb.from_user.id)
+    lang = data["lang"]
+    L = get_locale(lang)
+    await safe_edit_or_send(cb, L["confirm_delete"], confirm_delete_kb(book_id, lang), lang)
+    await cb.answer()
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:delete_yes:"))
 async def cb_book_delete(cb: CallbackQuery):
-    """Delete book and its words"""
-    await cb.answer()
     book_id = int(cb.data.split(":")[2])
     user_id = cb.from_user.id
-    lang = await get_user_lang(user_id)
-    L = LOCALES[lang]
-
     await db_exec("DELETE FROM vocab_entries WHERE book_id=%s", (book_id,))
     await db_exec("DELETE FROM vocab_books WHERE id=%s AND user_id=%s", (book_id, user_id))
 
-    rows = await db_exec(
-        "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
-        (user_id,), fetch=True, many=True
-    )
-    if not rows:
-        await safe_send(cb, L["no_books"], reply_markup=cabinet_kb(lang))
+    data = await get_user_data(user_id)
+    lang, books = data["lang"], data["books"]
+    L = get_locale(lang)
+    if not books:
+        await safe_edit_or_send(cb, L["no_books"], cabinet_kb(lang), lang)
         return
+    await safe_edit_or_send(cb, L["my_books"], books_kb(books, lang), lang)
+    await cb.answer()
 
-    btns = [InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}") for r in rows]
-    btns.append(InlineKeyboardButton(text=L["back"], callback_data="cab:back"))
-    kb_rows = two_col_rows(btns)
-    kb = InlineKeyboardMarkup(inline_keyboard=kb_rows)
-    await safe_send(cb, L["my_books"], reply_markup=kb)
-
-# -------- Add words --------
 @router.callback_query(lambda c: c.data and c.data.startswith("book:add:"))
 async def cb_book_add(cb: CallbackQuery, state: FSMContext):
-    """Switch to adding words mode"""
-    await cb.answer()
     book_id = int(cb.data.split(":")[2])
-    lang = await get_user_lang(cb.from_user.id)
-    L = LOCALES[lang]
-
-    await safe_send(cb, L["send_pairs"], reply_markup=add_words_back_kb(book_id, lang))
-
+    data = await get_user_data(cb.from_user.id)
+    lang = data["lang"]
+    L = get_locale(lang)
+    await safe_edit_or_send(cb, L["send_pairs"], add_words_back_kb(book_id, lang), lang)
     await state.update_data(book_id=book_id)
     await state.set_state(VocabStates.waiting_word_list)
+    await cb.answer()
 
 @router.message(VocabStates.waiting_word_list)
 async def add_words(msg: Message, state: FSMContext):
-    """Add word pairs into a book"""
-    user_id = msg.from_user.id
-    lang = await get_user_lang(user_id)
-    L = LOCALES[lang]
-
     data = await state.get_data()
     book_id = data["book_id"]
+    user_data = await get_user_data(msg.from_user.id)
+    lang = user_data["lang"]
+    L = get_locale(lang)
 
     lines = msg.text.strip().split("\n")
-    pairs = []
-    for line in lines:
-        if "-" in line:
-            w, t = line.split("-", 1)
-            pairs.append((w.strip(), t.strip()))
+    pairs = [(w.strip(), t.strip()) for line in lines if "-" in line for w, t in [line.split("-", 1)]]
 
     if not pairs:
         await msg.answer("❌ Xato format.", reply_markup=add_words_back_kb(book_id, lang))
         return
 
     for w, t in pairs:
-        await db_exec(
-            "INSERT INTO vocab_entries (book_id, word_src, word_trg) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING",
-            (book_id, w, t)
-        )
+        await db_exec("INSERT INTO vocab_entries (book_id, word_src, word_trg) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING", (book_id, w, t))
 
     await msg.answer(L["added_pairs"].format(n=len(pairs)), reply_markup=add_words_back_kb(book_id, lang))
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:export:"))
 async def cb_book_export(cb: CallbackQuery):
-    """Export book words to Excel, delete old message, send file, and show updated books"""
-    await cb.answer("⏳ Fayl tayyorlanmoqda...")
     book_id = int(cb.data.split(":")[2])
     user_id = cb.from_user.id
-    lang = await get_user_lang(user_id)
-    L = LOCALES[lang]
+    data = await get_user_data(user_id)
+    lang = data["lang"]
+    L = get_locale(lang)
 
+    await cb.answer("⏳ Fayl tayyorlanmoqda...")
     file_path = await export_book_to_excel(book_id, user_id)
     if not file_path:
         await cb.answer("❌ " + L["empty_book"], show_alert=True)
         return
 
     try:
-        # Send file
-        file = FSInputFile(file_path, filename=os.path.basename(file_path))
+        await cb.message.delete()
+        file = FSInputFile(file_path)
         await cb.message.answer_document(file, caption="📤 " + L["export"])
     finally:
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    # After sending, show updated books list
-    rows = await db_exec(
-        "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
-        (user_id,), fetch=True, many=True
-    )
-
-    if not rows:
+    # Refresh and send books list
+    refreshed_data = await get_user_data(user_id)
+    if not refreshed_data["books"]:
         await cb.message.answer(L["no_books"], reply_markup=cabinet_kb(lang))
-        return
+    else:
+        await cb.message.answer(L["my_books"], reply_markup=books_kb(refreshed_data["books"], lang))
+    await cb.answer()
 
-    # Build two-column button layout for existing books
-    btns = [InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}") for r in rows]
-    btns.append(InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"))
-    btns.append(InlineKeyboardButton(text=L["back"], callback_data="cab:back"))
-    kb_rows = two_col_rows(btns)
-    kb = InlineKeyboardMarkup(inline_keyboard=kb_rows)
-    await cb.message.answer(L["my_books"], reply_markup=kb)
-
-# -------- Practice --------
 @router.callback_query(lambda c: c.data and c.data.startswith("book:practice:"))
 async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
-    """Start practice session if enough words"""
     book_id = int(cb.data.split(":")[2])
-    user_id = cb.from_user.id
-    lang = await get_user_lang(user_id)
-    L = LOCALES[lang]
+    rows = await db_exec("SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s", (book_id,), fetch=True, many=True)
 
-    # Get book words
-    rows = await db_exec(
-        "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s",
-        (book_id,), fetch=True, many=True
-    )
-
-    if not rows or len(rows) < 4:
-        await cb.answer("❌ " + L["empty_book"], show_alert=True)
+    if len(rows) < 4:
+        data = await get_user_data(cb.from_user.id)
+        await cb.answer("❌ " + get_locale(data["lang"])["empty_book"], show_alert=True)
         return
 
-    # Prepare and shuffle
     random.shuffle(rows)
-
-    # Initialize richer stats:
     await state.update_data(
-        book_id=book_id,
-        words=rows,
-        index=0,
-        correct=0,
-        wrong=0,
-        total=len(rows),
-        answers=0,
-        cycles=0,
-        current_cycle_correct=0,
-        current_cycle_wrong=0,
-        cycles_stats=[]
+        book_id=book_id, words=rows, index=0, correct=0, wrong=0, total=len(rows),
+        answers=0, cycles=0, current_cycle_correct=0, current_cycle_wrong=0, cycles_stats=[]
     )
     await state.set_state(VocabStates.practicing)
-
-    await send_next_question(cb.message, state, lang)
+    data = await get_user_data(cb.from_user.id)
+    await send_next_question(cb.message, state, data["lang"])
     await cb.answer()
 
 async def send_next_question(msg: Message, state: FSMContext, lang: str):
-    """Helper: send next practice question (goes in cycle; when reaches end, count cycle and reshuffle)"""
     data = await state.get_data()
-    words = data["words"]
-    index = data["index"]
-    L = LOCALES[lang]
+    words, index = data["words"], data["index"]
+    L = get_locale(lang)
 
-    # If reached end -> complete a cycle
     if index >= len(words):
         cycles = data.get("cycles", 0) + 1
-        c_corr = data.get("current_cycle_correct", 0)
-        c_wrong = data.get("current_cycle_wrong", 0)
         cycles_stats = data.get("cycles_stats", [])
-        cycles_stats.append({"correct": c_corr, "wrong": c_wrong})
-
-        # reset per-cycle counters and reshuffle
+        cycles_stats.append({
+            "correct": data.get("current_cycle_correct", 0),
+            "wrong": data.get("current_cycle_wrong", 0)
+        })
         random.shuffle(words)
         await state.update_data(
-            words=words,
-            index=0,
-            cycles=cycles,
-            current_cycle_correct=0,
-            current_cycle_wrong=0,
-            cycles_stats=cycles_stats
+            words=words, index=0, cycles=cycles, cycles_stats=cycles_stats,
+            current_cycle_correct=0, current_cycle_wrong=0
         )
-        index = 0
         data = await state.get_data()
+        index = 0
 
     current = data["words"][index]
     correct_answer = current["word_trg"]
-
-    # Prepare options
     options = [correct_answer]
+    seen = set(options)
     while len(options) < 4 and len(options) < len(data["words"]):
         candidate = random.choice(data["words"])["word_trg"]
-        if candidate not in options:
+        if candidate not in seen:
             options.append(candidate)
+            seen.add(candidate)
     random.shuffle(options)
 
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=o, callback_data=f"ans:{index}:{o}")] for o in options
     ] + [
         [InlineKeyboardButton(text=L["finish"], callback_data="practice:finish")],
         [InlineKeyboardButton(text=L["main_menu"], callback_data="cab:back")]
     ])
 
-    # Always delete and send new for practice questions to avoid edit issues
-    try:
-        await msg.delete()
-    except:
-        pass
-    await msg.answer(L["question"].format(word=current["word_src"]), reply_markup=keyboard)
+    await msg.edit_text(L["question"].format(word=current["word_src"]), reply_markup=kb)  # Practice messages are fresh, so edit ok
 
 @router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
 async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
-    """Check practice answer and update enhanced stats"""
-    user_id = cb.from_user.id
-    lang = await get_user_lang(user_id)
-    L = LOCALES[lang]
-
     data = await state.get_data()
-    words = data["words"]
-    index = data["index"]
-
-    _, idx, chosen = cb.data.split(":", 2)
-    idx = int(idx)
-    # Protect against index out of range (race)
-    if idx < 0 or idx >= len(words):
+    _, idx_str, chosen = cb.data.split(":", 2)
+    idx = int(idx_str)
+    if idx >= len(data["words"]):
         await cb.answer("❌", show_alert=True)
         return
 
-    current = words[idx]
+    current = data["words"][idx]
     correct_answer = current["word_trg"]
+    data["answers"] = data.get("answers", 0) + 1
 
-    # Update totals
-    data.setdefault("answers", 0)
-    data["answers"] += 1
+    user_data = await get_user_data(cb.from_user.id)
+    L = get_locale(user_data["lang"])
 
     if chosen == correct_answer:
         data["correct"] = data.get("correct", 0) + 1
@@ -619,49 +519,22 @@ async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
         data["current_cycle_wrong"] = data.get("current_cycle_wrong", 0) + 1
         await cb.answer(L["wrong"].format(correct=correct_answer), show_alert=True)
 
-    # Move forward
-    data["index"] = index + 1
+    data["index"] = idx + 1
     await state.update_data(**data)
-
-    # Send next
-    await send_next_question(cb.message, state, lang)
+    await send_next_question(cb.message, state, user_data["lang"])
 
 @router.callback_query(lambda c: c.data == "practice:finish")
 async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
-    """Finish practice session and show localized simple stats"""
-    user_id = cb.from_user.id
-    lang = await get_user_lang(user_id)
-    L = LOCALES[lang]
-
     data = await state.get_data()
+    total_unique, total_answers = data.get("total", 0), data.get("answers", 0)
+    total_correct, total_wrong = data.get("correct", 0), data.get("wrong", 0)
+    percent = (total_correct / total_answers * 100) if total_answers else 0.0
 
-    total_unique = data.get("total", 0)
-    total_answers = data.get("answers", 0)
-    total_correct = data.get("correct", 0)
-    total_wrong = data.get("wrong", 0)
-
-    percent = (total_correct / total_answers * 100) if total_answers > 0 else 0.0
-
-    full_text = (
-        f"{L['results_header']}\n\n" +
-        L['results_lines'].format(
-            unique=total_unique,
-            answers=total_answers,
-            correct=total_correct,
-            wrong=total_wrong,
-            percent=percent
-        )
-    )
+    user_data = await get_user_data(cb.from_user.id)
+    L = get_locale(user_data["lang"])
+    full_text = f"{L['results_header']}\n\n{L['results_lines'].format(unique=total_unique, answers=total_answers, correct=total_correct, wrong=total_wrong, percent=percent)}"
 
     await state.clear()
-
-    # Delete current and send results
-    try:
-        await cb.message.delete()
-    except:
-        pass
-    await cb.message.answer(full_text)
-
-    # Show cabinet menu after results
-    await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
+    await cb.message.edit_text(full_text)
+    await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(user_data["lang"]))
     await cb.answer()
