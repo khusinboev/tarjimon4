@@ -209,11 +209,6 @@ def main_menu_kb(lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=LOCALES[lang]["main_menu"], callback_data="cab:back")]
     ])
 
-def back_to_cabinet_kb(lang: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=LOCALES[lang]["back"], callback_data="cab:back")]
-    ])
-
 def new_book_cancel_kb(lang: str) -> InlineKeyboardMarkup:
     """Shown under 'enter book name' prompt to allow cancel."""
     L = LOCALES[lang]
@@ -339,11 +334,15 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
         except:
             await cb.message.delete()
             await cb.message.answer("📚 " + L["practice"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
+    try: await cb.answer()
+    except: pass
 
 
 @router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
 async def cb_change_lang(cb: CallbackQuery):
     """Change user language"""
+    try: await cb.answer()
+    except: pass
     lang = cb.data.split(":")[1]
     await set_user_lang(cb.from_user.id, lang)
     L = LOCALES[lang]
@@ -394,9 +393,10 @@ async def add_book(msg: Message, state: FSMContext):
 @router.callback_query(lambda c: c.data and c.data.startswith("book:open:"))
 async def cb_book_open(cb: CallbackQuery):
     """Open specific book menu"""
+    try: await cb.answer()
+    except: pass
     book_id = int(cb.data.split(":")[2])
     lang = await get_user_lang(cb.from_user.id)
-    L = LOCALES[lang]
     try:
         await cb.message.edit_text(f"📖 Book {book_id}", reply_markup=book_kb(book_id, lang))
     except:
@@ -407,6 +407,8 @@ async def cb_book_open(cb: CallbackQuery):
 @router.callback_query(lambda c: c.data and c.data.startswith("book:delete_confirm:"))
 async def cb_book_delete_confirm(cb: CallbackQuery):
     """Ask confirmation before deleting a book"""
+    try: await cb.answer()
+    except: pass
     book_id = int(cb.data.split(":")[2])
     lang = await get_user_lang(cb.from_user.id)
     L = LOCALES[lang]
@@ -419,6 +421,8 @@ async def cb_book_delete_confirm(cb: CallbackQuery):
 @router.callback_query(lambda c: c.data and c.data.startswith("book:delete_yes:"))
 async def cb_book_delete(cb: CallbackQuery):
     """Delete book and its words"""
+    try: await cb.answer()
+    except: pass
     book_id = int(cb.data.split(":")[2])
     user_id = cb.from_user.id
     lang = await get_user_lang(user_id)
@@ -452,6 +456,8 @@ async def cb_book_delete(cb: CallbackQuery):
 @router.callback_query(lambda c: c.data and c.data.startswith("book:add:"))
 async def cb_book_add(cb: CallbackQuery, state: FSMContext):
     """Switch to adding words mode"""
+    try: await cb.answer()
+    except: pass
     book_id = int(cb.data.split(":")[2])
     lang = await get_user_lang(cb.from_user.id)
     L = LOCALES[lang]
@@ -537,6 +543,8 @@ async def cb_book_export(cb: CallbackQuery):
     btns.append(InlineKeyboardButton(text=L["back"], callback_data="cab:back"))
     kb_rows = two_col_rows(btns)
     await cb.message.answer(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
+    try: await cb.answer()
+    except: pass
 
 # -------- Practice --------
 @router.callback_query(lambda c: c.data and c.data.startswith("book:practice:"))
@@ -577,6 +585,8 @@ async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
     await state.set_state(VocabStates.practicing)
 
     await send_next_question(cb.message, state, lang)
+    try: await cb.answer()
+    except: pass
 
 async def send_next_question(msg: Message, state: FSMContext, lang: str):
     """Helper: send next practice question (goes in cycle; when reaches end, count cycle and reshuffle)"""
@@ -671,6 +681,8 @@ async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
 
     # Send next
     await send_next_question(cb.message, state, lang)
+    try: await cb.answer()
+    except: pass
 
 @router.callback_query(lambda c: c.data == "practice:finish")
 async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
@@ -709,3 +721,5 @@ async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
 
     # Show cabinet menu after results
     await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
+    try: await cb.answer()
+    except: pass
