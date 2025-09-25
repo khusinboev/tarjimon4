@@ -225,7 +225,7 @@ def books_kb(books: List[Dict], lang: str, for_practice: bool = False) -> Inline
         action = f"book:practice:{b['id']}" if for_practice else f"book:open:{b['id']}"
         btns.append(InlineKeyboardButton(text=b["name"], callback_data=action))
     btns.extend([
-        InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"),
+        # InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"),
         InlineKeyboardButton(text=L["back"], callback_data="cab:back")
     ])
     return InlineKeyboardMarkup(inline_keyboard=two_col_rows(btns))
