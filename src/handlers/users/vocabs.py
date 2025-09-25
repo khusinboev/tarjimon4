@@ -265,21 +265,27 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
     L = LOCALES[lang]
 
     if cb.data == "cab:settings":
-        await cb.message.edit_text(L["choose_lang"], reply_markup=settings_kb(lang))
+        try:
+            await cb.message.edit_text(L["choose_lang"], reply_markup=settings_kb(lang))
+            await cb.message.delete()
+        except:
+            await cb.message.answer(L["choose_lang"], reply_markup=settings_kb(lang))
 
     elif cb.data == "cab:back":
         # Go back to main cabinet
         try:
             await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
-        except Exception:
-            await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
+            await cb.message.delete()
+        except:
+            await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
 
     elif cb.data == "cab:new":
         # Ask for book name with cancel button under message
         try:
             await cb.message.edit_text(L["enter_book_name"], reply_markup=new_book_cancel_kb(lang))
-        except Exception:
-            await cb.message.answer(L["enter_book_name"], reply_markup=new_book_cancel_kb(lang))
+            await cb.message.delete()
+        except:
+            await cb.message.edit_text(L["enter_book_name"], reply_markup=new_book_cancel_kb(lang))
         await state.set_state(VocabStates.waiting_book_name)
 
     elif cb.data == "cab:books":
@@ -296,7 +302,11 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
                 InlineKeyboardButton(text=L["back"], callback_data="cab:back"),
             ]
             kb_rows = two_col_rows(buttons)
-            await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
+            try:
+                await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
+                await cb.message.delete()
+            except:
+                await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
             return
 
         # Build two-column button layout for existing books
@@ -305,7 +315,11 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
         btns.append(InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"))
         btns.append(InlineKeyboardButton(text=L["back"], callback_data="cab:back"))
         kb_rows = two_col_rows(btns)
-        await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
+        try:
+            await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
+            await cb.message.delete()
+        except:
+            await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
 
     elif cb.data == "cab:practice":
         # Show list of books to choose from for practice
@@ -322,7 +336,8 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
         kb_rows = two_col_rows(btns)
         try:
             await cb.message.edit_text("📚 " + L["practice"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
-        except Exception:
+            await cb.message.delete()
+        except:
             await cb.message.answer("📚 " + L["practice"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
 
 
@@ -334,9 +349,9 @@ async def cb_change_lang(cb: CallbackQuery):
     L = LOCALES[lang]
     try:
         await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(lang))
-    except Exception:
+    except:
+        await cb.message.delete()
         await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
-    await cb.answer("Language changed ✅")
 
 # =====================================================
 # 📌 Books management
@@ -370,9 +385,10 @@ async def add_book(msg: Message, state: FSMContext):
     )
     book_id = row["id"] if row else None
     try:
+        await msg.edit_text(L["book_created"].format(name=name, id=book_id), reply_markup=main_menu_kb(lang))
+    except:
+        await msg.delete()
         await msg.answer(L["book_created"].format(name=name, id=book_id), reply_markup=main_menu_kb(lang))
-    except Exception:
-        await msg.reply(L["book_created"].format(name=name, id=book_id), reply_markup=main_menu_kb(lang))
     await state.clear()
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:open:"))
@@ -383,7 +399,8 @@ async def cb_book_open(cb: CallbackQuery):
     L = LOCALES[lang]
     try:
         await cb.message.edit_text(f"📖 Book {book_id}", reply_markup=book_kb(book_id, lang))
-    except Exception:
+    except:
+        await cb.message.delete()
         await cb.message.answer(f"📖 Book {book_id}", reply_markup=book_kb(book_id, lang))
 
 # -------- Delete book --------
@@ -393,7 +410,11 @@ async def cb_book_delete_confirm(cb: CallbackQuery):
     book_id = int(cb.data.split(":")[2])
     lang = await get_user_lang(cb.from_user.id)
     L = LOCALES[lang]
-    await cb.message.edit_text(L["confirm_delete"], reply_markup=confirm_delete_kb(book_id, lang))
+    try:
+        await cb.message.edit_text(L["confirm_delete"], reply_markup=confirm_delete_kb(book_id, lang))
+    except:
+        await cb.message.delete()
+        await cb.message.answer(L["confirm_delete"], reply_markup=confirm_delete_kb(book_id, lang))
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:delete_yes:"))
 async def cb_book_delete(cb: CallbackQuery):
@@ -413,14 +434,19 @@ async def cb_book_delete(cb: CallbackQuery):
     if not rows:
         try:
             await cb.message.edit_text(L["no_books"], reply_markup=cabinet_kb(lang))
-        except Exception:
+        except:
+            await cb.message.delete()
             await cb.message.answer(L["no_books"], reply_markup=cabinet_kb(lang))
         return
 
     btns = [InlineKeyboardButton(text=r["name"], callback_data=f"book:open:{r['id']}") for r in rows]
     btns.append(InlineKeyboardButton(text=L["back"], callback_data="cab:back"))
     kb_rows = two_col_rows(btns)
-    await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
+    try:
+        await cb.message.edit_text(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
+    except:
+        await cb.message.delete()
+        await cb.message.answer(L["my_books"], reply_markup=InlineKeyboardMarkup(inline_keyboard=kb_rows))
 
 # -------- Add words --------
 @router.callback_query(lambda c: c.data and c.data.startswith("book:add:"))
@@ -432,7 +458,8 @@ async def cb_book_add(cb: CallbackQuery, state: FSMContext):
 
     try:
         await cb.message.edit_text(L["send_pairs"], reply_markup=add_words_back_kb(book_id, lang))
-    except Exception:
+    except:
+        await cb.message.delete()
         await cb.message.answer(L["send_pairs"], reply_markup=add_words_back_kb(book_id, lang))
 
     await state.update_data(book_id=book_id)
@@ -600,8 +627,9 @@ async def send_next_question(msg: Message, state: FSMContext, lang: str):
     # Use edit_text when possible, else send new
     try:
         await msg.edit_text(L["question"].format(word=current["word_src"]), reply_markup=keyboard)
-    except Exception:
-        await msg.answer(L["question"].format(word=current["word_src"]), reply_markup=keyboard)
+    except:
+        await msg.delete()
+        await msg.edit_text(L["question"].format(word=current["word_src"]), reply_markup=keyboard)
 
 @router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
 async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
@@ -675,7 +703,8 @@ async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
 
     try:
         await cb.message.edit_text(full_text)
-    except Exception:
+    except:
+        await cb.message.delete()
         await cb.message.answer(full_text)
 
     # Show cabinet menu after results
