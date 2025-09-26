@@ -260,7 +260,8 @@ async def safe_edit_or_send(cb: CallbackQuery, text: str, kb: InlineKeyboardMark
         await cb.message.delete()
     except:
         pass
-    await cb.message.answer(text, reply_markup=kb)
+    sent = await cb.message.answer(text, reply_markup=kb)
+    return sent.message_id
 
 # =====================================================
 # 📌 Cabinet menu (optimized: batch fetch)
@@ -286,7 +287,8 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
         await safe_edit_or_send(cb, L["cabinet"], cabinet_kb(lang), lang)
 
     elif cb.data == "cab:new":
-        await safe_edit_or_send(cb, L["enter_book_name"], new_book_cancel_kb(lang), lang)
+        sent = await safe_edit_or_send(cb, L["enter_book_name"], new_book_cancel_kb(lang), lang)
+        await state.update_data(prompt_msg_id=sent, chat_id=cb.message.chat.id   )
         await state.set_state(VocabStates.waiting_book_name)
 
     elif cb.data == "cab:books":
@@ -329,17 +331,31 @@ async def add_book(msg: Message, state: FSMContext):
     L = get_locale(lang)
 
     name = msg.text.strip()
+
+    # Oldin saqlangan prompt xabarni o‘chirish
+    st = await state.get_data()
+    if "prompt_msg_id" in st and "chat_id" in st:
+        try:
+            await msg.bot.delete_message(st["chat_id"], st["prompt_msg_id"])
+        except:
+            pass
+
     if await db_exec("SELECT id FROM vocab_books WHERE user_id=%s AND name=%s", (user_id, name), fetch=True):
         await msg.answer(L["book_exists"], reply_markup=books_kb(books, lang))
         await state.clear()
         return
 
-    row = await db_exec("INSERT INTO vocab_books (user_id, name) VALUES (%s,%s) RETURNING id", (user_id, name), fetch=True)
+    row = await db_exec(
+        "INSERT INTO vocab_books (user_id, name) VALUES (%s,%s) RETURNING id",
+        (user_id, name), fetch=True
+    )
     book_id = row["id"] if row else None
-    data = await get_user_data(user_id)
-    lang, books = data["lang"], data["books"]
-    await msg.answer(L["book_created"].format(name=name, id=book_id), reply_markup=books_kb(books, lang))
+    await msg.answer(
+        L["book_created"].format(name=name, id=book_id),
+        reply_markup=books_kb(books, lang)
+    )
     await state.clear()
+
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:open:"))
 async def cb_book_open(cb: CallbackQuery):
