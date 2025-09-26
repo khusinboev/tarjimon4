@@ -329,30 +329,16 @@ async def add_book(msg: Message, state: FSMContext):
     L = get_locale(lang)
 
     name = msg.text.strip()
-
-    # Eski "Yangi lug'at nomini kiriting" xabarini o'chirish
-    try:
-        if msg.reply_to_message:
-            await msg.reply_to_message.delete()
-    except:
-        pass
-
     if await db_exec("SELECT id FROM vocab_books WHERE user_id=%s AND name=%s", (user_id, name), fetch=True):
         await msg.answer(L["book_exists"], reply_markup=books_kb(books, lang))
         await state.clear()
         return
 
-    row = await db_exec(
-        "INSERT INTO vocab_books (user_id, name) VALUES (%s,%s) RETURNING id",
-        (user_id, name), fetch=True
-    )
+    row = await db_exec("INSERT INTO vocab_books (user_id, name) VALUES (%s,%s) RETURNING id", (user_id, name), fetch=True)
     book_id = row["id"] if row else None
-    await msg.answer(
-        L["book_created"].format(name=name, id=book_id),
-        reply_markup=books_kb(books, lang)
-    )
+    lang, books = data["lang"], data["books"]
+    await msg.answer(L["book_created"].format(name=name, id=book_id), reply_markup=books_kb(books, lang))
     await state.clear()
-
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:open:"))
 async def cb_book_open(cb: CallbackQuery):
