@@ -325,18 +325,18 @@ async def cb_change_lang(cb: CallbackQuery):
 async def add_book(msg: Message, state: FSMContext):
     user_id = msg.from_user.id
     data = await get_user_data(user_id)
-    lang = data["lang"]
+    lang, books = data["lang"], data["books"]
     L = get_locale(lang)
 
     name = msg.text.strip()
     if await db_exec("SELECT id FROM vocab_books WHERE user_id=%s AND name=%s", (user_id, name), fetch=True):
-        await msg.answer(L["book_exists"], reply_markup=main_menu_kb(lang))
+        await msg.answer(L["book_exists"], reply_markup=books_kb(books, lang))
         await state.clear()
         return
 
     row = await db_exec("INSERT INTO vocab_books (user_id, name) VALUES (%s,%s) RETURNING id", (user_id, name), fetch=True)
     book_id = row["id"] if row else None
-    await msg.answer(L["book_created"].format(name=name, id=book_id), reply_markup=main_menu_kb(lang))
+    await msg.answer(L["book_created"].format(name=name, id=book_id), reply_markup=books_kb(books, lang))
     await state.clear()
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:open:"))
