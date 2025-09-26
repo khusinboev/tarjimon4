@@ -350,6 +350,8 @@ async def add_book(msg: Message, state: FSMContext):
         (user_id, name), fetch=True
     )
     book_id = row["id"] if row else None
+    data = await get_user_data(user_id)
+    lang, books = data["lang"], data["books"]
     await msg.answer(
         L["book_created"].format(name=name, id=book_id),
         reply_markup=books_kb(books, lang)
