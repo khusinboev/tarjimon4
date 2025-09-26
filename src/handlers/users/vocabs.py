@@ -206,17 +206,6 @@ def add_words_back_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=get_locale(lang)["back_to_book"], callback_data=f"book:open:{book_id}")]
     ])
 
-def main_menu_kb(lang: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_locale(lang)["main_menu"], callback_data="cab:back")]
-    ])
-
-def new_book_cancel_kb(lang: str) -> InlineKeyboardMarkup:
-    L = get_locale(lang)
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=L["cancel"], callback_data="cab:back")]
-    ])
-
 def books_kb(books: List[Dict], lang: str, for_practice: bool = False) -> InlineKeyboardMarkup:
     """Unified KB builder for books list."""
     L = get_locale(lang)
@@ -286,7 +275,7 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
         await safe_edit_or_send(cb, L["cabinet"], cabinet_kb(lang), lang)
 
     elif cb.data == "cab:new":
-        await safe_edit_or_send(cb, L["enter_book_name"], new_book_cancel_kb(lang), lang)
+        await safe_edit_or_send(cb, L["enter_book_name"], books_kb(books, lang), lang)
         await state.set_state(VocabStates.waiting_book_name)
 
     elif cb.data == "cab:books":
