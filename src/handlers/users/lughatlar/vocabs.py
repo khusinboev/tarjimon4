@@ -251,6 +251,13 @@ async def cmd_cabinet(msg: Message):
     data = await get_user_data(msg.from_user.id)
     await msg.answer(get_locale(data["lang"])["cabinet"], reply_markup=cabinet_kb(data["lang"]))
 
+@router.callback_query(lambda c: c.data == "cab:settings")
+async def cb_settings(cb: CallbackQuery):
+    data = await get_user_data(cb.from_user.id)
+    L = get_locale(data["lang"])
+    await cb.message.edit_text(L["choose_lang"], reply_markup=settings_kb(data["lang"]))
+    await cb.answer()
+
 @router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
 async def cb_change_lang(cb: CallbackQuery):
     new_lang = cb.data.split(":")[1]
@@ -268,11 +275,4 @@ async def cb_back_to_cabinet(cb: CallbackQuery):
     data = await get_user_data(cb.from_user.id)
     L = get_locale(data["lang"])
     await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(data["lang"]))
-    await cb.answer()
-
-@router.callback_query(lambda c: c.data == "cab:settings")
-async def cb_settings(cb: CallbackQuery):
-    data = await get_user_data(cb.from_user.id)
-    L = get_locale(data["lang"])
-    await cb.message.edit_text(L["choose_lang"], reply_markup=settings_kb(data["lang"]))
     await cb.answer()
