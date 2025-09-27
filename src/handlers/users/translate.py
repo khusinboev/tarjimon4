@@ -97,22 +97,19 @@ def get_translation_keyboard():
 
 # --- Translation with fallback ---
 def translate_text(from_lang: str, to_lang: str, text: str):
-    translators = ["deep", "googletrans"]
-    random.shuffle(translators)
-
-    for method in translators:
+    try:
+        # Asosiy tarjimon
+        return GoogleTranslator(source=from_lang, target=to_lang).translate(text)
+    except Exception:
         try:
-            if method == "deep":
-                return GoogleTranslator(source=from_lang, target=to_lang).translate(text)
-            elif method == "googletrans":
-                res = fallback_translator.translate(
-                    text, src=from_lang if from_lang != "auto" else "auto", dest=to_lang
-                )
-                return res.text
+            # Fallback — googletrans
+            res = fallback_translator.translate(
+                text, src=from_lang if from_lang != "auto" else "auto", dest=to_lang
+            )
+            return res.text
         except Exception as e:
-            error_msg = str(e)
+            return f"⚠️ Tarjima xatosi: {str(e)}"
 
-    return f"⚠️ Tarjima xatosi: {error_msg}"
 
 # --- Switch tillar funksiyasi ---
 def switch_user_langs(user_id: int):
