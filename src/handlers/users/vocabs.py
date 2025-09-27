@@ -622,6 +622,7 @@ async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
 
     current = data["words"][idx]
     correct_answer = current["word_trg"]
+    options = [correct_answer]
     data["answers"] = data.get("answers", 0) + 1
 
     user_data = await get_user_data(cb.from_user.id)
