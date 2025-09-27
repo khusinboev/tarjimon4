@@ -1,8 +1,7 @@
 import asyncio
 import logging
-from aiogram import Bot, Dispatcher
 
-from config import BOT_TOKEN, dp, bot
+from config import dp, bot
 from src.db.init_db import create_all_base
 from src.handlers.admins.admin import admin_router
 from src.handlers.admins.messages import msg_router
@@ -10,9 +9,12 @@ from src.handlers.others.channels import channel_router
 from src.handlers.others.groups import group_router
 from src.handlers.others.other import other_router
 from src.handlers.users.inline_translate import inline_router
+from src.handlers.users.lughatlar.lughatlarim import lughatlarim_router
+from src.handlers.users.lughatlar.mashqlar import mashqlar_router
+from src.handlers.users.lughatlar.ommaviylar import ommaviylar_router
 from src.handlers.users.translate import translate_router
 from src.handlers.users.users import user_router
-from src.handlers.users.vocabs import router as vocab_router 
+from src.handlers.users.lughatlar.vocabs import router as vocab_router
 from src.middlewares.middleware import RegisterUserMiddleware
 
 
@@ -32,6 +34,9 @@ async def main():
 
     #for user
     dp.include_router(vocab_router)
+    dp.include_router(mashqlar_router)
+    dp.include_router(lughatlarim_router)
+    dp.include_router(ommaviylar_router)
     dp.include_router(user_router)
     dp.include_router(translate_router)
     dp.include_router(inline_router)
