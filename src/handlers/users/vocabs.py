@@ -295,10 +295,15 @@ async def cb_settings(cb: CallbackQuery):
 async def cb_change_lang(cb: CallbackQuery):
     new_lang = cb.data.split(":")[1]
     user_id = cb.from_user.id
-    await db_exec("INSERT INTO accounts (user_id, lang_code) VALUES (%s, %s)", (user_id, new_lang))
+    await db_exec(
+        "INSERT INTO accounts (user_id, lang_code) VALUES (%s, %s) "
+        "ON CONFLICT (user_id) DO UPDATE SET lang_code = EXCLUDED.lang_code",
+        (user_id, new_lang)
+    )
     L = get_locale(new_lang)
-    await cb.message.edit_text(L["cabinet"], reply_markup=cabinet_kb(new_lang))
-    await cb.answer(L["lang_changed"])
+    await cb.message.edit_text(L["lang_changed"], reply_markup=cabinet_kb(new_lang))
+    await cb.answer()
+
 
 @router.callback_query(lambda c: c.data == "cab:back")
 async def cb_cabinet(cb: CallbackQuery):
@@ -485,13 +490,17 @@ async def cb_book_confirm_delete(cb: CallbackQuery):
     book_id = int(cb.data.split(":")[2])
     book = await get_book_details(book_id)
     if not book or book["user_id"] != cb.from_user.id:
-        await cb.answer("❌ This book is not yours.", show_alert=True)
+        await cb.answer("❌ Bu lug'at sizniki emas.", show_alert=True)
         return
 
     await db_exec("DELETE FROM vocab_books WHERE id=%s", (book_id,))
+    refreshed_books = await db_exec(
+        "SELECT id, name, is_public FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
+        (cb.from_user.id,), fetch=True, many=True
+    )
     user_data = await get_user_data(cb.from_user.id)
     L = get_locale(user_data["lang"])
-    await cb.message.edit_text(L["my_books"], reply_markup=books_kb(user_data["books"], user_data["lang"]))
+    await cb.message.edit_text(L["my_books"], reply_markup=books_kb(refreshed_books, user_data["lang"]))
     await cb.answer()
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:export:"))
@@ -499,15 +508,18 @@ async def cb_book_export(cb: CallbackQuery):
     book_id = int(cb.data.split(":")[2])
     book = await get_book_details(book_id)
     if not book:
-        await cb.answer("❌ Book not found.", show_alert=True)
+        await cb.answer("❌ Lug'at topilmadi.", show_alert=True)
         return
 
     user_data = await get_user_data(cb.from_user.id)
     L = get_locale(user_data["lang"])
     file_path = await export_book_to_excel(book_id, cb.from_user.id)
-    await cb.message.answer_document(FSInputFile(file_path))
-    os.remove(file_path)  # Note: This is sync, but fine in callback as it's quick
-    await cb.message.edit_text(f"{L['my_books']}: {book['name']}", reply_markup=book_kb(book_id, user_data["lang"], book["is_public"], book["user_id"] == cb.from_user.id))
+    await cb.message.reply_document(FSInputFile(file_path))  # ✅ to‘g‘ri metod
+    os.remove(file_path)  # ✅ faylni o‘chirib tashlash
+    await cb.message.edit_text(
+        f"{L['my_books']}: {book['name']}",
+        reply_markup=book_kb(book_id, user_data["lang"], book["is_public"], book["user_id"] == cb.from_user.id)
+    )
     await cb.answer()
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:toggle_public:"))
@@ -516,7 +528,7 @@ async def cb_book_toggle_public(cb: CallbackQuery, state: FSMContext):
     user_id = cb.from_user.id
     book = await get_book_details(book_id)
     if not book or book["user_id"] != user_id:
-        await cb.answer("❌ This book is not yours.", show_alert=True)
+        await cb.answer("❌ Bu lug'at sizniki emas.", show_alert=True)
         return
 
     new_public = not book["is_public"]
@@ -526,13 +538,12 @@ async def cb_book_toggle_public(cb: CallbackQuery, state: FSMContext):
     L = get_locale(data["lang"])
     msg = L["toggled_public"] if new_public else L["toggled_private"]
 
-    await cb.answer(msg)
     refreshed_books = await db_exec(
         "SELECT id, name, is_public FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
         (user_id,), fetch=True, many=True
     )
     await cb.message.edit_text(L["my_books"], reply_markup=books_kb(refreshed_books, data["lang"]))
-    await cb.answer()
+    await cb.answer(msg)  # ✅ faqat bitta answer()
 
 @router.callback_query(lambda c: c.data == "cab:new")
 async def cb_new_book(cb: CallbackQuery, state: FSMContext):
