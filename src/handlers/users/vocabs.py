@@ -56,6 +56,13 @@ LOCALES = {
         "back_to_book": "🔙 Orqaga",
         "main_menu": "🏠 Bosh menyu",
         "cancel": "❌ Bekor qilish",
+        "make_public": "🌐 Global qilish",
+        "make_private": "🔒 Local qilish",
+        "public_books": "🌐 Umumiy lug'atlar",
+        "toggle_confirm": "❓ O'zgartirishni tasdiqlaysizmi?",
+        "toggled_public": "✅ Lug'at global qilindi.",
+        "toggled_private": "✅ Lug'at local qilindi.",
+        "no_public_books": "Hali umumiy lug'atlar yo'q.",
     },
     "en": {
         "cabinet": "📚 Cabinet",
@@ -95,6 +102,13 @@ LOCALES = {
         "back_to_book": "🔙 Back",
         "main_menu": "🏠 Main menu",
         "cancel": "❌ Cancel",
+        "make_public": "🌐 Make Global",
+        "make_private": "🔒 Make Local",
+        "public_books": "🌐 Public Books",
+        "toggle_confirm": "❓ Confirm change?",
+        "toggled_public": "✅ Book made global.",
+        "toggled_private": "✅ Book made local.",
+        "no_public_books": "No public books yet.",
     }
 }
 
@@ -146,6 +160,12 @@ async def set_user_lang(user_id: int, lang: str):
     else:
         await db_exec("INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s)", (user_id, lang))
 
+async def get_book_details(book_id: int) -> Dict[str, Any]:
+    return await db_exec(
+        "SELECT id, name, is_public FROM vocab_books WHERE id=%s",
+        (book_id,), fetch=True
+    )
+
 # =====================================================
 # 📌 FSM States (unchanged)
 # =====================================================
@@ -170,7 +190,8 @@ def get_locale(lang: str) -> Dict[str, str]:
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     L = get_locale(lang)
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=L["practice"], callback_data="cab:practice")],
+        [InlineKeyboardButton(text=L["practice"], callback_data="cab:practice"),
+         InlineKeyboardButton(text=L["public_books"], callback_data="cab:public_books")],
         [InlineKeyboardButton(text=L["my_books"], callback_data="cab:books"),
          InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")]
     ])
@@ -185,12 +206,16 @@ def settings_kb(lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=L["back"], callback_data="cab:back")]
     ])
 
-def book_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
+def book_kb(book_id: int, lang: str, is_public: bool) -> InlineKeyboardMarkup:
     L = get_locale(lang)
+    toggle_text = L["make_private"] if is_public else L["make_public"]
+    toggle_data = f"book:toggle_public:{book_id}"
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=L["add_words"], callback_data=f"book:add:{book_id}")],
-        [InlineKeyboardButton(text=L["export"], callback_data=f"book:export:{book_id}")],
-        [InlineKeyboardButton(text=L["delete"], callback_data=f"book:delete_confirm:{book_id}")],
+        [InlineKeyboardButton(text=L["practice"], callback_data=f"book:practice:{book_id}"),
+         InlineKeyboardButton(text=L["add_words"], callback_data=f"book:add:{book_id}")],
+        [InlineKeyboardButton(text=L["export"], callback_data=f"book:export:{book_id}"),
+         InlineKeyboardButton(text=L["delete"], callback_data=f"book:delete:{book_id}")],
+        [InlineKeyboardButton(text=toggle_text, callback_data=toggle_data)],
         [InlineKeyboardButton(text=L["back"], callback_data="cab:books")]
     ])
 
@@ -217,17 +242,18 @@ def new_book_cancel_kb(lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=L["cancel"], callback_data="cab:books")]
     ])
 
-def books_kb(books: List[Dict], lang: str, for_practice: bool = False) -> InlineKeyboardMarkup:
-    """Unified KB builder for books list."""
+def books_kb(books: List[Dict], lang: str) -> InlineKeyboardMarkup:
     L = get_locale(lang)
-    btns = []
-    for b in books:
-        action = f"book:practice:{b['id']}" if for_practice else f"book:open:{b['id']}"
-        btns.append(InlineKeyboardButton(text=b["name"], callback_data=action))
-    if not for_practice:
-        btns.append(InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"))
-    btns.append(InlineKeyboardButton(text=L["back"], callback_data="cab:back"))
-    return InlineKeyboardMarkup(inline_keyboard=two_col_rows(btns))
+    buttons = [
+        InlineKeyboardButton(
+            text=f"{b['name']} {'🌐' if b.get('is_public', False) else '🔒'} (id={b['id']})",
+            callback_data=f"book:{b['id']}"
+        ) for b in books
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=two_col_rows(buttons) + [
+        [InlineKeyboardButton(text=L["new_book"], callback_data="cab:new")],
+        [InlineKeyboardButton(text=L["back"], callback_data="cab:back")]
+    ])
 
 # =====================================================
 # 📌 Export helper (optimized: check rows early)
@@ -272,6 +298,32 @@ async def cmd_cabinet(msg: Message):
     data = await get_user_data(msg.from_user.id)
     L = get_locale(data["lang"])
     await msg.answer(L["cabinet"], reply_markup=cabinet_kb(data["lang"]))
+
+@router.callback_query(lambda c: c.data == "cab:public_books")
+async def cb_public_books(cb: CallbackQuery):
+    user_data = await get_user_data(cb.from_user.id)
+    lang = user_data["lang"]
+    L = get_locale(lang)
+
+    public_books = await db_exec(
+        "SELECT id, name, user_id FROM vocab_books WHERE is_public=TRUE ORDER BY created_at DESC LIMIT 50",
+        fetch=True, many=True
+    )
+    if not public_books:
+        await safe_edit_or_send(cb, L["no_public_books"], cabinet_kb(lang), lang)
+        return
+
+    buttons = [
+        InlineKeyboardButton(
+            text=f"{b['name']} (by user {b['user_id']})",
+            callback_data=f"public_book:{b['id']}"
+        ) for b in public_books
+    ]
+    kb = InlineKeyboardMarkup(inline_keyboard=two_col_rows(buttons) + [
+        [InlineKeyboardButton(text=L["back"], callback_data="cab:back")]
+    ])
+    await safe_edit_or_send(cb, L["public_books"], kb, lang)
+    await cb.answer()
 
 @router.callback_query(lambda c: c.data and c.data.startswith("cab:"))
 async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
@@ -557,3 +609,27 @@ async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
     await cb.message.edit_text(full_text)
     await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(user_data["lang"]))
     await cb.answer()
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:toggle_public:"))
+async def cb_book_toggle_public(cb: CallbackQuery, state: FSMContext):
+    book_id = int(cb.data.split(":")[2])
+    user_id = cb.from_user.id
+    book = await get_book_details(book_id)
+    if not book or book["user_id"] != user_id:  # Faqat egasi o'zgartira oladi
+        await cb.answer("❌ Bu lug'at sizniki emas.", show_alert=True)
+        return
+
+    new_public = not book["is_public"]
+    await db_exec("UPDATE vocab_books SET is_public=%s WHERE id=%s", (new_public, book_id))
+
+    data = await get_user_data(user_id)
+    L = get_locale(data["lang"])
+    msg = L["toggled_public"] if new_public else L["toggled_private"]
+
+    await cb.answer(msg)
+    # Menyuni yangilash
+    refreshed_books = await db_exec(
+        "SELECT id, name, is_public FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
+        (user_id,), fetch=True, many=True
+    )
+    await cb.message.edit_text(L["my_books"], reply_markup=books_kb(refreshed_books, data["lang"]))

@@ -113,7 +113,8 @@ CREATE TABLE IF NOT EXISTS practice_questions (
 -- Indekslar
 CREATE INDEX IF NOT EXISTS idx_vocab_books_user ON vocab_books(user_id);
 CREATE INDEX IF NOT EXISTS idx_vocab_entries_book ON vocab_entries(book_id);
-CREATE INDEX IF NOT EXISTS idx_practice_sessions_user ON practice_sessions(user_id);""") 
+CREATE INDEX IF NOT EXISTS idx_practice_sessions_user ON practice_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_vocab_books_public ON vocab_books(is_public) WHERE is_public = TRUE;""")
     db.commit()
 
 
