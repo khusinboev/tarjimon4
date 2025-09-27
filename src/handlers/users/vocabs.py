@@ -64,6 +64,7 @@ LOCALES = {
         "toggled_private": "✅ Lug'at local qilindi.",
         "no_public_books": "Hali umumiy lug'atlar yo'q.",
         "practice_section": "▶ Mashq bo'limi",
+        "lang_changed": "✅ Til o'zgartirildi.",
     },
     "en": {
         "cabinet": "📚 Cabinet",
@@ -111,6 +112,7 @@ LOCALES = {
         "toggled_private": "✅ Book made local.",
         "no_public_books": "No public books yet.",
         "practice_section": "▶ Practice Section",
+        "lang_changed": "✅ Language changed.",
     }
 }
 
@@ -218,7 +220,7 @@ def books_kb(books: List[Dict], lang: str, practice_mode: bool = False) -> Inlin
     L = get_locale(lang)
     buttons = [
         InlineKeyboardButton(
-            text=f"{b['name']} {'🌐' if b['is_public'] else '🔒'} (id={b['id']})",
+            text=f"{b['name']} {'🌐' if b.get('is_public', False) else '🔒'} (id={b['id']})",
             callback_data=f"{'practice_book' if practice_mode else 'book'}:{b['id']}"
         ) for b in books
     ]
@@ -242,6 +244,14 @@ def book_kb(book_id: int, lang: str, is_public: bool, is_owner: bool) -> InlineK
     rows.append([InlineKeyboardButton(text=L["back"], callback_data="cab:books")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
+def settings_kb(lang: str) -> InlineKeyboardMarkup:
+    L = get_locale(lang)
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🇺🇿 Uzbek", callback_data="lang:uz"),
+         InlineKeyboardButton(text="🇺🇸 English", callback_data="lang:en")],
+        [InlineKeyboardButton(text=L["back"], callback_data="cab:back")]
+    ])
+
 # =====================================================
 # 📌 Handlers
 # =====================================================
@@ -254,6 +264,25 @@ async def cmd_cabinet(msg: Message):
 async def cb_back_to_cabinet(cb: CallbackQuery):
     data = await get_user_data(cb.from_user.id)
     await cb.message.edit_text(get_locale(data["lang"])["cabinet"], reply_markup=cabinet_kb(data["lang"]))
+    await cb.answer()
+
+@router.callback_query(lambda c: c.data == "cab:settings")
+async def cb_settings(cb: CallbackQuery):
+    data = await get_user_data(cb.from_user.id)
+    L = get_locale(data["lang"])
+    await cb.message.edit_text(L["choose_lang"], reply_markup=settings_kb(data["lang"]))
+    await cb.answer()
+
+@router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
+async def cb_change_lang(cb: CallbackQuery):
+    new_lang = cb.data.split(":")[1]
+    user_id = cb.from_user.id
+    await db_exec(
+        "INSERT INTO accounts (user_id, lang_code) VALUES (%s, %s) ON CONFLICT (user_id) DO UPDATE SET lang_code = %s",
+        (user_id, new_lang, new_lang)
+    )
+    L = get_locale(new_lang)
+    await cb.message.edit_text(L["lang_changed"], reply_markup=cabinet_kb(new_lang))
     await cb.answer()
 
 @router.callback_query(lambda c: c.data == "cab:books")
@@ -419,7 +448,7 @@ async def process_word_list(msg: Message, state: FSMContext):
     count = 0
     for word_src, word_trg in pairs:
         await db_exec(
-            "INSERT INTO vocab_entries (book_id, word_src, word_trg, src_lang, trg_lang) VALUES (%s, %s, %s, %s, %s)",
+            "INSERT INTO vocab_entries (book_id, word_src, word_trg, src_lang, trg_lang) VALUES (%s, %s, %s, %s, %s) ON CONFLICT DO NOTHING",
             (book_id, word_src, word_trg, "en", "uz")
         )
         count += 1
@@ -474,6 +503,7 @@ async def cb_book_export(cb: CallbackQuery):
     L = get_locale(user_data["lang"])
     file_path = await export_book_to_excel(book_id, cb.from_user.id)
     await cb.message.answer_document(FSInputFile(file_path))
+    os.remove(file_path)  # Clean up the file after sending
     await cb.message.edit_text(f"{L['my_books']}: {book['name']}", reply_markup=book_kb(book_id, user_data["lang"], book["is_public"], book["user_id"] == cb.from_user.id))
     await cb.answer()
 
