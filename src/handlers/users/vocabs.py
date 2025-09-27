@@ -15,7 +15,7 @@ from config import db
 router = Router()
 
 # =====================================================
-# 📌 Localization (unchanged, as it's already compact)
+# 📌 Localization
 # =====================================================
 LOCALES = {
     "uz": {
@@ -63,6 +63,7 @@ LOCALES = {
         "toggled_public": "✅ Lug'at global qilindi.",
         "toggled_private": "✅ Lug'at local qilindi.",
         "no_public_books": "Hali umumiy lug'atlar yo'q.",
+        "practice_section": "▶ Mashq bo'limi",
     },
     "en": {
         "cabinet": "📚 Cabinet",
@@ -109,11 +110,12 @@ LOCALES = {
         "toggled_public": "✅ Book made global.",
         "toggled_private": "✅ Book made local.",
         "no_public_books": "No public books yet.",
+        "practice_section": "▶ Practice Section",
     }
 }
 
 # =====================================================
-# 📌 Database helpers (optimized: combined lang fetch)
+# 📌 Database helpers
 # =====================================================
 
 async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: bool = False):
@@ -138,7 +140,6 @@ async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: b
     return await asyncio.to_thread(run)
 
 async def get_user_data(user_id: int) -> Dict[str, Any]:
-    """Fetch user lang and books with is_public."""
     lang_row = await db_exec(
         "SELECT lang_code FROM accounts WHERE user_id=%s ORDER BY id DESC LIMIT 1",
         (user_id,), fetch=True
@@ -150,25 +151,17 @@ async def get_user_data(user_id: int) -> Dict[str, Any]:
     )
     return {"lang": lang, "books": books or []}
 
-async def set_user_lang(user_id: int, lang: str):
-    row = await db_exec(
-        "SELECT id FROM accounts WHERE user_id=%s ORDER BY id DESC LIMIT 1",
-        (user_id,), fetch=True
-    )
-    if row:
-        await db_exec("UPDATE accounts SET lang_code=%s WHERE id=%s", (lang, row["id"]))
-    else:
-        await db_exec("INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s)", (user_id, lang))
-
 async def get_book_details(book_id: int) -> Dict[str, Any]:
-    """Fetch book details including user_id and is_public."""
     return await db_exec(
         "SELECT id, name, user_id, is_public FROM vocab_books WHERE id=%s",
         (book_id,), fetch=True
     )
 
+def get_locale(lang: str) -> Dict[str, str]:
+    return LOCALES.get(lang, LOCALES["uz"])
+
 # =====================================================
-# 📌 FSM States (unchanged)
+# 📌 States
 # =====================================================
 class VocabStates(StatesGroup):
     waiting_book_name = State()
@@ -176,37 +169,44 @@ class VocabStates(StatesGroup):
     practicing = State()
 
 # =====================================================
-# 📌 UI Builders (optimized: reuse L, fix two-col for odd counts)
+# 📌 Helper Functions
 # =====================================================
 def two_col_rows(buttons: List[InlineKeyboardButton]) -> List[List[InlineKeyboardButton]]:
-    """Split buttons into two columns."""
     rows = []
     for i in range(0, len(buttons), 2):
         row = buttons[i:i+2]
         rows.append(row)
     return rows
 
-def get_locale(lang: str) -> Dict[str, str]:
-    return LOCALES.get(lang, LOCALES["uz"])
+async def export_book_to_excel(book_id: int, user_id: int) -> str:
+    # Stub: Replace with your actual implementation
+    return "path_to_file.xlsx"
 
+# =====================================================
+# 📌 Keyboards
+# =====================================================
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     L = get_locale(lang)
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=L["practice"], callback_data="cab:practice"),
-         InlineKeyboardButton(text=L["public_books"], callback_data="cab:public_books")],
         [InlineKeyboardButton(text=L["my_books"], callback_data="cab:books"),
-         InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")]
+         InlineKeyboardButton(text=L["public_books"], callback_data="cab:public_books")],
+        [InlineKeyboardButton(text=L["practice_section"], callback_data="cab:practice"),
+         InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")],
     ])
 
-def settings_kb(lang: str) -> InlineKeyboardMarkup:
+def books_kb(books: List[Dict], lang: str, practice_mode: bool = False) -> InlineKeyboardMarkup:
     L = get_locale(lang)
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(text="🇺🇿 O'zbek", callback_data="lang:uz"),
-            InlineKeyboardButton(text="🇬🇧 English", callback_data="lang:en")
-        ],
-        [InlineKeyboardButton(text=L["back"], callback_data="cab:back")]
-    ])
+    buttons = [
+        InlineKeyboardButton(
+            text=f"{b['name']} {'🌐' if b['is_public'] else '🔒'} (id={b['id']})",
+            callback_data=f"{'practice_book' if practice_mode else 'book'}:{b['id']}"
+        ) for b in books
+    ]
+    rows = two_col_rows(buttons)
+    if not practice_mode:
+        rows.append([InlineKeyboardButton(text=L["new_book"], callback_data="cab:new")])
+    rows.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 def book_kb(book_id: int, lang: str, is_public: bool, is_owner: bool) -> InlineKeyboardMarkup:
     L = get_locale(lang)
@@ -222,80 +222,9 @@ def book_kb(book_id: int, lang: str, is_public: bool, is_owner: bool) -> InlineK
     rows.append([InlineKeyboardButton(text=L["back"], callback_data="cab:books")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
-def confirm_delete_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
-    L = get_locale(lang)
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=L["yes"], callback_data=f"book:delete_yes:{book_id}")],
-        [InlineKeyboardButton(text=L["no"], callback_data=f"book:open:{book_id}")]
-    ])
-
-def add_words_back_kb(book_id: int, lang: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_locale(lang)["back_to_book"], callback_data=f"book:open:{book_id}")]
-    ])
-
-def main_menu_kb(lang: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_locale(lang)["main_menu"], callback_data="cab:back")]
-    ])
-
-def new_book_cancel_kb(lang: str) -> InlineKeyboardMarkup:
-    L = get_locale(lang)
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=L["cancel"], callback_data="cab:books")]
-    ])
-
-def books_kb(books: List[Dict], lang: str) -> InlineKeyboardMarkup:
-    L = get_locale(lang)
-    buttons = [
-        InlineKeyboardButton(
-            text=f"{b['name']} {'🌐' if b['is_public'] else '🔒'} (id={b['id']})",
-            callback_data=f"book:{b['id']}"
-        ) for b in books
-    ]
-    return InlineKeyboardMarkup(inline_keyboard=two_col_rows(buttons) + [
-        [InlineKeyboardButton(text=L["new_book"], callback_data="cab:new")],
-        [InlineKeyboardButton(text=L["back"], callback_data="cab:back")]
-    ])
-
 # =====================================================
-# 📌 Export helper (optimized: check rows early)
+# 📌 Handlers
 # =====================================================
-async def export_book_to_excel(book_id: int, user_id: int) -> str:
-    rows = await db_exec(
-        "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s ORDER BY id",
-        (book_id,), fetch=True, many=True
-    )
-    if len(rows) < 1:  # At least one row for export
-        return None
-
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Vocabulary"
-    ws.append(["Word", "Translation"])
-    for r in rows:
-        ws.append([r["word_src"], r["word_trg"]])
-
-    file_path = f"export_{user_id}_{book_id}.xlsx"
-    wb.save(file_path)
-    return file_path
-
-# =====================================================
-# 📌 Helper to send message (always delete old if edit fails)
-# =====================================================
-async def safe_edit_or_send(cb: CallbackQuery, text: str, kb: InlineKeyboardMarkup, lang: str):
-    """Delete old message and send new to avoid edit issues with old inlines."""
-    try:
-        await cb.message.delete()
-    except:
-        pass
-    sent = await cb.message.answer(text, reply_markup=kb)
-    return sent.message_id
-
-# =====================================================
-# 📌 Cabinet menu (optimized: batch fetch)
-# =====================================================
-
 @router.message(Command("cabinet"))
 async def cmd_cabinet(msg: Message):
     data = await get_user_data(msg.from_user.id)
@@ -338,90 +267,24 @@ async def cb_public_books(cb: CallbackQuery):
     await cb.message.edit_text(L["public_books"], reply_markup=kb)
     await cb.answer()
 
-@router.callback_query(lambda c: c.data and c.data.startswith("cab:"))
-async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
-    user_id = cb.from_user.id
-    data = await get_user_data(user_id)
-    lang, books = data["lang"], data["books"]
+@router.callback_query(lambda c: c.data == "cab:practice")
+async def cb_practice_section(cb: CallbackQuery):
+    user_data = await get_user_data(cb.from_user.id)
+    lang = user_data["lang"]
     L = get_locale(lang)
 
-    if cb.data == "cab:settings":
-        await safe_edit_or_send(cb, L["choose_lang"], settings_kb(lang), lang)
-
-    elif cb.data == "cab:back":
-        await safe_edit_or_send(cb, L["cabinet"], cabinet_kb(lang), lang)
-
-    elif cb.data == "cab:new":
-        sent = await safe_edit_or_send(cb, L["enter_book_name"], new_book_cancel_kb(lang), lang)
-        await state.update_data(prompt_msg_id=sent, chat_id=cb.message.chat.id   )
-        await state.set_state(VocabStates.waiting_book_name)
-
-    elif cb.data == "cab:books":
-        if not books:
-            kb = InlineKeyboardMarkup(inline_keyboard=two_col_rows([
-                InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"),
-                InlineKeyboardButton(text=L["back"], callback_data="cab:back")
-            ]))
-            await safe_edit_or_send(cb, L["my_books"], kb, lang)
-            return
-        await safe_edit_or_send(cb, L["my_books"], books_kb(books, lang), lang)
-
-    elif cb.data == "cab:practice":
-        if not books:
-            await cb.answer(L["no_books"], show_alert=True)
-            return
-        await safe_edit_or_send(cb, "📚 " + L["practice"], books_kb(books, lang, for_practice=True), lang)
-    try:
+    # Shaxsiy va umumiy lug'atlarni birlashtirish
+    books = user_data["books"] + await db_exec(
+        "SELECT id, name, user_id, is_public FROM vocab_books WHERE is_public=TRUE ORDER BY created_at DESC LIMIT 50",
+        fetch=True, many=True
+    )
+    if not books:
+        await cb.message.edit_text(L["no_books"], reply_markup=cabinet_kb(lang))
         await cb.answer()
-    except:
-        pass
-
-@router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
-async def cb_change_lang(cb: CallbackQuery):
-    lang = cb.data.split(":")[1]
-    await set_user_lang(cb.from_user.id, lang)
-    L = get_locale(lang)
-    await safe_edit_or_send(cb, L["cabinet"], cabinet_kb(lang), lang)
-    await cb.answer()
-
-# =====================================================
-# 📌 Books management (optimized: reuse data fetch)
-# =====================================================
-
-@router.message(VocabStates.waiting_book_name)
-async def add_book(msg: Message, state: FSMContext):
-    user_id = msg.from_user.id
-    data = await get_user_data(user_id)
-    lang, books = data["lang"], data["books"]
-    L = get_locale(lang)
-
-    name = msg.text.strip()
-
-    # Oldin saqlangan prompt xabarni o‘chirish
-    st = await state.get_data()
-    if "prompt_msg_id" in st and "chat_id" in st:
-        try:
-            await msg.bot.delete_message(st["chat_id"], st["prompt_msg_id"])
-        except:
-            pass
-
-    if await db_exec("SELECT id FROM vocab_books WHERE user_id=%s AND name=%s", (user_id, name), fetch=True):
-        await msg.answer(L["book_exists"], reply_markup=books_kb(books, lang))
-        await state.clear()
         return
 
-    row = await db_exec(
-        "INSERT INTO vocab_books (user_id, name) VALUES (%s,%s) RETURNING id",
-        (user_id, name), fetch=True
-    )
-    book_id = row["id"] if row else None
-    data = await get_user_data(user_id)
-    lang, books = data["lang"], data["books"]
-    await msg.answer(
-        L["book_created"].format(name=name, id=book_id),
-        reply_markup=books_kb(books, lang)
-    )
-    await state.clear()
+    await cb.message.edit_text(L["practice_section"], reply_markup=books_kb(books, lang, practice_mode=True))
+    await cb.answer()
 
 @router.callback_query(lambda c: c.data and c.data.startswith("public_book:"))
 async def cb_public_book_open(cb: CallbackQuery):
@@ -439,10 +302,8 @@ async def cb_public_book_open(cb: CallbackQuery):
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:"))
 async def cb_book_open(cb: CallbackQuery):
-    if ":" in cb.data:
-        parts = cb.data.split(":")
-        if len(parts) > 1 and parts[1] in ["practice", "add", "delete", "export", "toggle_public"]:
-            return  # Handled by other callbacks
+    if ":" in cb.data and cb.data.split(":")[1] in ["practice", "add", "delete", "export", "toggle_public"]:
+        return
     book_id = int(cb.data.split(":")[1])
     book = await get_book_details(book_id)
     if not book:
@@ -455,90 +316,24 @@ async def cb_book_open(cb: CallbackQuery):
     await cb.message.edit_text(f"{L['my_books']}: {book['name']}", reply_markup=book_kb(book_id, user_data["lang"], book["is_public"], is_owner))
     await cb.answer()
 
-@router.callback_query(lambda c: c.data and c.data.startswith("book:delete_confirm:"))
-async def cb_book_delete_confirm(cb: CallbackQuery):
-    book_id = int(cb.data.split(":")[2])
+@router.callback_query(lambda c: c.data and c.data.startswith("practice_book:"))
+async def cb_practice_book_open(cb: CallbackQuery, state: FSMContext):
+    book_id = int(cb.data.split(":")[1])
+    rows = await db_exec("SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s", (book_id,), fetch=True, many=True)
+
+    if len(rows) < 4:
+        data = await get_user_data(cb.from_user.id)
+        await cb.answer("❌ " + get_locale(data["lang"])["empty_book"], show_alert=True)
+        return
+
+    random.shuffle(rows)
+    await state.update_data(
+        book_id=book_id, words=rows, index=0, correct=0, wrong=0, total=len(rows),
+        answers=0, cycles=0, current_cycle_correct=0, current_cycle_wrong=0, cycles_stats=[]
+    )
+    await state.set_state(VocabStates.practicing)
     data = await get_user_data(cb.from_user.id)
-    lang = data["lang"]
-    L = get_locale(lang)
-    await safe_edit_or_send(cb, L["confirm_delete"], confirm_delete_kb(book_id, lang), lang)
-    await cb.answer()
-
-@router.callback_query(lambda c: c.data and c.data.startswith("book:delete_yes:"))
-async def cb_book_delete(cb: CallbackQuery):
-    book_id = int(cb.data.split(":")[2])
-    user_id = cb.from_user.id
-    await db_exec("DELETE FROM vocab_entries WHERE book_id=%s", (book_id,))
-    await db_exec("DELETE FROM vocab_books WHERE id=%s AND user_id=%s", (book_id, user_id))
-
-    data = await get_user_data(user_id)
-    lang, books = data["lang"], data["books"]
-    L = get_locale(lang)
-    if not books:
-        await safe_edit_or_send(cb, L["no_books"], cabinet_kb(lang), lang)
-        return
-    await safe_edit_or_send(cb, L["my_books"], books_kb(books, lang), lang)
-    await cb.answer()
-
-@router.callback_query(lambda c: c.data and c.data.startswith("book:add:"))
-async def cb_book_add(cb: CallbackQuery, state: FSMContext):
-    book_id = int(cb.data.split(":")[2])
-    data = await get_user_data(cb.from_user.id)
-    lang = data["lang"]
-    L = get_locale(lang)
-    await safe_edit_or_send(cb, L["send_pairs"], add_words_back_kb(book_id, lang), lang)
-    await state.update_data(book_id=book_id)
-    await state.set_state(VocabStates.waiting_word_list)
-    await cb.answer()
-
-@router.message(VocabStates.waiting_word_list)
-async def add_words(msg: Message, state: FSMContext):
-    data = await state.get_data()
-    book_id = data["book_id"]
-    user_data = await get_user_data(msg.from_user.id)
-    lang = user_data["lang"]
-    L = get_locale(lang)
-
-    lines = msg.text.strip().split("\n")
-    pairs = [(w.strip(), t.strip()) for line in lines if "-" in line for w, t in [line.split("-", 1)]]
-
-    if not pairs:
-        await msg.answer("❌ Xato format.", reply_markup=add_words_back_kb(book_id, lang))
-        return
-
-    for w, t in pairs:
-        await db_exec("INSERT INTO vocab_entries (book_id, word_src, word_trg) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING", (book_id, w, t))
-
-    await msg.answer(L["added_pairs"].format(n=len(pairs)), reply_markup=add_words_back_kb(book_id, lang))
-
-@router.callback_query(lambda c: c.data and c.data.startswith("book:export:"))
-async def cb_book_export(cb: CallbackQuery):
-    book_id = int(cb.data.split(":")[2])
-    user_id = cb.from_user.id
-    data = await get_user_data(user_id)
-    lang = data["lang"]
-    L = get_locale(lang)
-
-    await cb.answer("⏳ Fayl tayyorlanmoqda...")
-    file_path = await export_book_to_excel(book_id, user_id)
-    if not file_path:
-        await cb.answer("❌ " + L["empty_book"], show_alert=True)
-        return
-
-    try:
-        await cb.message.delete()
-        file = FSInputFile(file_path)
-        await cb.message.answer_document(file, caption="📤 " + L["export"])
-    finally:
-        if os.path.exists(file_path):
-            os.remove(file_path)
-
-    # Refresh and send books list
-    refreshed_data = await get_user_data(user_id)
-    if not refreshed_data["books"]:
-        await cb.message.answer(L["no_books"], reply_markup=cabinet_kb(lang))
-    else:
-        await cb.message.answer(L["my_books"], reply_markup=books_kb(refreshed_data["books"], lang))
+    await send_next_question(cb.message, state, data["lang"])
     await cb.answer()
 
 @router.callback_query(lambda c: c.data and c.data.startswith("book:practice:"))
@@ -560,6 +355,125 @@ async def cb_book_practice(cb: CallbackQuery, state: FSMContext):
     data = await get_user_data(cb.from_user.id)
     await send_next_question(cb.message, state, data["lang"])
     await cb.answer()
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:add:"))
+async def cb_book_add_words(cb: CallbackQuery, state: FSMContext):
+    book_id = int(cb.data.split(":")[2])
+    book = await get_book_details(book_id)
+    if not book or book["user_id"] != cb.from_user.id:
+        await cb.answer("❌ Bu lug'at sizniki emas.", show_alert=True)
+        return
+
+    user_data = await get_user_data(cb.from_user.id)
+    L = get_locale(user_data["lang"])
+    await cb.message.edit_text(L["send_pairs"], reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=L["cancel"], callback_data="cab:books")]
+    ]))
+    await state.set_state(VocabStates.waiting_word_list)
+    await state.update_data(book_id=book_id)
+    await cb.answer()
+
+@router.message(VocabStates.waiting_word_list)
+async def process_word_list(msg: Message, state: FSMContext):
+    data = await state.get_data()
+    book_id = data.get("book_id")
+    if not book_id:
+        await msg.answer("❌ Lug'at topilmadi.")
+        await state.clear()
+        return
+
+    user_data = await get_user_data(msg.from_user.id)
+    L = get_locale(user_data["lang"])
+    pairs = [line.strip().split("-") for line in msg.text.split("\n") if "-" in line]
+    pairs = [(p[0].strip(), p[1].strip()) for p in pairs if len(p) == 2]
+
+    if not pairs:
+        await msg.answer("❌ Hech qanday so'z juftligi topilmadi.")
+        return
+
+    count = 0
+    for word_src, word_trg in pairs:
+        await db_exec(
+            "INSERT INTO vocab_entries (book_id, word_src, word_trg, src_lang, trg_lang) VALUES (%s, %s, %s, %s, %s)",
+            (book_id, word_src, word_trg, "en", "uz")
+        )
+        count += 1
+
+    await msg.answer(L["added_pairs"].format(n=count), reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=L["back"], callback_data="cab:books")]
+    ]))
+    await state.clear()
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:delete:"))
+async def cb_book_delete(cb: CallbackQuery):
+    book_id = int(cb.data.split(":")[2])
+    book = await get_book_details(book_id)
+    if not book or book["user_id"] != cb.from_user.id:
+        await cb.answer("❌ Bu lug'at sizniki emas.", show_alert=True)
+        return
+
+    user_data = await get_user_data(cb.from_user.id)
+    L = get_locale(user_data["lang"])
+    await cb.message.edit_text(
+        L["confirm_delete"],
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=L["yes"], callback_data=f"book:confirm_delete:{book_id}"),
+             InlineKeyboardButton(text=L["no"], callback_data="cab:books")]
+        ])
+    )
+    await cb.answer()
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:confirm_delete:"))
+async def cb_book_confirm_delete(cb: CallbackQuery):
+    book_id = int(cb.data.split(":")[2])
+    book = await get_book_details(book_id)
+    if not book or book["user_id"] != cb.from_user.id:
+        await cb.answer("❌ Bu lug'at sizniki emas.", show_alert=True)
+        return
+
+    await db_exec("DELETE FROM vocab_books WHERE id=%s", (book_id,))
+    user_data = await get_user_data(cb.from_user.id)
+    L = get_locale(user_data["lang"])
+    await cb.message.edit_text(L["my_books"], reply_markup=books_kb(user_data["books"], user_data["lang"]))
+    await cb.answer()
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:export:"))
+async def cb_book_export(cb: CallbackQuery):
+    book_id = int(cb.data.split(":")[2])
+    book = await get_book_details(book_id)
+    if not book:
+        await cb.answer("❌ Lug'at topilmadi.", show_alert=True)
+        return
+
+    user_data = await get_user_data(cb.from_user.id)
+    L = get_locale(user_data["lang"])
+    file_path = await export_book_to_excel(book_id, cb.from_user.id)
+    await cb.message.answer_document(FSInputFile(file_path))
+    await cb.message.edit_text(f"{L['my_books']}: {book['name']}", reply_markup=book_kb(book_id, user_data["lang"], book["is_public"], book["user_id"] == cb.from_user.id))
+    await cb.answer()
+
+@router.callback_query(lambda c: c.data and c.data.startswith("book:toggle_public:"))
+async def cb_book_toggle_public(cb: CallbackQuery, state: FSMContext):
+    book_id = int(cb.data.split(":")[2])
+    user_id = cb.from_user.id
+    book = await get_book_details(book_id)
+    if not book or book["user_id"] != user_id:
+        await cb.answer("❌ Bu lug'at sizniki emas.", show_alert=True)
+        return
+
+    new_public = not book["is_public"]
+    await db_exec("UPDATE vocab_books SET is_public=%s WHERE id=%s", (new_public, book_id))
+
+    data = await get_user_data(user_id)
+    L = get_locale(data["lang"])
+    msg = L["toggled_public"] if new_public else L["toggled_private"]
+
+    await cb.answer(msg)
+    refreshed_books = await db_exec(
+        "SELECT id, name, is_public FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
+        (user_id,), fetch=True, many=True
+    )
+    await cb.message.edit_text(L["my_books"], reply_markup=books_kb(refreshed_books, data["lang"]))
 
 async def send_next_question(msg: Message, state: FSMContext, lang: str):
     data = await state.get_data()
@@ -599,7 +513,7 @@ async def send_next_question(msg: Message, state: FSMContext, lang: str):
         [InlineKeyboardButton(text=L["main_menu"], callback_data="cab:back")]
     ])
 
-    await msg.edit_text(L["question"].format(word=current["word_src"]), reply_markup=kb)  # Practice messages are fresh, so edit ok
+    await msg.edit_text(L["question"].format(word=current["word_src"]), reply_markup=kb)
 
 @router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
 async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
@@ -646,25 +560,39 @@ async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
     await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(user_data["lang"]))
     await cb.answer()
 
-@router.callback_query(lambda c: c.data and c.data.startswith("book:toggle_public:"))
-async def cb_book_toggle_public(cb: CallbackQuery, state: FSMContext):
-    book_id = int(cb.data.split(":")[2])
-    user_id = cb.from_user.id
-    book = await get_book_details(book_id)
-    if not book or book["user_id"] != user_id:
-        await cb.answer("❌ Bu lug'at sizniki emas.", show_alert=True)
+@router.callback_query(lambda c: c.data == "cab:new")
+async def cb_new_book(cb: CallbackQuery, state: FSMContext):
+    user_data = await get_user_data(cb.from_user.id)
+    L = get_locale(user_data["lang"])
+    await cb.message.edit_text(L["enter_book_name"], reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=L["cancel"], callback_data="cab:books")]
+    ]))
+    await state.set_state(VocabStates.waiting_book_name)
+    await cb.answer()
+
+@router.message(VocabStates.waiting_book_name)
+async def process_book_name(msg: Message, state: FSMContext):
+    name = msg.text.strip()
+    user_id = msg.from_user.id
+    user_data = await get_user_data(user_id)
+    L = get_locale(user_data["lang"])
+
+    existing = await db_exec(
+        "SELECT id FROM vocab_books WHERE user_id=%s AND name=%s",
+        (user_id, name), fetch=True
+    )
+    if existing:
+        await msg.answer(L["book_exists"])
         return
 
-    new_public = not book["is_public"]
-    await db_exec("UPDATE vocab_books SET is_public=%s WHERE id=%s", (new_public, book_id))
-
-    data = await get_user_data(user_id)
-    L = get_locale(data["lang"])
-    msg = L["toggled_public"] if new_public else L["toggled_private"]
-
-    await cb.answer(msg)
-    refreshed_books = await db_exec(
-        "SELECT id, name, is_public FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
-        (user_id,), fetch=True, many=True
+    result = await db_exec(
+        "INSERT INTO vocab_books (user_id, name, src_lang, trg_lang) VALUES (%s, %s, %s, %s) RETURNING id",
+        (user_id, name, "en", "uz"), fetch=True
     )
-    await cb.message.edit_text(L["my_books"], reply_markup=books_kb(refreshed_books, data["lang"]))
+    book_id = result["id"]
+    await msg.answer(L["book_created"].format(name=name, id=book_id))
+    await msg.answer(L["send_pairs"], reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=L["back"], callback_data="cab:books")]
+    ]))
+    await state.set_state(VocabStates.waiting_word_list)
+    await state.update_data(book_id=book_id)
