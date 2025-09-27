@@ -192,10 +192,10 @@ def get_locale(lang: str) -> Dict[str, str]:
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     L = get_locale(lang)
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=L["my_books"], callback_data="cab:books"),
+        [InlineKeyboardButton(text=L["practice"], callback_data="cab:practice"),
          InlineKeyboardButton(text=L["public_books"], callback_data="cab:public_books")],
-        [InlineKeyboardButton(text=L["new_book"], callback_data="cab:new"),
-         InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")],
+        [InlineKeyboardButton(text=L["my_books"], callback_data="cab:books"),
+         InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")]
     ])
 
 def settings_kb(lang: str) -> InlineKeyboardMarkup:
