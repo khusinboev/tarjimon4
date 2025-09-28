@@ -7,7 +7,8 @@ from math import ceil
 
 from src.handlers.users.lughatlar.vocabs import (
     get_user_data, db_exec, get_locale, two_col_rows,
-    safe_edit_or_send, cabinet_kb, BOOKS_PER_PAGE, get_book_emoji
+    safe_edit_or_send, cabinet_kb, BOOKS_PER_PAGE, get_book_emoji,
+    get_paginated_books
 )
 
 mashqlar_router = Router()
@@ -23,47 +24,6 @@ class MashqStates(StatesGroup):
 # =====================================================
 # 📌 Practice specific functions
 # =====================================================
-async def get_practice_books(user_id: int, page: int = 0, per_page: int = BOOKS_PER_PAGE):
-    """Mashq uchun lug'atlar ro'yxati (faqat yetarli so'zi borlar)."""
-    offset = page * per_page
-
-    query = """
-            SELECT vb.id, \
-                   vb.name, \
-                   vb.is_public, \
-                   COUNT(ve.id) as word_count,
-                   vb.created_at::date as created_date
-            FROM vocab_books vb
-                     LEFT JOIN vocab_entries ve ON vb.id = ve.book_id
-            WHERE vb.user_id = %s
-            GROUP BY vb.id, vb.name, vb.is_public, vb.created_at
-            HAVING COUNT(ve.id) >= 4
-            ORDER BY vb.created_at DESC
-                LIMIT %s \
-            OFFSET %s \
-            """
-
-    books = await db_exec(query, (user_id, per_page, offset), fetch=True, many=True)
-
-    # Umumiy soni
-    count_query = """
-                  SELECT COUNT(*) as count \
-                  FROM (
-                      SELECT vb.id
-                      FROM vocab_books vb
-                      LEFT JOIN vocab_entries ve ON vb.id = ve.book_id
-                      WHERE vb.user_id = %s
-                      GROUP BY vb.id
-                      HAVING COUNT (ve.id) >= 4
-                      ) as subq \
-                  """
-
-    count_result = await db_exec(count_query, (user_id,), fetch=True)
-    total_count = count_result.get('count', 0) if count_result else 0
-
-    return books or [], total_count
-
-
 def create_practice_books_kb(books: list, current_page: int, total_pages: int, lang: str) -> InlineKeyboardMarkup:
     """Mashq uchun lug'atlar klaviaturasi."""
     L = get_locale(lang)
@@ -114,8 +74,8 @@ async def cb_mashqlar(cb: CallbackQuery):
     lang = data["lang"]
     L = get_locale(lang)
 
-    # Mashq uchun mos lug'atlarni olish
-    books, total_count = await get_practice_books(user_id, page, BOOKS_PER_PAGE)
+    # Mashq uchun mos lug'atlarni olish (min_words=4 - mashq uchun yetarli so'z bo'lishi kerak)
+    books, total_count = await get_paginated_books(user_id, page, BOOKS_PER_PAGE, min_words=4)
 
     if not books and page == 0:
         kb = InlineKeyboardMarkup(inline_keyboard=[
@@ -296,7 +256,7 @@ async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
 
     # Tsikllar haqida ma'lumot
     if cycles > 0:
-        full_text += f"\n🔄 Takrorlangan tsikllar: {cycles}"
+        full_text += f"\n📄 Takrorlangan tsikllar: {cycles}"
 
     # Motivatsion xabar
     if percent >= 90:

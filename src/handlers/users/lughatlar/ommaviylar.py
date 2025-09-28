@@ -51,12 +51,13 @@ def create_mixed_books_kb(books: list, current_page: int, total_pages: int, lang
 
         # Muallif ma'lumoti
         author_info = "Siz" if is_own else f"ID {book['author_id']}"
-        text = f"{emoji} {book['name']} ({book['word_count']})\n   👤 {author_info}"
+        # Tugma matni
+        text = f"{emoji} {book['name']} ({book['word_count']})"
 
         callback = f"ommaviy:info:{book['id']}"
-        rows.append([InlineKeyboardButton(text=book['name'], callback_data=callback)])
+        rows.append([InlineKeyboardButton(text=text, callback_data=callback)])
 
-    # Sahifalash tugmalari
+    # Sahifalash tugmalari faqat kerak bo'lganda
     if total_pages > 1:
         nav_row = []
         if current_page > 0:
@@ -81,11 +82,32 @@ async def get_mixed_public_books(user_id: int, page: int = 0, per_page: int = BO
     """O'z va boshqalarning ommaviy lug'atlarini olish."""
     offset = page * per_page
 
+    # Avval umumiy sonini olish
+    count_query = """
+                  SELECT COUNT(*) as count
+                  FROM (
+                      SELECT DISTINCT vb.id
+                      FROM vocab_books vb
+                      LEFT JOIN vocab_entries ve ON vb.id = ve.book_id
+                      WHERE vb.is_public = TRUE
+                      GROUP BY vb.id
+                      HAVING COUNT (ve.id) >= 4
+                      ) as subquery \
+                  """
+
+    count_result = await db_exec(count_query, (), fetch=True)
+    total_count = count_result.get('count', 0) if count_result else 0
+
+    # Agar hech qanday ommaviy lug'at yo'q bo'lsa
+    if total_count == 0:
+        return [], 0
+
+    # Lug'atlarni olish
     query = """
-            SELECT vb.id, \
-                   vb.name, \
-                   vb.is_public, \
-                   vb.user_id, \
+            SELECT vb.id,
+                   vb.name,
+                   vb.is_public,
+                   vb.user_id,
                    vb.created_at::date as created_date, COALESCE(a.user_id::text, 'Unknown') as author_name,
                    COUNT(ve.id)                                       as word_count,
                    CASE WHEN vb.user_id = %s THEN true ELSE false END as is_own,
@@ -96,27 +118,13 @@ async def get_mixed_public_books(user_id: int, page: int = 0, per_page: int = BO
             WHERE vb.is_public = TRUE
             GROUP BY vb.id, vb.name, vb.is_public, vb.user_id, vb.created_at, a.user_id
             HAVING COUNT(ve.id) >= 4
-            ORDER BY CASE WHEN vb.user_id = %s THEN 0 ELSE 1 END, -- O'z lug'atlari birinchi \
+            ORDER BY CASE WHEN vb.user_id = %s THEN 0 ELSE 1 END, -- O'z lug'atlari birinchi
                      vb.created_at DESC
                 LIMIT %s \
             OFFSET %s \
             """
 
     books = await db_exec(query, (user_id, user_id, per_page, offset), fetch=True, many=True)
-
-    # Umumiy soni
-    count_query = """
-                  SELECT COUNT(DISTINCT vb.id) as count
-                  FROM vocab_books vb
-                      LEFT JOIN vocab_entries ve \
-                  ON vb.id = ve.book_id
-                  WHERE vb.is_public = TRUE
-                  GROUP BY vb.id
-                  HAVING COUNT (ve.id) >= 4 \
-                  """
-
-    count_result = await db_exec(count_query, (), fetch=True, many=True)
-    total_count = len(count_result) if count_result else 0
 
     return books or [], total_count
 
@@ -138,13 +146,12 @@ async def cb_ommaviylar(cb: CallbackQuery):
     # Aralash ommaviy lug'atlarni olish
     books, total_count = await get_mixed_public_books(user_id, page, BOOKS_PER_PAGE)
 
-    if not books and page == 0:
-        kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=L["back"], callback_data="cab:back")]
-        ])
-        await safe_edit_or_send(cb, L["no_public_books"], kb, lang)
+    # Agar hech qanday ommaviy lug'at yo'q bo'lsa
+    if total_count == 0:
+        await cb.answer("❌ Hozircha ommaviy lug'atlar mavjud emas", show_alert=True)
         return
 
+    # Agar kerakli sahifada lug'at yo'q bo'lsa
     if not books and page > 0:
         await cb.answer("❌ Bu sahifada lug'at yo'q", show_alert=True)
         return
@@ -206,7 +213,7 @@ async def cb_public_book_info(cb: CallbackQuery):
     text += f"📊 {L['word_count']} {book_info['word_count']} ta\n"
     text += f"📅 {L['created']} {book_info['created_date']}\n"
 
-    if book_info['description']:
+    if book_info.get('description'):
         text += f"📝 Tavsif: {book_info['description']}"
 
     await safe_edit_or_send(cb, text, public_book_detail_kb(book_id, is_own, lang), lang)
@@ -218,6 +225,16 @@ async def cb_start_public_practice(cb: CallbackQuery, state: FSMContext):
     """Ommaviy lug'at bilan mashqni boshlash."""
     book_id = int(cb.data.split(":")[2])
     user_id = cb.from_user.id
+
+    # Lug'at nomini olish
+    book_check = await db_exec(
+        "SELECT name FROM vocab_books WHERE id=%s AND is_public=TRUE",
+        (book_id,), fetch=True
+    )
+
+    if not book_check:
+        await cb.answer("❌ Lug'at topilmadi!", show_alert=True)
+        return
 
     # Lug'atdagi so'zlarni olish
     rows = await db_exec("""
@@ -238,8 +255,18 @@ async def cb_start_public_practice(cb: CallbackQuery, state: FSMContext):
 
     random.shuffle(rows)
     await state.update_data(
-        book_id=book_id, words=rows, index=0, correct=0, wrong=0, total=len(rows),
-        answers=0, cycles=0, current_cycle_correct=0, current_cycle_wrong=0, cycles_stats=[],
+        book_id=book_id,
+        book_name=book_check["name"],
+        words=rows,
+        index=0,
+        correct=0,
+        wrong=0,
+        total=len(rows),
+        answers=0,
+        cycles=0,
+        current_cycle_correct=0,
+        current_cycle_wrong=0,
+        cycles_stats=[],
         is_public=True  # Ommaviy lug'at ekanligini belgilash
     )
     await state.set_state(OmmaviyMashqStates.practicing)
@@ -262,8 +289,12 @@ async def send_next_public_question(msg: Message, state: FSMContext, lang: str):
         })
         random.shuffle(words)
         await state.update_data(
-            words=words, index=0, cycles=cycles, cycles_stats=cycles_stats,
-            current_cycle_correct=0, current_cycle_wrong=0
+            words=words,
+            index=0,
+            cycles=cycles,
+            cycles_stats=cycles_stats,
+            current_cycle_correct=0,
+            current_cycle_wrong=0
         )
         data = await state.get_data()
         index = 0
@@ -292,8 +323,10 @@ async def send_next_public_question(msg: Message, state: FSMContext, lang: str):
                                                   [InlineKeyboardButton(text=L["main_menu"], callback_data="cab:back")]
                                               ])
 
+    # Progress va lug'at nomini ko'rsatish
     progress_text = f"📊 {data.get('correct', 0)}/{data.get('answers', 0)} to'g'ri"
-    question_text = f"{L['question'].format(word=current['word_src'])}\n\n{progress_text}"
+    book_name = data.get('book_name', 'Lug\'at')
+    question_text = f"📖 {book_name}\n{L['question'].format(word=current['word_src'])}\n\n{progress_text}"
 
     await msg.edit_text(question_text, reply_markup=kb)
 
@@ -334,22 +367,37 @@ async def cb_public_practice_answer(cb: CallbackQuery, state: FSMContext):
 async def cb_public_practice_finish(cb: CallbackQuery, state: FSMContext):
     """Ommaviy mashqni tugatish."""
     data = await state.get_data()
-    total_unique, total_answers = data.get("total", 0), data.get("answers", 0)
-    total_correct, total_wrong = data.get("correct", 0), data.get("wrong", 0)
+    total_unique = data.get("total", 0)
+    total_answers = data.get("answers", 0)
+    total_correct = data.get("correct", 0)
+    total_wrong = data.get("wrong", 0)
+    book_name = data.get("book_name", "Lug'at")
+    cycles = data.get("cycles", 0)
+
     percent = (total_correct / total_answers * 100) if total_answers else 0.0
 
     user_data = await get_user_data(cb.from_user.id)
     L = get_locale(user_data["lang"])
 
-    full_text = f"{L['results_header']}\n\n{L['results_lines'].format(unique=total_unique, answers=total_answers, correct=total_correct, wrong=total_wrong, percent=percent)}"
+    full_text = f"📖 {book_name}\n"
+    full_text += f"{L['results_header']}\n\n"
+    full_text += f"{L['results_lines'].format(unique=total_unique, answers=total_answers, correct=total_correct, wrong=total_wrong, percent=percent)}"
 
-    # Agar natija yaxshi bo'lsa, qo'shimcha motivatsiya
-    if percent >= 80:
-        full_text += "\n\n🎉 Ajoyib natija! Davom eting!"
-    elif percent >= 60:
-        full_text += "\n\n👍 Yaxshi natija! Yanada yaxshilashishga harakat qiling!"
+    # Tsikllar haqida ma'lumot
+    if cycles > 0:
+        full_text += f"\n📄 Takrorlangan tsikllar: {cycles}"
+
+    # Motivatsion xabar
+    if percent >= 90:
+        full_text += "\n\n🎉 Mukammal! Siz bu lug'atni juda yaxshi bilasiz!"
+    elif percent >= 80:
+        full_text += "\n\n⭐ Ajoyib natija! Davom eting!"
+    elif percent >= 70:
+        full_text += "\n\n👍 Yaxshi natija! Yanada yaxshilashga harakat qiling!"
+    elif percent >= 50:
+        full_text += "\n\n💪 Yomon emas! Yana mashq qiling!"
     else:
-        full_text += "\n\n💪 Mashq davom eting, natija yaxshilanadi!"
+        full_text += "\n\n📚 Mashq davom eting, har gal yaxshilashasiz!"
 
     await state.clear()
     await cb.message.edit_text(full_text)

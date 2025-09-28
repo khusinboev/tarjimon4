@@ -37,8 +37,8 @@ LOCALES = {
         "results": "📊 Natijalar:\nJami: {total}\nTo'g'ri: {correct}\nXato: {wrong}",
         "results_header": "📊 Batafsil natijalar:",
         "results_lines": (
-            "🔹 Savollar soni: {unique}\n"
-            "🔹 Jami berilgan savollar: {answers}\n"
+            "📹 Savollar soni: {unique}\n"
+            "📹 Jami berilgan savollar: {answers}\n"
             "✅ To'g'ri javoblar: {correct}\n"
             "❌ Xato javoblar: {wrong}\n"
             "📊 Natijaviy ko'rsatgich: {percent:.1f}%"
@@ -85,8 +85,8 @@ LOCALES = {
         "results": "📊 Results:\nTotal: {total}\nCorrect: {correct}\nWrong: {wrong}",
         "results_header": "📊 Detailed Results:",
         "results_lines": (
-            "🔹 Questions in set: {unique}\n"
-            "🔹 Total asked: {answers}\n"
+            "📹 Questions in set: {unique}\n"
+            "📹 Total asked: {answers}\n"
             "✅ Correct: {correct}\n"
             "❌ Wrong: {wrong}\n"
             "📊 Performance: {percent:.1f}%"
@@ -169,16 +169,27 @@ async def get_user_data(user_id: int) -> Dict[str, Any]:
     return {"lang": lang, "books": books or []}
 
 
-async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS_PER_PAGE, public_only: bool = False,
-                              exclude_user: bool = False) -> Tuple[List[Dict], int]:
-    """Sahifalangan lug'atlar ro'yxatini olish."""
+async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS_PER_PAGE,
+                              public_only: bool = False, exclude_user: bool = False,
+                              min_words: int = 0) -> Tuple[List[Dict], int]:
+    """
+    Sahifalangan lug'atlar ro'yxatini olish.
+
+    Args:
+        user_id: Foydalanuvchi ID
+        page: Sahifa raqami
+        per_page: Har sahifadagi elementlar soni
+        public_only: Faqat ommaviy lug'atlarni olish
+        exclude_user: Foydalanuvchining o'z lug'atlarini chiqarib tashlash
+        min_words: Minimal so'z soni (0 = cheklovsiz)
+    """
     offset = page * per_page
 
     base_query = """
-                 SELECT vb.id, \
-                        vb.name, \
-                        vb.is_public, \
-                        vb.user_id, \
+                 SELECT vb.id,
+                        vb.name,
+                        vb.is_public,
+                        vb.user_id,
                         vb.created_at::date as created_date, COALESCE(a.user_id::text, 'Unknown') as author_name,
                         COUNT(ve.id) as word_count
                  FROM vocab_books vb
@@ -200,7 +211,13 @@ async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS
 
     base_query += """
         GROUP BY vb.id, vb.name, vb.is_public, vb.user_id, vb.created_at, a.user_id
-        HAVING COUNT(ve.id) >= 4
+    """
+
+    # Minimal so'z soni cheklovi
+    if min_words > 0:
+        base_query += f" HAVING COUNT(ve.id) >= {min_words}"
+
+    base_query += """
         ORDER BY vb.created_at DESC
         LIMIT %s OFFSET %s
     """
@@ -212,7 +229,8 @@ async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS
     # Umumiy soni
     count_query = base_query.replace(
         "SELECT vb.id, vb.name, vb.is_public, vb.user_id, vb.created_at::date as created_date, COALESCE(a.user_id::text, 'Unknown') as author_name, COUNT(ve.id) as word_count",
-        "SELECT COUNT(DISTINCT vb.id)")
+        "SELECT COUNT(DISTINCT vb.id)"
+    )
     count_query = count_query.split("ORDER BY")[0].replace("LIMIT %s OFFSET %s", "")
 
     count_params = params[:-2] if params else []
@@ -253,7 +271,7 @@ def get_book_emoji(is_public: bool, is_own: bool = True) -> str:
     if is_own:
         return "🌐" if is_public else "🔒"
     else:
-        return "👥" if is_public else "🔐"
+        return "👥" if is_public else "🔒"
 
 
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
@@ -263,6 +281,7 @@ def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=L["practice"], callback_data="mashq:list")],
         [InlineKeyboardButton(text=L["my_books"], callback_data="lughat:list:0"),
          InlineKeyboardButton(text=L["public_vocabs"], callback_data="ommaviy:list:0")],
+        [InlineKeyboardButton(text="📚 Essentiallar", callback_data="essential:main")],
         [InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")]
     ])
 

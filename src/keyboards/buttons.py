@@ -16,6 +16,9 @@ class AdminPanel:
                         [
                             KeyboardButton(text="✍Xabarlar"),
                             KeyboardButton(text="📊Tillar")
+                        ],
+                        [
+                            KeyboardButton(text="📚 Kitoblarni kirgizish")
                         ]
                     ],
                     resize_keyboard=True,

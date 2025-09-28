@@ -10,6 +10,7 @@ from src.handlers.others.groups import group_router
 from src.handlers.others.other import other_router
 from src.handlers.users.inline_translate import inline_router
 from src.handlers.users.lughatlar import vocabs_router
+from src.handlers.users.lughatlar.essential import essential_router
 from src.handlers.users.lughatlar.lughatlarim import lughatlarim_router
 from src.handlers.users.lughatlar.mashqlar import mashqlar_router
 from src.handlers.users.lughatlar.ommaviylar import ommaviylar_router
@@ -51,6 +52,7 @@ async def main():
     dp.include_router(lughatlarim_router)   # Lug'atlarim bo'limi
     dp.include_router(mashqlar_router)      # Mashqlar bo'limi
     dp.include_router(ommaviylar_router)    # Ommaviy lug'atlar bo'limi
+    dp.include_router(essential_router)    # essential_router lug'atlar bo'limi
     dp.include_router(user_router)
     dp.include_router(translate_router)
     dp.include_router(inline_router)

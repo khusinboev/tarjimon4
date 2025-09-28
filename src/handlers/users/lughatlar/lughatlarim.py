@@ -81,8 +81,8 @@ async def cb_lughatlarim(cb: CallbackQuery):
     lang = data["lang"]
     L = get_locale(lang)
 
-    # Sahifalangan lug'atlarni olish
-    books, total_count = await get_paginated_books(user_id, page, BOOKS_PER_PAGE)
+    # Sahifalangan lug'atlarni olish (min_words=0 - barcha lug'atlar)
+    books, total_count = await get_paginated_books(user_id, page, BOOKS_PER_PAGE, min_words=0)
 
     if not books and page == 0:
         kb = InlineKeyboardMarkup(inline_keyboard=[
@@ -178,7 +178,7 @@ async def cb_book_open(cb: CallbackQuery):
     text = f"📖 {book_data['name']}\n"
     text += f"📊 {L['word_count']} {book_data['word_count']} ta\n"
     text += f"📅 {L['created']} {book_data['created_date']}\n"
-    text += f"🔹 Holat: {status_text}"
+    text += f"📹 Holat: {status_text}"
 
     await safe_edit_or_send(cb, text, book_detail_kb(book_id, book_data['is_public'], lang), lang)
     await cb.answer()
@@ -206,7 +206,8 @@ async def cb_make_public(cb: CallbackQuery):
     book_data = await db_exec(
         """SELECT name,
                   is_public,
-                  created_at::date as created_date, (SELECT COUNT(*) FROM vocab_entries WHERE book_id = %s) as word_count
+                  created_at::date as created_date,
+                  (SELECT COUNT(*) FROM vocab_entries WHERE book_id = %s) as word_count
            FROM vocab_books
            WHERE id = %s
              AND user_id = %s""",
@@ -222,7 +223,7 @@ async def cb_make_public(cb: CallbackQuery):
     text = f"📖 {book_data['name']}\n"
     text += f"📊 {L['word_count']} {book_data['word_count']} ta\n"
     text += f"📅 {L['created']} {book_data['created_date']}\n"
-    text += f"🔹 Holat: {status_text}"
+    text += f"📹 Holat: {status_text}"
 
     await safe_edit_or_send(cb, text, book_detail_kb(book_id, book_data['is_public'], lang), lang)
     await cb.answer("✅ Lug'at ommaviy qilindi!")
@@ -240,7 +241,8 @@ async def cb_make_private(cb: CallbackQuery):
     book_data = await db_exec(
         """SELECT name,
                   is_public,
-                  created_at::date as created_date, (SELECT COUNT(*) FROM vocab_entries WHERE book_id = %s) as word_count
+                  created_at::date as created_date,
+                  (SELECT COUNT(*) FROM vocab_entries WHERE book_id = %s) as word_count
            FROM vocab_books
            WHERE id = %s
              AND user_id = %s""",
@@ -256,7 +258,7 @@ async def cb_make_private(cb: CallbackQuery):
     text = f"📖 {book_data['name']}\n"
     text += f"📊 {L['word_count']} {book_data['word_count']} ta\n"
     text += f"📅 {L['created']} {book_data['created_date']}\n"
-    text += f"🔹 Holat: {status_text}"
+    text += f"📹 Holat: {status_text}"
 
     await safe_edit_or_send(cb, text, book_detail_kb(book_id, book_data['is_public'], lang), lang)
     await cb.answer("✅ Lug'at shaxsiy qilindi!")
@@ -342,7 +344,7 @@ async def cb_book_export(cb: CallbackQuery):
             os.remove(file_path)
 
     # Lug'atlar ro'yxatiga qaytish
-    books, total_count = await get_paginated_books(user_id, 0, BOOKS_PER_PAGE)
+    books, total_count = await get_paginated_books(user_id, 0, BOOKS_PER_PAGE, min_words=0)
     if not books:
         await cb.message.answer("📚 Sizda hali lug'at yo'q.", reply_markup=cabinet_kb(lang))
     else:
@@ -374,7 +376,7 @@ async def cb_book_delete(cb: CallbackQuery):
     await db_exec("DELETE FROM vocab_books WHERE id=%s AND user_id=%s", (book_id, user_id))
 
     # Lug'atlar ro'yxatiga qaytish
-    books, total_count = await get_paginated_books(user_id, 0, BOOKS_PER_PAGE)
+    books, total_count = await get_paginated_books(user_id, 0, BOOKS_PER_PAGE, min_words=0)
     data = await get_user_data(user_id)
     lang = data["lang"]
 
