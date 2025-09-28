@@ -14,7 +14,7 @@ from src.handlers.users.lughatlar.mashqlar import mashqlar_router
 from src.handlers.users.lughatlar.ommaviylar import ommaviylar_router
 from src.handlers.users.translate import translate_router
 from src.handlers.users.users import user_router
-from src.handlers.users.lughatlar.vocabs import router as vocab_router
+from src.handlers.users.lughatlar.vocabs import router as vocabs_router
 from src.middlewares.middleware import RegisterUserMiddleware
 
 
@@ -33,10 +33,10 @@ async def main():
     dp.include_router(msg_router)
 
     #for user
-    dp.include_router(vocab_router)
-    dp.include_router(mashqlar_router)
-    dp.include_router(lughatlarim_router)
-    dp.include_router(ommaviylar_router)
+    dp.include_router(vocabs_router)        # Asosiy kabinet va sozlamalar
+    dp.include_router(lughatlarim_router)   # Lug'atlarim bo'limi
+    dp.include_router(mashqlar_router)      # Mashqlar bo'limi
+    dp.include_router(ommaviylar_router)    # Ommaviy lug'atlar bo'limi
     dp.include_router(user_router)
     dp.include_router(translate_router)
     dp.include_router(inline_router)

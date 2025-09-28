@@ -9,10 +9,7 @@ async def create_all_base():
         id SERIAL NOT NULL,
         user_id BIGINT NOT NULL UNIQUE, -- ✅ UNIQUE qo‘shildi
         lang_code CHARACTER VARYING(10),
-        date TIMESTAMP DEFAULT now(),
-        CONSTRAINT accounts_pkey PRIMARY KEY (id)
-    )
-    """)
+        date TIMESTAMP DEFAULT now())""")
     db.commit()
 
     # 2) Mandatorys
@@ -63,7 +60,6 @@ async def create_all_base():
 
     # 6) Vocabularies
     sql.execute("""
-    -- Books
     CREATE TABLE IF NOT EXISTS vocab_books (
         id SERIAL PRIMARY KEY,
         user_id BIGINT NOT NULL,
@@ -123,11 +119,7 @@ async def create_all_base():
     CREATE INDEX IF NOT EXISTS idx_vocab_books_user ON vocab_books(user_id);
     CREATE INDEX IF NOT EXISTS idx_vocab_entries_book ON vocab_entries(book_id);
     CREATE INDEX IF NOT EXISTS idx_practice_sessions_user ON practice_sessions(user_id);
-    CREATE INDEX IF NOT EXISTS idx_vocab_books_public ON vocab_books(is_public) WHERE is_public = TRUE;
-        ALTER TABLE accounts
-ADD CONSTRAINT accounts_user_unique UNIQUE (user_id);
-
-    """)
+    CREATE INDEX IF NOT EXISTS idx_vocab_books_public ON vocab_books(is_public) WHERE is_public = TRUE;""")
     db.commit()
 
 
