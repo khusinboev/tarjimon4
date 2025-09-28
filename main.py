@@ -2,24 +2,38 @@ import asyncio
 import logging
 
 from config import dp, bot
-from src.db.init_db import create_all_base
+from src.db.init_db import create_all_base, init_languages_table, create_indexes_and_constraints
 from src.handlers.admins.admin import admin_router
 from src.handlers.admins.messages import msg_router
 from src.handlers.others.channels import channel_router
 from src.handlers.others.groups import group_router
 from src.handlers.others.other import other_router
 from src.handlers.users.inline_translate import inline_router
+from src.handlers.users.lughatlar import vocabs_router
 from src.handlers.users.lughatlar.lughatlarim import lughatlarim_router
 from src.handlers.users.lughatlar.mashqlar import mashqlar_router
 from src.handlers.users.lughatlar.ommaviylar import ommaviylar_router
 from src.handlers.users.translate import translate_router
 from src.handlers.users.users import user_router
-from src.handlers.users.lughatlar.vocabs import router as vocabs_router
 from src.middlewares.middleware import RegisterUserMiddleware
 
 
 async def on_startup() -> None:
-    await create_all_base()
+    try:
+        # Asosiy jadvallarni yaratish
+        await create_all_base()
+
+        # Tillar jadvalini to'ldirish
+        init_languages_table()
+
+        # Qo'shimcha indekslar
+        create_indexes_and_constraints()
+
+        print("🎉 Ma'lumotlar bazasi muvaffaqiyatli sozlandi!")
+
+    except Exception as e:
+        print(f"❌ Ma'lumotlar bazasi sozlashda xato: {e}")
+        raise e
 
 
 async def main():

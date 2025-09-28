@@ -1,7 +1,7 @@
 import asyncio
 import random
 import os
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional, Tuple
 
 from aiogram import Router
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
@@ -11,10 +11,13 @@ from aiogram.fsm.context import FSMContext
 from openpyxl import Workbook
 from config import db
 
-router = Router()
+vocabs_router = Router()
+
+# Sahifalash uchun konstanta
+BOOKS_PER_PAGE = 30
 
 # =====================================================
-# 🔌 Localization (unchanged)
+# 📌 Localization (kengaytirilgan)
 # =====================================================
 LOCALES = {
     "uz": {
@@ -55,6 +58,15 @@ LOCALES = {
         "back_to_book": "🔙 Orqaga",
         "main_menu": "🏠 Bosh menyu",
         "cancel": "❌ Bekor qilish",
+        "next_page": "➡️ Keyingi",
+        "prev_page": "⬅️ Oldingi",
+        "page_info": "📄 {current}/{total}",
+        "no_public_books": "Hozircha ommaviy lug'atlar yo'q.",
+        "author": "👤 Muallif:",
+        "word_count": "📊 So'zlar:",
+        "created": "📅 Yaratilgan:",
+        "status_public": "🌐 Ommaviy",
+        "status_private": "🔒 Shaxsiy",
     },
     "en": {
         "cabinet": "📚 Cabinet",
@@ -94,11 +106,21 @@ LOCALES = {
         "back_to_book": "🔙 Back",
         "main_menu": "🏠 Main menu",
         "cancel": "❌ Cancel",
+        "next_page": "➡️ Next",
+        "prev_page": "⬅️ Previous",
+        "page_info": "📄 {current}/{total}",
+        "no_public_books": "No public vocabularies available yet.",
+        "author": "👤 Author:",
+        "word_count": "📊 Words:",
+        "created": "📅 Created:",
+        "status_public": "🌐 Public",
+        "status_private": "🔒 Private",
     }
 }
 
+
 # =====================================================
-# 🔌 Database helpers (optimized)
+# 📌 Database helpers (optimized)
 # =====================================================
 
 async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: bool = False):
@@ -120,7 +142,9 @@ async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: b
                 return dict(zip(cols, row))
         db.commit()
         return None
+
     return await asyncio.to_thread(run)
+
 
 async def get_user_data(user_id: int) -> Dict[str, Any]:
     """Fetch user lang and books in one query batch for optimization."""
@@ -129,11 +153,74 @@ async def get_user_data(user_id: int) -> Dict[str, Any]:
         (user_id,), fetch=True
     )
     lang = lang_row["lang_code"] if lang_row else "uz"
+
+    # Lug'atlar bilan birga ularning holati ham olinadi
     books = await db_exec(
-        "SELECT id, name FROM vocab_books WHERE user_id=%s ORDER BY created_at DESC",
+        """SELECT id,
+                  name,
+                  is_public,
+                  (SELECT COUNT(*) FROM vocab_entries WHERE book_id = vocab_books.id) as word_count,
+                  created_at::date as created_date
+           FROM vocab_books
+           WHERE user_id = %s
+           ORDER BY created_at DESC""",
         (user_id,), fetch=True, many=True
     )
     return {"lang": lang, "books": books or []}
+
+
+async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS_PER_PAGE, public_only: bool = False,
+                              exclude_user: bool = False) -> Tuple[List[Dict], int]:
+    """Sahifalangan lug'atlar ro'yxatini olish."""
+    offset = page * per_page
+
+    base_query = """
+                 SELECT vb.id, \
+                        vb.name, \
+                        vb.is_public, \
+                        vb.user_id, \
+                        vb.created_at::date as created_date, COALESCE(a.user_id::text, 'Unknown') as author_name,
+                        COUNT(ve.id) as word_count
+                 FROM vocab_books vb
+                          LEFT JOIN accounts a ON vb.user_id = a.user_id
+                          LEFT JOIN vocab_entries ve ON vb.id = ve.book_id
+                 WHERE 1 = 1 \
+                 """
+
+    params = []
+
+    if public_only:
+        base_query += " AND vb.is_public = TRUE"
+        if exclude_user:
+            base_query += " AND vb.user_id != %s"
+            params.append(user_id)
+    else:
+        base_query += " AND vb.user_id = %s"
+        params.append(user_id)
+
+    base_query += """
+        GROUP BY vb.id, vb.name, vb.is_public, vb.user_id, vb.created_at, a.user_id
+        HAVING COUNT(ve.id) >= 4
+        ORDER BY vb.created_at DESC
+        LIMIT %s OFFSET %s
+    """
+
+    params.extend([per_page, offset])
+
+    books = await db_exec(base_query, tuple(params), fetch=True, many=True)
+
+    # Umumiy soni
+    count_query = base_query.replace(
+        "SELECT vb.id, vb.name, vb.is_public, vb.user_id, vb.created_at::date as created_date, COALESCE(a.user_id::text, 'Unknown') as author_name, COUNT(ve.id) as word_count",
+        "SELECT COUNT(DISTINCT vb.id)")
+    count_query = count_query.split("ORDER BY")[0].replace("LIMIT %s OFFSET %s", "")
+
+    count_params = params[:-2] if params else []
+    total_result = await db_exec(count_query, tuple(count_params), fetch=True)
+    total_count = total_result.get('count', 0) if total_result else 0
+
+    return books or [], total_count
+
 
 async def set_user_lang(user_id: int, lang: str):
     row = await db_exec(
@@ -145,28 +232,40 @@ async def set_user_lang(user_id: int, lang: str):
     else:
         await db_exec("INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s)", (user_id, lang))
 
+
 # =====================================================
-# 🔌 UI Builders (optimized)
+# 📌 UI Builders (improved)
 # =====================================================
 def two_col_rows(buttons: List[InlineKeyboardButton]) -> List[List[InlineKeyboardButton]]:
     rows = []
     for i in range(0, len(buttons), 2):
-        row = buttons[i:i+2]
+        row = buttons[i:i + 2]
         rows.append(row)
     return rows
 
+
 def get_locale(lang: str) -> Dict[str, str]:
     return LOCALES.get(lang, LOCALES["uz"])
+
+
+def get_book_emoji(is_public: bool, is_own: bool = True) -> str:
+    """Lug'at holati bo'yicha emoji qaytarish."""
+    if is_own:
+        return "🌐" if is_public else "🔒"
+    else:
+        return "👥" if is_public else "🔐"
+
 
 def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
     """Asosiy kabinet menyu klaviaturasi."""
     L = get_locale(lang)
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=L["practice"], callback_data="mashq:list")],
-        [InlineKeyboardButton(text=L["my_books"], callback_data="lughat:list"),
-         InlineKeyboardButton(text=L["public_vocabs"], callback_data="ommaviy:list")],
+        [InlineKeyboardButton(text=L["my_books"], callback_data="lughat:list:0"),
+         InlineKeyboardButton(text=L["public_vocabs"], callback_data="ommaviy:list:0")],
         [InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")]
     ])
+
 
 def settings_kb(lang: str) -> InlineKeyboardMarkup:
     L = get_locale(lang)
@@ -178,10 +277,50 @@ def settings_kb(lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=L["back"], callback_data="cab:back")]
     ])
 
+
+def create_paginated_kb(books: List[Dict], current_page: int, total_pages: int, prefix: str,
+                        lang: str) -> InlineKeyboardMarkup:
+    """Sahifalangan klaviatura yaratish."""
+    L = get_locale(lang)
+    rows = []
+
+    # Lug'atlar tugmalari
+    for book in books:
+        is_own = prefix == "lughat"
+        emoji = get_book_emoji(book["is_public"], is_own)
+        text = f"{emoji} {book['name']} ({book['word_count']})"
+        callback = f"{prefix}:open:{book['id']}"
+        rows.append([InlineKeyboardButton(text=text, callback_data=callback)])
+
+    # Sahifalash tugmalari
+    if total_pages > 1:
+        nav_row = []
+        if current_page > 0:
+            nav_row.append(InlineKeyboardButton(text=L["prev_page"], callback_data=f"{prefix}:list:{current_page - 1}"))
+
+        if current_page < total_pages - 1:
+            nav_row.append(InlineKeyboardButton(text=L["next_page"], callback_data=f"{prefix}:list:{current_page + 1}"))
+
+        if nav_row:
+            rows.append(nav_row)
+
+        # Sahifa ma'lumoti
+        page_info = L["page_info"].format(current=current_page + 1, total=total_pages)
+        rows.append([InlineKeyboardButton(text=page_info, callback_data="noop")])
+
+    # Boshqa tugmalar
+    if prefix == "lughat":
+        rows.append([InlineKeyboardButton(text="➕ Yangi lug'at", callback_data="lughat:new")])
+
+    rows.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
+
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
 # =====================================================
-# 🔌 Export helper (optimized)
+# 📌 Export helper (optimized)
 # =====================================================
-async def export_book_to_excel(book_id: int, user_id: int) -> str:
+async def export_book_to_excel(book_id: int, user_id: int) -> Optional[str]:
     rows = await db_exec(
         "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s ORDER BY id",
         (book_id,), fetch=True, many=True
@@ -200,8 +339,9 @@ async def export_book_to_excel(book_id: int, user_id: int) -> str:
     wb.save(file_path)
     return file_path
 
+
 # =====================================================
-# 🔌 Helper to send message
+# 📌 Helper to send message
 # =====================================================
 async def safe_edit_or_send(cb: CallbackQuery, text: str, kb: InlineKeyboardMarkup, lang: str):
     """Delete old message and send new to avoid edit issues with old inlines."""
@@ -211,17 +351,19 @@ async def safe_edit_or_send(cb: CallbackQuery, text: str, kb: InlineKeyboardMark
         pass
     await cb.message.answer(text, reply_markup=kb)
 
+
 # =====================================================
-# 🔌 Cabinet menu (main)
+# 📌 Cabinet menu (main)
 # =====================================================
 
-@router.message(Command("cabinet"))
+@vocabs_router.message(Command("cabinet"))
 async def cmd_cabinet(msg: Message):
     data = await get_user_data(msg.from_user.id)
     L = get_locale(data["lang"])
     await msg.answer(L["cabinet"], reply_markup=cabinet_kb(data["lang"]))
 
-@router.callback_query(lambda c: c.data and c.data.startswith("cab:"))
+
+@vocabs_router.callback_query(lambda c: c.data and c.data.startswith("cab:"))
 async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
     user_id = cb.from_user.id
     data = await get_user_data(user_id)
@@ -239,10 +381,17 @@ async def cb_cabinet(cb: CallbackQuery, state: FSMContext):
     except:
         pass
 
-@router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
+
+@vocabs_router.callback_query(lambda c: c.data and c.data.startswith("lang:"))
 async def cb_change_lang(cb: CallbackQuery):
     lang = cb.data.split(":")[1]
     await set_user_lang(cb.from_user.id, lang)
     L = get_locale(lang)
     await safe_edit_or_send(cb, L["cabinet"], cabinet_kb(lang), lang)
+    await cb.answer()
+
+
+# Noop callback (sahifa ma'lumoti uchun)
+@vocabs_router.callback_query(lambda c: c.data == "noop")
+async def cb_noop(cb: CallbackQuery):
     await cb.answer()
