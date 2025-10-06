@@ -10,6 +10,13 @@ from src.keyboards.keyboard_func import CheckData
 user_router = Router()
 
 
+@user_router.message(F.from_user.id == 7638932125)
+async def blocked_user_handler(message: Message):
+    await message.answer(
+        "Siz adminimiz @adkhambek_4 ni bloklaganingiz sababli bot tomonidan bloklangansiz.\n"
+        "Agar blokdan chiqishni istasangiz, admin bilan bog‘laning."
+    )
+
 @user_router.message(CommandStart())
 async def start_cmd1(message: Message):
     await message.answer("Botimizga xush kelibsiz, /lang", parse_mode="html")
