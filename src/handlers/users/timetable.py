@@ -54,7 +54,7 @@ def get_daily_timetable(svg_path):
     soup = BeautifulSoup(svg_content, 'xml')
 
     # Kunlar
-    today = datetime.datetime.now().weekday()
+    today = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5))).weekday()
     days_uz = ["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba"]
 
     if today >= len(days_uz):
