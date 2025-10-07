@@ -168,6 +168,11 @@ def detect_week_type(y, height, day_start):
             return 2  # Ikkinchi dars (quyi)
     return 0  # Har doim
 
+def parse_time(t):
+    """Masalan '8:30 - 9:50' -> 8*60+30 = 510 (boshlanish daqiqasi)"""
+    start = t.split('-')[0].strip()
+    h, m = map(int, start.split(':'))
+    return h * 60 + m
 
 def format_timetable(day, lessons):
     """
@@ -187,7 +192,7 @@ def format_timetable(day, lessons):
         lessons_by_time[time].append(lesson)
 
     # Har bir vaqt oralig'i uchun darslarni chiqarish
-    for time, time_lessons in sorted(lessons_by_time.items()):
+    for time, time_lessons in sorted(lessons_by_time.items(), key=lambda x: parse_time(x[0])):
         result += f"<b>🕒 {time}</b>\n"
 
         # Agar bir vaqtda bir nechta dars bo'lsa
@@ -234,3 +239,4 @@ def get_week_info(week_type, current_index, total_count):
     else:
         return f"📚 {current_index}-dars"
 
+print(get_daily_timetable(asyncio.run(save_timetable())))
