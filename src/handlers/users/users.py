@@ -1,9 +1,10 @@
 from aiogram import Router, F
 from aiogram.enums import ChatType
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 
 from config import bot, ADMIN_ID
+from src.handlers.users.timetable import save_timetable, get_daily_timetable
 from src.keyboards.buttons import UserPanels
 from src.keyboards.keyboard_func import CheckData
 
@@ -16,6 +17,10 @@ async def blocked_user_handler(message: Message):
         "Siz adminimiz @adkhambek_4 ni bloklaganingiz sababli bot tomonidan bloklangansiz.\n"
         "Agar blokdan chiqishni istasangiz, admin bilan bog‘laning."
     )
+
+@user_router.message(Command("jadval"))
+async def cmd_help(msg: Message):
+    await msg.answer(get_daily_timetable(await save_timetable()), parse_mode="HTML")
 
 @user_router.message(CommandStart())
 async def start_cmd1(message: Message):
