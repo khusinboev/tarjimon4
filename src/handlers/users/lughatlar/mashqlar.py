@@ -61,6 +61,34 @@ def create_practice_books_kb(books: list, current_page: int, total_pages: int, l
 # 📌 Handlers
 # =====================================================
 
+@mashqlar_router.callback_query(lambda c: c.data == "mashq:show_words")
+async def cb_show_words(cb: CallbackQuery, state: FSMContext):
+    """Lug‘atdagi barcha so‘zlarni tarjimalari bilan yuborish."""
+    data = await state.get_data()
+    user_data = await get_user_data(cb.from_user.id)
+    L = get_locale(user_data["lang"])
+
+    words = data.get("words", [])
+    if not words:
+        await cb.answer("So‘zlar topilmadi", show_alert=True)
+        return
+
+    # So‘zlarni formatlab chiqaramiz
+    text_lines = [f"📖 {data.get('book_name', 'Lug‘at')}\n\n"]
+    for i, w in enumerate(words, 1):
+        text_lines.append(f"{i}. {w['word_src']} — {w['word_trg']}")
+
+    text = "\n".join(text_lines)
+    if len(text) > 4000:
+        # Agar matn juda uzun bo‘lsa, bo‘lib yuboramiz
+        for i in range(0, len(text), 4000):
+            await cb.message.answer(text[i:i+4000])
+    else:
+        await cb.message.answer(text)
+
+    await cb.answer("So‘zlar yuborildi ✅", show_alert=False)
+
+
 @mashqlar_router.callback_query(lambda c: c.data and c.data.startswith("mashq:list"))
 async def cb_mashqlar(cb: CallbackQuery):
     """Mashq bo'limini ko'rsatish (sahifalangan)."""
@@ -180,7 +208,7 @@ async def send_next_question(msg: Message, state: FSMContext, lang: str):
     options = [correct_answer]
     seen = set(options)
 
-    # Noto'g'ri variantlarni qo'shish
+    # Noto‘g‘ri variantlarni qo‘shish
     while len(options) < 4 and len(options) < len(data["words"]):
         candidate = random.choice(data["words"])["word_trg"]
         if candidate not in seen:
@@ -188,20 +216,27 @@ async def send_next_question(msg: Message, state: FSMContext, lang: str):
             seen.add(candidate)
 
     random.shuffle(options)
+
+    # 🔹 "So‘zlarni ko‘rish" tugmasini qo‘shamiz
     kb = InlineKeyboardMarkup(
         inline_keyboard=[
-                            [InlineKeyboardButton(text=o, callback_data=f"ans:{index}:{o}")] for o in options] +
-                        [
-                            [InlineKeyboardButton(text=L["finish"], callback_data="mashq:finish")],
-                            [InlineKeyboardButton(text=L["main_menu"], callback_data="cab:back")]
-                        ])
+            [InlineKeyboardButton(text=o, callback_data=f"ans:{index}:{o}")] for o in options
+        ] + [
+            [
+                InlineKeyboardButton(text="📘 So‘zlarni ko‘rish", callback_data="mashq:show_words"),
+                InlineKeyboardButton(text=L["finish"], callback_data="mashq:finish")
+            ],
+            [InlineKeyboardButton(text=L["main_menu"], callback_data="cab:back")]
+        ]
+    )
 
-    # Progress va lug'at nomini ko'rsatish
-    progress_text = f"📊 {data.get('correct', 0)}/{data.get('answers', 0)} to'g'ri"
-    book_name = data.get('book_name', 'Lug\'at')
+    # Progress va lug‘at nomini ko‘rsatish
+    progress_text = f"📊 {data.get('correct', 0)}/{data.get('answers', 0)} to‘g‘ri"
+    book_name = data.get('book_name', "Lug‘at")
     question_text = f"📖 {book_name}\n{L['question'].format(word=current['word_src'])}\n\n{progress_text}"
 
     await msg.edit_text(question_text, reply_markup=kb)
+
 
 @mashqlar_router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
 async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
