@@ -362,13 +362,17 @@ async def export_book_to_excel(book_id: int, user_id: int) -> Optional[str]:
 # =====================================================
 # 📌 Helper to send message
 # =====================================================
+
 async def safe_edit_or_send(cb: CallbackQuery, text: str, kb: InlineKeyboardMarkup, lang: str):
-    """Delete old message and send new to avoid edit issues with old inlines."""
+    """Try to edit message first; if fails, delete and send new one."""
     try:
-        await cb.message.delete()
-    except:
-        pass
-    await cb.message.answer(text, reply_markup=kb, parse_mode="html")
+        await cb.message.edit_text(text, reply_markup=kb, parse_mode="html")
+    except Exception:
+        try:
+            await cb.message.delete()
+        except Exception:
+            pass
+        await cb.message.answer(text, reply_markup=kb, parse_mode="html")
 
 
 # =====================================================
