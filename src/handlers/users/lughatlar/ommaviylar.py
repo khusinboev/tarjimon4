@@ -19,6 +19,7 @@ ommaviylar_router = Router()
 # =====================================================
 class OmmaviyMashqStates(StatesGroup):
     practicing = State()
+    ready_to_start = State()  # Yangi holat: so'zlar ko'rsatildi, mashq boshlashga tayyor
 
 
 # =====================================================
@@ -78,6 +79,15 @@ def create_mixed_books_kb(books: list, current_page: int, total_pages: int, lang
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
+def start_public_practice_kb(lang: str) -> InlineKeyboardMarkup:
+    """Ommaviy mashqni boshlash klaviaturasi."""
+    L = get_locale(lang)
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="▶️ Mashqni boshlash", callback_data="ommaviy:begin_practice")],
+        [InlineKeyboardButton(text=L["back"], callback_data="ommaviy:list:0")]
+    ])
+
+
 async def get_mixed_public_books(user_id: int, page: int = 0, per_page: int = BOOKS_PER_PAGE):
     """O'z va boshqalarning ommaviy lug'atlarini olish."""
     offset = page * per_page
@@ -91,8 +101,8 @@ async def get_mixed_public_books(user_id: int, page: int = 0, per_page: int = BO
                       LEFT JOIN vocab_entries ve ON vb.id = ve.book_id
                       WHERE vb.is_public = TRUE
                       GROUP BY vb.id
-                      HAVING COUNT (ve.id) >= 4
-                      ) as subquery \
+                      HAVING COUNT(ve.id) >= 4
+                      ) as subquery
                   """
 
     count_result = await db_exec(count_query, (), fetch=True)
@@ -108,10 +118,11 @@ async def get_mixed_public_books(user_id: int, page: int = 0, per_page: int = BO
                    vb.name,
                    vb.is_public,
                    vb.user_id,
-                   vb.created_at::date as created_date, COALESCE(a.user_id::text, 'Unknown') as author_name,
-                   COUNT(ve.id)                                       as word_count,
+                   vb.created_at::date as created_date,
+                   COALESCE(a.user_id::text, 'Unknown') as author_name,
+                   COUNT(ve.id) as word_count,
                    CASE WHEN vb.user_id = %s THEN true ELSE false END as is_own,
-                   vb.user_id                                         as author_id
+                   vb.user_id as author_id
             FROM vocab_books vb
                      LEFT JOIN accounts a ON vb.user_id = a.user_id
                      LEFT JOIN vocab_entries ve ON vb.id = ve.book_id
@@ -120,8 +131,8 @@ async def get_mixed_public_books(user_id: int, page: int = 0, per_page: int = BO
             HAVING COUNT(ve.id) >= 4
             ORDER BY CASE WHEN vb.user_id = %s THEN 0 ELSE 1 END, -- O'z lug'atlari birinchi
                      vb.created_at DESC
-                LIMIT %s \
-            OFFSET %s \
+                LIMIT %s
+            OFFSET %s
             """
 
     books = await db_exec(query, (user_id, user_id, per_page, offset), fetch=True, many=True)
@@ -186,9 +197,10 @@ async def cb_public_book_info(cb: CallbackQuery):
     book_info = await db_exec("""
                               SELECT vb.name,
                                      vb.description,
-                                     vb.user_id   as author_id,
+                                     vb.user_id as author_id,
                                      COUNT(ve.id) as word_count,
-                                     vb.created_at::date as created_date, CASE WHEN vb.user_id = %s THEN true ELSE false END as is_own
+                                     vb.created_at::date as created_date,
+                                     CASE WHEN vb.user_id = %s THEN true ELSE false END as is_own
                               FROM vocab_books vb
                                        LEFT JOIN vocab_entries ve ON vb.id = ve.book_id
                               WHERE vb.id = %s
@@ -222,7 +234,7 @@ async def cb_public_book_info(cb: CallbackQuery):
 
 @ommaviylar_router.callback_query(lambda c: c.data and c.data.startswith("ommaviy:start:"))
 async def cb_start_public_practice(cb: CallbackQuery, state: FSMContext):
-    """Ommaviy lug'at bilan mashqni boshlash."""
+    """Ommaviy lug'at bilan mashqni boshlash - avval so'zlarni ko'rsatish."""
     book_id = int(cb.data.split(":")[2])
     user_id = cb.from_user.id
 
@@ -253,10 +265,22 @@ async def cb_start_public_practice(cb: CallbackQuery, state: FSMContext):
         await cb.answer("❌ " + L["empty_book"], show_alert=True)
         return
 
+    # So'zlar ro'yxatini tayyorlash
+    book_name = book_check["name"]
+    words_list = []
+    for idx, word in enumerate(rows, 1):
+        words_list.append(f"{idx}. <b>{word['word_src']}</b> - {word['word_trg']}")
+    
+    words_text = f"📖 <b>{book_name}</b>\n"
+    words_text += f"📊 Jami: {len(rows)} ta so'z\n\n"
+    words_text += "\n".join(words_list)
+    words_text += "\n\n💡 So'zlarni ko'rib chiqing va tayyor bo'lganingizda mashqni boshlang!"
+
+    # So'zlarni state'ga saqlash
     random.shuffle(rows)
     await state.update_data(
         book_id=book_id,
-        book_name=book_check["name"],
+        book_name=book_name,
         words=rows,
         index=0,
         correct=0,
@@ -269,7 +293,31 @@ async def cb_start_public_practice(cb: CallbackQuery, state: FSMContext):
         cycles_stats=[],
         is_public=True  # Ommaviy lug'at ekanligini belgilash
     )
+    await state.set_state(OmmaviyMashqStates.ready_to_start)
+    
+    await safe_edit_or_send(cb, words_text, start_public_practice_kb(lang), lang)
+    await cb.answer()
+
+
+@ommaviylar_router.callback_query(lambda c: c.data == "ommaviy:begin_practice")
+async def cb_begin_public_practice(cb: CallbackQuery, state: FSMContext):
+    """Ommaviy mashqni boshlash."""
+    current_state = await state.get_state()
+    if current_state != OmmaviyMashqStates.ready_to_start:
+        await cb.answer("❌ Xato holat!", show_alert=True)
+        return
+
+    user_data = await get_user_data(cb.from_user.id)
+    lang = user_data["lang"]
+
     await state.set_state(OmmaviyMashqStates.practicing)
+    
+    # Eski xabarni o'chirish
+    try:
+        await cb.message.delete()
+    except:
+        pass
+    
     await send_next_public_question(cb.message, state, lang)
     await cb.answer()
 
@@ -328,7 +376,13 @@ async def send_next_public_question(msg: Message, state: FSMContext, lang: str):
     book_name = data.get('book_name', 'Lug\'at')
     question_text = f"📖 {book_name}\n{L['question'].format(word=current['word_src'])}\n\n{progress_text}"
 
-    await msg.edit_text(question_text, reply_markup=kb)
+    # Eski xabarni o'chirish va yangi yuborish
+    try:
+        await msg.delete()
+    except:
+        pass
+    
+    await msg.answer(question_text, reply_markup=kb)
 
 
 @ommaviylar_router.callback_query(lambda c: c.data and c.data.startswith("ommaviy_ans:"))
@@ -385,7 +439,7 @@ async def cb_public_practice_finish(cb: CallbackQuery, state: FSMContext):
 
     # Tsikllar haqida ma'lumot
     if cycles > 0:
-        full_text += f"\n📄 Takrorlangan tsikllar: {cycles}"
+        full_text += f"\n🔄 Takrorlangan tsikllar: {cycles}"
 
     # Motivatsion xabar
     if percent >= 90:
@@ -400,6 +454,13 @@ async def cb_public_practice_finish(cb: CallbackQuery, state: FSMContext):
         full_text += "\n\n📚 Mashq davom eting, har gal yaxshilashasiz!"
 
     await state.clear()
-    await cb.message.edit_text(full_text)
+    
+    # Eski xabarni o'chirish
+    try:
+        await cb.message.delete()
+    except:
+        pass
+    
+    await cb.message.answer(full_text)
     await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(user_data["lang"]))
     await cb.answer()
