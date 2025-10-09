@@ -411,13 +411,16 @@ async def send_next_essential_question(msg: Message, state: FSMContext, lang: st
     unit_title = data.get('unit_title', 'Essential Unit')
     question_text = f"📖 {unit_title}\n\n<b>❓ {current['word_src']}</b>\n\n{progress_text}"
 
-    # Eski xabarni o'chirish va yangi yuborish
+
+    """Try to edit message first; if fails, delete and send new one."""
     try:
-        await msg.delete()
-    except:
-        pass
-    
-    await msg.answer(question_text, reply_markup=kb, parse_mode="HTML")
+        await cb.message.edit_text(question_text, reply_markup=kb, parse_mode="html")
+    except Exception:
+        try:
+            await cb.message.delete()
+        except Exception:
+            pass
+        await cb.message.answer(question_text, reply_markup=kb, parse_mode="html")
 
 
 # =====================================================
