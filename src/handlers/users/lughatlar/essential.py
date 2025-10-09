@@ -34,6 +34,7 @@ ESSENTIAL_BOOKS = {
 # =====================================================
 class EssentialStates(StatesGroup):
     practicing = State()
+    ready_to_start = State()  # Yangi holat: so'zlar ko'rsatildi, mashq boshlashga tayyor
 
 
 # =====================================================
@@ -328,6 +329,15 @@ def essential_units_kb(series_code: str, units: list, page: int, total_pages: in
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
+def start_practice_kb(lang: str) -> InlineKeyboardMarkup:
+    """Mashqni boshlash klaviaturasi."""
+    L = get_locale(lang)
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="▶️ Mashqni boshlash", callback_data="essential:begin_practice")],
+        [InlineKeyboardButton(text=L["back"], callback_data="essential:main")]
+    ])
+
+
 def essential_practice_kb(lang: str) -> InlineKeyboardMarkup:
     """Essential mashq klaviaturasi."""
     L = get_locale(lang)
@@ -401,7 +411,13 @@ async def send_next_essential_question(msg: Message, state: FSMContext, lang: st
     unit_title = data.get('unit_title', 'Essential Unit')
     question_text = f"📖 {unit_title}\n\n<b>❓ {current['word_src']}</b>\n\n{progress_text}"
 
-    await msg.edit_text(question_text, reply_markup=kb, parse_mode="HTML")
+    # Eski xabarni o'chirish va yangi yuborish
+    try:
+        await msg.delete()
+    except:
+        pass
+    
+    await msg.answer(question_text, reply_markup=kb, parse_mode="HTML")
 
 
 # =====================================================
@@ -529,7 +545,7 @@ async def cb_essential_series(cb: CallbackQuery):
 
 @essential_router.callback_query(lambda c: c.data and c.data.startswith("essential:unit:"))
 async def cb_essential_unit_practice(cb: CallbackQuery, state: FSMContext):
-    """Essential unit bilan mashq boshlash."""
+    """Essential unit bilan mashq boshlash - avval so'zlarni ko'rsatish."""
     unit_id = int(cb.data.split(":")[2])
     user_id = cb.from_user.id
 
@@ -556,10 +572,19 @@ async def cb_essential_unit_practice(cb: CallbackQuery, state: FSMContext):
     user_data = await get_user_data(user_id)
     lang = user_data["lang"]
 
-    # Mashqni boshlash
-    random.shuffle(words)
+    # So'zlar ro'yxatini tayyorlash
     unit_title = f"{unit_info['series_name']} - Unit {unit_info['unit_number']}"
+    words_list = []
+    for idx, word in enumerate(words, 1):
+        words_list.append(f"{idx}. <b>{word['word_src']}</b> - {word['word_trg']}")
+    
+    words_text = f"📖 <b>{unit_title}</b>\n"
+    words_text += f"📊 Jami: {len(words)} ta so'z\n\n"
+    words_text += "\n".join(words_list)
+    words_text += "\n\n💡 So'zlarni ko'rib chiqing va tayyor bo'lganingizda mashqni boshlang!"
 
+    # So'zlarni state'ga saqlash
+    random.shuffle(words)
     await state.update_data(
         unit_id=unit_id,
         unit_title=unit_title,
@@ -574,7 +599,31 @@ async def cb_essential_unit_practice(cb: CallbackQuery, state: FSMContext):
         current_cycle_wrong=0,
         cycles_stats=[]
     )
+    await state.set_state(EssentialStates.ready_to_start)
+
+    await safe_edit_or_send(cb, words_text, start_practice_kb(lang), lang)
+    await cb.answer()
+
+
+@essential_router.callback_query(lambda c: c.data == "essential:begin_practice")
+async def cb_begin_essential_practice(cb: CallbackQuery, state: FSMContext):
+    """Mashqni boshlash."""
+    current_state = await state.get_state()
+    if current_state != EssentialStates.ready_to_start:
+        await cb.answer("❌ Xato holat!", show_alert=True)
+        return
+
+    user_data = await get_user_data(cb.from_user.id)
+    lang = user_data["lang"]
+
     await state.set_state(EssentialStates.practicing)
+    
+    # Eski xabarni o'chirish
+    try:
+        await cb.message.delete()
+    except:
+        pass
+    
     await send_next_essential_question(cb.message, state, lang)
     await cb.answer()
 
@@ -633,7 +682,7 @@ async def cb_essential_finish(cb: CallbackQuery, state: FSMContext):
 
     # Tsikllar haqida ma'lumot
     if cycles > 0:
-        full_text += f"\n📄 Takrorlangan tsikllar: {cycles}"
+        full_text += f"\n🔄 Takrorlangan tsikllar: {cycles}"
 
     # Motivatsion xabar
     if percent >= 90:
@@ -648,6 +697,13 @@ async def cb_essential_finish(cb: CallbackQuery, state: FSMContext):
         full_text += "\n\n📚 Mashq davom eting, har gal yaxshilashasiz!"
 
     await state.clear()
-    await cb.message.edit_text(full_text)
+    
+    # Eski xabarni o'chirish
+    try:
+        await cb.message.delete()
+    except:
+        pass
+    
+    await cb.message.answer(full_text)
     await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(user_data["lang"]))
     await cb.answer()
