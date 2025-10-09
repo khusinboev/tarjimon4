@@ -14,6 +14,7 @@ from src.handlers.users.lughatlar.essential import essential_router
 from src.handlers.users.lughatlar.lughatlarim import lughatlarim_router
 from src.handlers.users.lughatlar.mashqlar import mashqlar_router
 from src.handlers.users.lughatlar.ommaviylar import ommaviylar_router
+from src.handlers.users.lughatlar.parallel import parallel_router
 from src.handlers.users.translate import translate_router
 from src.handlers.users.users import user_router
 from src.middlewares.middleware import RegisterUserMiddleware
@@ -53,6 +54,7 @@ async def main():
     dp.include_router(mashqlar_router)      # Mashqlar bo'limi
     dp.include_router(ommaviylar_router)    # Ommaviy lug'atlar bo'limi
     dp.include_router(essential_router)    # essential_router lug'atlar bo'limi
+    dp.include_router(parallel_router)  # ⭐ YANGI: Parallel tarjimalar
     dp.include_router(user_router)
     dp.include_router(translate_router)
     dp.include_router(inline_router)

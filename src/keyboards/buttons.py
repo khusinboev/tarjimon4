@@ -18,7 +18,8 @@ class AdminPanel:
                             KeyboardButton(text="📊Tillar")
                         ],
                         [
-                            KeyboardButton(text="📚 Kitoblarni kirgizish")
+                            KeyboardButton(text="📚 Kitoblarni kirgizish"),
+                            KeyboardButton(text="📚 Parallellarni kirgizish")
                         ]
                     ],
                     resize_keyboard=True,

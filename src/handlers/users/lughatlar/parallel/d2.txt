@@ -1,0 +1,511 @@
+Family,I love my family.,Men oilamni sevaman.,Я люблю свою семью.
+Family,We have a large family.,Bizning katta oilamiz bor.,У нас большая семья.
+Family,My mother is a teacher.,Mening onam o'qituvchi.,Моя мама учительница.
+Family,My father works in an office.,Mening otam ofisda ishlaydi.,Мой папа работает в офисе.
+Family,I have two brothers.,Mening ikki ukam bor.,У меня два брата.
+Family,We eat dinner together.,Biz kechki ovqatni birga yeymiz.,Мы ужинаем вместе.
+Family,My sister is a student.,Mening opam/singlim talaba.,Моя сестра студентка.
+Family,We visit our grandparents on weekends.,Biz dam olish kunlarida bobolarimiznikiga boramiz.,Мы навещаем бабушку и дедушку по выходным.
+Family,Family is very important.,Oila juda muhim.,Семья очень важна.
+Family,I call my parents every day.,Men har kuni ota-onamga qo'ng'iroq qilaman.,Я звоню родителям каждый день.
+Family,We live in a small house.,Biz kichik uyda yashaymiz.,Мы живём в маленьком доме.
+Family,My uncle is a doctor.,Mening amakim shifokor.,Мой дядя врач.
+Family,We often have family gatherings.,Biz tez-tez oilaviy yig'inlar o'tkazamiz.,Мы часто устраиваем семейные встречи.
+Family,My cousin lives in another city.,Mening amakivachcham boshqa shaharda yashaydi.,Мой двоюродный брат живёт в другом городе.
+Family,I help my mother with cooking.,Men onamga ovqat pishirishda yordam beraman.,Я помогаю маме готовить.
+Family,We watch TV together in the evening.,Biz kechqurun televizorni birga tomosha qilamiz.,Мы вечером вместе смотрим телевизор.
+Family,My nephew is very cute.,Mening jiyanim juda yoqimli.,Мой племянник очень милый.
+Family,We support each other.,Biz bir-birimizni qo'llab-quvvatlaymiz.,Мы поддерживаем друг друга.
+Family,Family meals are the best.,Oila bilan ovqatlanish eng zo'ri.,Семейные обеды самые лучшие.
+Work,I go to work at 9 AM.,Men ishga soat 9da boraman.,Я иду на работу в 9 утра.
+Work,She is a great manager.,U ajoyib menejer.,Она отличный менеджер.
+Work,He works from home.,U uydan ishlaydi.,Он работает из дома.
+Work,We have a meeting today.,Bugun bizning majlisimiz bor.,У нас сегодня собрание.
+Work,I need to finish this report.,Men bu hisobotni tugatishim kerak.,Мне нужно закончить этот отчёт.
+Work,My job is interesting.,Mening ishim qiziqarli.,Моя работа интересная.
+Work,They work in a hospital.,Ular shifoxonada ishlashadi.,Они работают в больнице.
+Work,I'm looking for a new job.,Men yangi ish qidiryapman.,Я ищу новую работу.
+Work,We have a deadline tomorrow.,Ertaga bizning muddatimiz tugaydi.,У нас завтра дедлайн.
+Work,He got a promotion.,U lavozimi oshirildi.,Его повысили.
+Work,She is on vacation.,U ta'tilda.,Она в отпуске.
+Work,I work with a great team.,Men ajoyib jamoa bilan ishlayman.,Я работаю с отличной командой.
+Work,My office is in the city center.,Mening ofisim shahar markazida.,Мой офис в центре города.
+Work,We use computers every day.,Biz har kuni kompyuterlardan foydalanamiz.,Мы используем компьютеры каждый день.
+Work,I have a business trip next week.,Mening kelasi hafta ish safari bor.,У меня командировка на следующей неделе.
+Work,She answers emails all day.,U kun bo'yi elektron pochta xabarlariga javob beradi.,Она весь день отвечает на электронные письма.
+Work,He is a hard worker.,U mehnatsevar odam.,Он трудолюбивый человек.
+Work,We are hiring new people.,Biz yangi odamlarni ishga olmoqdamiz.,Мы нанимаем новых людей.
+Work,I'm tired after work.,Men ishdan keyin charchayman.,Я устаю после работы.
+Education,She is a smart student.,U aqlli talaba.,Она умная студентка.
+Education,I study English every day.,Men har kuni ingliz tilini o'rganaman.,Я учу английский каждый день.
+Education,The teacher explained the lesson well.,O'qituvchi darsni yaxshi tushuntirdi.,Учитель хорошо объяснил урок.
+Education,We have an exam on Monday.,Dushanba kuni imtihonimiz bor.,У нас экзамен в понедельник.
+Education,He goes to university.,U universitetga boradi.,Он ходит в университет.
+Education,Learning new things is fun.,Yangi narsalarni o'rganish qiziqarli.,Изучать новое - это весело.
+Education,The school has a big library.,Maktabda katta kutubxona bor.,В школе большая библиотека.
+Education,I need to buy textbooks.,Men darsliklar sotib olishim kerak.,Мне нужно купить учебники.
+Education,She got a good grade.,U yaxshi baho oldi.,Она получила хорошую оценку.
+Education,Education is the key to success.,Ta'lim muvaffaqiyatning kaliti.,Образование - ключ к успеху.
+Education,We are doing a science project.,Biz loyiha ustida ishlaymiz.,Мы работаем над научным проектом.
+Education,He is good at mathematics.,U matematikadan yaxshi.,Он хорошо разбирается в математике.
+Education,I want to learn how to code.,Men dasturlashni o'rganmoqchiman.,Я хочу научиться программировать.
+Education,The class was very interesting.,Dars juda qiziqarli edi.,Урок был очень интересным.
+Education,She is reading a book for her course.,U o'z kursi uchun kitob o'qiyapti.,Она читает книгу для своего курса.
+Education,We practice speaking in class.,Biz darsda gapirishni mashq qilamiz.,Мы практикуем разговорную речь на уроке.
+Education,He asked a question to the professor.,U professorga savol berdi.,Он задал вопрос профессору.
+Education,Knowledge is power.,Bilim kuchdir.,Знание - сила.
+Hobbies,My hobby is photography.,Mening hobbim fotosurat.,Моё хобби - фотография.
+Hobbies,She likes to paint.,U rasim chizishni yoqtiradi.,Она любит рисовать.
+Hobbies,He plays the guitar.,U gitara chaladi.,Он играет на гитаре.
+Hobbies,We go hiking on weekends.,Biz dam olish kunlarida piyoda sayr qilamiz.,Мы ходим в походы по выходным.
+Hobbies,I enjoy reading books.,Men kitob o'qishni yoqtiraman.,Мне нравится читать книги.
+Hobbies,They collect stamps.,Ular markal yig'ishadi.,Они собирают марки.
+Hobbies,Cooking is my passion.,Ovqat pishirish mening ishtiyoqim.,Готовка - моя страсть.
+Hobbies,He is interested in gardening.,U bog'bonlik bilan qiziqadi.,Он увлекается садоводством.
+Hobbies,She makes handmade crafts.,U qo'l san'ati asarlarini yasaydi.,Она делает handmade поделки.
+Hobbies,I love listening to music.,Men musiqa tinglashni yaxshi ko'raman.,Я люблю слушать музыку.
+Hobbies,We play chess in the evening.,Biz kechqurun shaxmat o'ynamiz.,Мы играем в шахматы вечером.
+Hobbies,His hobby is fishing.,Uning hobbisi baliq ovlash.,Его хобби - рыбалка.
+Hobbies,She goes swimming every week.,U har hafta suzishga boradi.,Она ходит плавать каждую неделю.
+Hobbies,I am learning to dance.,Men raqsga o'rganyapman.,Я учусь танцевать.
+Hobbies,They watch movies together.,Ular birga filmlar tomosha qilishadi.,Они вместе смотрят фильмы.
+Hobbies,He writes poems in his free time.,U bo'sh vaqtida she'rlar yozadi.,Он пишет стихи в свободное время.
+Hobbies,My hobby helps me relax.,Mening hobbim jimirlashimga yordam beradi.,Моё хобби помогает мне расслабиться.
+Hobbies,We have a book club.,Bizning kitob klubimiz bor.,У нас есть книжный клуб.
+Travel,I love to travel.,Men sayohat qilishni yaxshi ko'raman.,Я люблю путешествовать.
+Travel,We are planning a trip to Samarkand.,Biz Samarqandga sayohatni rejalashtirmoqdamiz.,Мы планируем поездку в Самарканд.
+Travel,She visited many countries.,U ko'plab mamlakatlarni ziyarat qilgan.,Она посетила много стран.
+Travel,He bought a plane ticket.,U samolyot chiptasini sotib oldi.,Он купил авиабилет.
+Travel,The beach was beautiful.,Plyaj juda go'zal edi.,Пляж был красивым.
+Travel,We stayed in a hotel.,Biz mehmonda qoldik.,Мы останавливались в отеле.
+Travel,I want to see the world.,Men dunyoni ko'rmoqchiman.,Я хочу увидеть мир.
+Travel,They took many photos.,Ular ko'p rasm oldilar.,Они сделали много фотографий.
+Travel,He likes to try new food.,U yangi ovqatlarni tatib ko'rishni yoqtiradi.,Он любит пробовать новую еду.
+Travel,The mountains are amazing.,Tog'lar ajoyib.,Горы потрясающие.
+Travel,We need a tour guide.,Bizga ekskursiya yetakchisi kerak.,Нам нужен гид.
+Travel,She packed her suitcase.,U chamadonini yig'di.,Она собрала чемодан.
+Travel,I will send you a postcard.,Men sizga ochiq esdalik yuboraman.,Я отправлю тебе открытку.
+Travel,They are going on vacation tomorrow.,Ular ertaga ta'tilga ketishadi.,Они завтра уезжают в отпуск.
+Travel,He loves adventure.,U sarguzashtni yaxshi ko'radi.,Он любит приключения.
+Travel,We traveled by train.,Biz poyezdda sayohat qildik.,Мы путешествовали поездом.
+Travel,The city was very crowded.,Shahar juda gavjum edi.,Город был очень многолюдным.
+Travel,I enjoy learning about new cultures.,Men yangi madaniyatlar haqida o'rganishni yoqtiraman.,Мне нравится узнавать о новых культурах.
+Food,This plov is delicious.,Bu osh juda mazali.,Этот плов очень вкусный.
+Food,She is cooking dinner.,U kechki ovqat pishirmoqda.,Она готовит ужин.
+Food,We eat fruits every day.,Biz har kuni meva yeymiz.,Мы едим фрукты каждый день.
+Food,He doesn't like vegetables.,U sabzavotlarni yoqtirmaydi.,Он не любит овощи.
+Food,The restaurant is famous for its kebabs.,Restoran o'z kaboblari bilan mashhur.,Ресторан знаменит своими кебабами.
+Food,I'm hungry.,Men ochman.,Я голоден.
+Food,Would you like some tea?.,Choy istermidingiz?.,Хочешь чаю?
+Food,This bread is fresh.,Bu non yangi.,Этот хлеб свежий.
+Food,She baked a cake.,U tort pishirdi.,Она испекла торт.
+Food,We need to buy milk.,Bizga sut sotib olish kerak.,Нам нужно купить молоко.
+Food,He ordered pizza.,U pizza buyurtma qildi.,Он заказал пиццу.
+Food,The soup is too salty.,Shorva juda sho'r.,Суп слишком солёный.
+Food,I prefer green tea.,Men yashil choyni afzal ko'raman.,Я предпочитаю зелёный чай.
+Food,They are setting the table.,Ular stolni yozmoqdalar.,Они накрывают на стол.
+Food,This is a traditional dish.,Bu an'anaviy taom.,Это традиционное блюдо.
+Food,We have lunch at 1 PM.,Biz tushlikni soat 1da yeymiz.,Мы обедаем в 1 час дня.
+Food,He is a good cook.,U yaxshi oshpaz.,Он хороший повар.
+Food,The market has fresh fish.,Bozorda yangi baliq bor.,На рынке есть свежая рыба.
+Health,Exercise is good for health.,Mashqlar sog'liq uchun yaxshi.,Упражнения полезны для здоровья.
+Health,She goes to the gym.,U sport zaliga boradi.,Она ходит в спортзал.
+Health,You should drink more water.,Siz ko'proq suv ichishingiz kerak.,Тебе следует пить больше воды.
+Health,He feels sick.,U o'zini kasal his qiladi.,Он чувствует себя больным.
+Health,I have a headache.,Mening boshim og'riyapti.,У меня болит голова.
+Health,We need to see a doctor.,Biz shifokorga ko'rinishimiz kerak.,Нам нужно обратиться к врачу.
+Health,She is taking medicine.,U dori ichyapti.,Она принимает лекарство.
+Health,Get well soon!.,Tezda tuzuling!.,Выздоравливай скорее!
+Health,He is very healthy.,U juda sog'lom.,Он очень здоровый.
+Health,I try to eat healthy food.,Men sog'lom ovqat yeyishga harakat qilaman.,Я стараюсь есть здоровую пищу.
+Health,She has a toothache.,Uning tishi og'riyapti.,У неё болит зуб.
+Health,Wash your hands before eating.,Ovqatlanishdan oldin qo'llaringizni yuving.,Мой руки перед едой.
+Health,He broke his leg.,U oyog'ini sindirib oldi.,Он сломал ногу.
+Health,The doctor was very kind.,Shifokor juda mehribon edi.,Врач был очень добрым.
+Health,Smoking is bad for you.,Chekish sog'ligingiz uchun zararli.,Курить вредно для тебя.
+Health,She gets enough sleep.,U etarli uxlaydi.,Она высыпается.
+Health,I am on a diet.,Men parhezdamAN.,Я на диете.
+Health,They are very fit.,Ular juda chiroylI.,Они в очень хорошей форме.
+Weather,The weather is nice today.,Bugun ob-havo yaxshi.,Сегодня хорошая погода.
+Weather,It's raining.,Yomg'ir yog'yapti.,Идёт дождь.
+Weather,It will be sunny tomorrow.,Ertaga quyoshli bo'ladi.,Завтра будет солнечно.
+Weather,The sky is clear.,Osmon ochiq.,Небо ясное.
+Weather,It's very cold today.,Bugun juda sovuq.,Сегодня очень холодно.
+Weather,What's the temperature?.,Harorat qanday?.,Какая температура?
+Weather,It's a windy day.,Bugun shamolli kun.,Сегодня ветреный день.
+Weather,It might snow.,Qor yog'ishi mumkin.,Может пойти снег.
+Weather,The summer is hot.,Yoz issiq.,Лето жаркое.
+Weather,I like autumn.,Men kuzni yoqtiraman.,Мне нравится осень.
+Weather,The weather is unpredictable.,Ob-havo beqaror.,Погода непредсказуема.
+Weather,There is a storm coming.,Bo'ron kelayotgan.,Приближается буря.
+Weather,It's foggy.,Tumanli.,Туманно.
+Weather,The sun is shining.,Quyosh nur sochmoqda.,Солнце светит.
+Weather,It's humid.,Havo nam.,Влажно.
+Weather,We had a lot of snow last winter.,O'tgan qish ko'p qor yog'gan edi.,Прошлой зимой было много снега.
+Weather,It's a beautiful day.,Bugun ajoyib kun.,Сегодня прекрасный день.
+Weather,The nights are getting colder.,Tunlar sovuqlashmoqda.,Ночи становятся холоднее.
+Weather,It's warm outside.,Tashqarida iliq.,На улице тепло.
+Technology,I bought a new phone.,Men yangi telefon sotib oldim.,Я купил новый телефон.
+Technology,She uses a laptop for work.,U ish uchun noutbukdan foydalanadi.,Она использует ноутбук для работы.
+Technology,He is good with computers.,U kompyuterlar bilan yaxshi ishlaydi.,Он хорошо разбирается в компьютерах.
+Technology,We need a faster internet.,Bizga tezroq internet kerak.,Нам нужен более быстрый интернет.
+Technology,The software was updated.,Dasturiy ta'minot yangilandi.,Программное обеспечение было обновлено.
+Technology,My brother is a programmer.,Mening akam dasturchi.,Мой брат программист.
+Technology,She is always on her phone.,U doim telefonida.,Она всегда в телефоне.
+Technology,I don't understand this app.,Men ushbu ilovani tushunmayapman.,Я не понимаю это приложение.
+Technology,He fixed my computer.,U mening kompyuterimni tuzatdi.,Он починил мой компьютер.
+Technology,Technology is developing fast.,Texnologiya tez rivojlanmoqda.,Технологии быстро развиваются.
+Technology,We live in a digital world.,Biz raqamli dunyoda yashaymiz.,Мы живём в цифровом мире.
+Technology,She posted a picture on Instagram.,U Instagram'da rasm joyladi.,Она опубликовала фото в Instagram.
+Technology,The battery is dead.,Batareya to'xtab qoldi.,Батарея разряжена.
+Technology,I will send you an email.,Men sizga elektron xat yuboraman.,Я отправлю тебе email.
+Technology,He designs websites.,U veb-saytlarni loyihalaydi.,Он проектирует веб-сайты.
+Technology,Please turn off your phone.,Iltimos, telefoningizni o'chiring.,Пожалуйста, выключи телефон.
+Technology,The video call was clear.,Video qo'ng'iroq aniq edi.,Видеозвонок был чётким.
+Technology,This robot can clean the house.,Bu robot uyni tozalay oladi.,Этот робот может убирать дом.
+Sports,He plays football.,U futbol o'ynaydi.,Он играет в футбол.
+Sports,She is a great swimmer.,U ajoyib suzuvchi.,Она отличная пловчиха.
+Sports,We watched the game yesterday.,Biz kecha o'yinni tomosha qildik.,Мы вчера смотрели игру.
+Sports,I go jogging every morning.,Men har kuni ertalab yugurishga chiqaman.,Я бегаю каждое утро.
+Sports,Their team won the match.,Ularning jamoasi o'yinda g'alaba qozondi.,Их команда выиграла матч.
+Sports,He runs very fast.,U juda tez yuguradi.,Он бегает очень быстро.
+Sports,She won a gold medal.,U oltin medalni qo'lga kiritdi.,Она выиграла золотую медаль.
+Sports,We play volleyball on the beach.,Biz plyajda voleybol o'ynamiz.,Мы играем в волейбол на пляже.
+Sports,I like to watch tennis.,Men tenni tomosha qilishni yoqtiraman.,Мне нравится смотреть теннис.
+Sports,They go to the stadium.,Ular stadionga borishadi.,Они ходят на стадион.
+Sports,Exercise keeps you healthy.,Mashqlar sizni sog'lom tutadi.,Упражнения поддерживают здоровье.
+Sports,He is a professional athlete.,U professional sportchi.,Он профессиональный спортсмен.
+Sports,She is training for the competition.,U musobaqaga tayyorgarlik ko'rmoqda.,Она тренируется для соревнования.
+Sports,The match was exciting.,O'yin hayajonli edi.,Матч был захватывающим.
+Sports,I bought new running shoes.,Men yangi yugurish poyabzallarini sotib oldim.,Я купил новые кроссовки.
+Sports,They are fans of that team.,Ular o'sha jamoa muxbislari.,Они болеют за ту команду.
+Sports,He injured his knee.,U tizzasini shikastlab oldi.,Он травмировал колено.
+Sports,Sports are important for children.,Sport bolalar uchun muhim.,Спорт важен для детей.
+Music,I love listening to music.,Men musiqa tinglashni yaxshi ko'raman.,Я люблю слушать музыку.
+Music,She plays the piano.,U pianino chaladi.,Она играет на пианино.
+Music,He has a good voice.,Uning yaxshi ovozi bor.,У него хороший голос.
+Music,We went to a concert last night.,Biz kecha kontsertga bordik.,Мы ходили на концерт прошлой ночью.
+Music,This song is popular.,Bu qo'shiq mashhur.,Эта песня популярна.
+Music,They are singing a song.,Ular qo'shiq aytishyaptilar.,Они поют песню.
+Music,I can play the guitar.,Men gitara chalolaman.,Я умею играть на гитаре.
+Music,She listens to pop music.,U pop musiqasini tinglaydi.,Она слушает поп-музыку.
+Music,He is a famous musician.,U mashhur musiqachi.,Он известный музыкант.
+Music,The concert was amazing.,Kontsert ajoyib edi.,Концерт был потрясающим.
+Music,I downloaded a new album.,Men yangi albomni yuklab oldim.,Я скачал новый альбом.
+Music,She is writing a song.,U qo'shiq yozmoqda.,Она пишет песню.
+Music,Music makes me happy.,Musiqa meni baxtli qiladi.,Музыка делает меня счастливым.
+Music,He turned on the radio.,U radioni yoqdi.,Он включил радио.
+Music,We dance to music.,Biz musiqaga raqs tushamiz.,Мы танцуем под музыку.
+Music,The lyrics are beautiful.,Qo'shiq matni go'zal.,Текст песни красивый.
+Music,This is my favorite band.,Bu mening sevimli guruhim.,Это моя любимая группа.
+Movies,We watched a movie yesterday.,Biz kecha film tomosha qildik.,Мы вчера смотрели фильм.
+Movies,This is an interesting film.,Bu qiziqarli film.,Это интересный фильм.
+Movies,He is a famous actor.,U mashhur aktyor.,Он известный актёр.
+Movies,She likes comedy movies.,U komediya filmlarini yoqtiradi.,Она любит комедийные фильмы.
+Movies,The movie theater is crowded.,Kinoteatr gavjum.,Кинотеатр переполнен.
+Movies,I prefer action movies.,Men jangari filmlarni afzal ko'raman.,Я предпочитаю боевики.
+Movies,They made a new film.,Ular yangi film suratga olishdi.,Они сняли новый фильм.
+Movies,The film was long.,Film uzun edi.,Фильм был длинным.
+Movies,She bought popcorn.,U popcorn sotib oldi.,Она купила попкорн.
+Movies,He is watching a documentary.,U hujjatli film tomosha qilmoqda.,Он смотрит документальный фильм.
+Movies,We are going to the cinema tonight.,Biz bugun kecha kinoga boramiz.,Мы идём в кино сегодня вечером.
+Movies,The special effects were great.,Maxsus effektlar ajoyib edi.,Спецэффекты были отличными.
+Movies,This director is famous.,Bu rejissyor mashhur.,Этот режиссёр известен.
+Movies,The story is sad.,Hikoya achinarli.,История грустная.
+Movies,I cried during the movie.,Men film paytida yigladim.,Я плакал во время фильма.
+Movies,It's a romantic movie.,Bu romantik film.,Это романтический фильм.
+Movies,They are filming a movie here.,Ular bu yerda film suratga olmoqdalar.,Они снимают фильм здесь.
+Books,She is reading a book.,U kitob o'qiyapti.,Она читает книгу.
+Books,I love reading novels.,Men roman o'qishni yaxshi ko'raman.,Я люблю читать романы.
+Books,He bought a new book.,U yangi kitob sotib oldi.,Он купил новую книгу.
+Books,This library is big.,Bu kutubxona katta.,Эта библиотека большая.
+Books,The author is well-known.,Muallif taniqli.,Автор известен.
+Books,We discussed the book in class.,Biz darsda kitobni muhokama qildik.,Мы обсуждали книгу в классе.
+Books,She writes books.,U kitoblar yozadi.,Она пишет книги.
+Books,This is a classic book.,Bu klassik kitob.,Это классическая книга.
+Books,He reads every night.,U har kecha o'qiydi.,Он читает каждую ночь.
+Books,My favorite book is "Harry Potter".,Mening sevimli kitobim "Harry Potter".,Моя любимая книга - "Гарри Поттер".
+Books,The book was interesting.,Kitob qiziqarli edi.,Книга была интересной.
+Books,I borrowed a book from the library.,Men kutubxonadan kitob oldim.,Я взял книгу из библиотеки.
+Books,She gave me a book as a gift.,U menga sovg'a sifatida kitob berdi.,Она дала мне книгу в подарок.
+Books,He likes poetry.,U she'riyatni yoqtiradi.,Он любит поэзию.
+Books,We have a book club.,Bizning kitob klubimiz bor.,У нас есть книжный клуб.
+Books,The story is exciting.,Hikoya hayajonli.,История захватывающая.
+Books,This book is a bestseller.,Bu kitob bestseller.,Эта книга бестселлер.
+Shopping,I go shopping every week.,Men har hafta xarid qilishga boraman.,Я хожу за покупками каждую неделю.
+Shopping,She bought a new dress.,U yangi ko'ylak sotib oldi.,Она купила новое платье.
+Shopping,We need to go to the supermarket.,Biz supermarkETga borishimiz kerak.,Нам нужно пойти в супермаркет.
+Shopping,He is looking for a gift.,U sovg'a qidirmoqda.,Он ищет подарок.
+Shopping,The market is crowded.,Bozor gavjum.,Рынок переполнен.
+Shopping,This shirt is too expensive.,Bu ko'ylak juda qimmat.,Эта рубашка слишком дорогая.
+Shopping,Can I help you?.,Sizga yordam bera olamanmi?.,Могу я вам помочь?
+Shopping,I'll take this.,Men buni olaman.,Я возьму это.
+Shopping,She is paying at the cashier.,U kassada to'lov qilmOqda.,Она платит в кассе.
+Shopping,We bought groceries.,Biz oziq-ovqat mahsulotlarini sotib oldik.,Мы купили продукты.
+Shopping,He likes window shopping.,U vitrina xaridini yoqtiradi.,Он любит ходить по магазинам (смотреть витрины).
+Shopping,The mall is very big.,Savdo markazi juda katta.,Торговый центр очень большой.
+Shopping,I found a good discount.,Men yaxshi chegirma topdim.,Я нашёл хорошую скидку.
+Shopping,She returned the product.,U mahsulotni qaytardi.,Она вернула товар.
+Shopping,We are looking for a toy for our son.,Biz o'g'limizga o'yinchoq qidirmoqdamiz.,Мы ищем игрушку для нашего сына.
+Shopping,This bag is cheap.,Bu sumka arzon.,Эта сумка дешёвая.
+Shopping,They are having a sale.,Ular chegirma o'tkazmoqdalar.,У них распродажа.
+Transportation,I go to work by bus.,Men ishga avtobusda boraman.,Я езжу на работу на автобусе.
+Transportation,She drives a car.,U mashina haydaydi.,Она водит машину.
+Transportation,He takes the train to work.,U ishga poyezdda boradi.,Он ездит на работу на поезде.
+Transportation,We are waiting for the taxi.,Biz taksi kutmoqdamiz.,Мы ждём такси.
+Transportation,The flight was delayed.,Parashut kechiktirildi.,Полет задержали.
+Transportation,You need to buy a ticket.,Sizga chipta sotib olish kerak.,Тебе нужно купить билет.
+Transportation,She rides a bicycle to school.,U maktabga velosipedda boradi.,Она ездит в школу на велосипеде.
+Transportation,He is filling the car with gas.,U mashinani benzin bilan to'ldirmoqda.,Он заправляет машину бензином.
+Transportation,The traffic is heavy today.,Bugun yo'l harakati zich.,Сегодня интенсивное движение.
+Transportation,I prefer to walk.,Men piyoda yurishni afzal ko'raman.,Я предпочитаю ходить пешком.
+Transportation,They are at the bus stop.,Ular avtobus bekatida.,Они на автобусной остановке.
+Transportation,We are going to the airport.,Biz aeroportga boramiz.,Мы едем в аэропорт.
+Transportation,He missed his flight.,U parvozini o'tkazib yubordi.,Он опоздал на свой рейс.
+Transportation,The subway is fast.,Metro tez.,Метро быстрое.
+Transportation,She called a taxi.,U taksi chaqirdi.,Она вызвала такси.
+Transportation,We need to cross the street.,Biz ko'chani kesib o'tishimiz kerak.,Нам нужно перейти улицу.
+Transportation,He is parking the car.,U mashinani joylashtirmoqda.,Он паркует машину.
+Daily Routine,I wake up early.,Men ertalab ertA turAman.,Я просыпаюсь рано.
+Daily Routine,She brushes her teeth.,U tishlarini tozalaydi.,Она чистит зубы.
+Daily Routine,He takes a shower.,U dush qabul qiladi.,Он принимает душ.
+Daily Routine,We have breakfast together.,Biz nonushtani birga qilamiz.,Мы завтракаем вместе.
+Daily Routine,I go to work at 8 AM.,Men ishga soat 8da boraman.,Я иду на работу в 8 утра.
+Daily Routine,She checks her email in the morning.,U ertalab elektron pochtasini tekshiradi.,Она проверяет email утром.
+Daily Routine,He comes home at 6 PM.,U uyga soat 6da keladi.,Он приходит домой в 6 вечера.
+Daily Routine,We watch TV in the evening.,Biz kechqurun televizor tomosha qilamiz.,Мы смотрим телевизор вечером.
+Daily Routine,I read a book before sleep.,Men uxlashdan oldin kitob o'qiyman.,Я читаю книгу перед сном.
+Daily Routine,She goes to bed at 11 PM.,U soat 11da uxlaydi.,Она ложится спать в 11 вечера.
+Daily Routine,He exercises every morning.,U har kuni ertalab mashq qiladi.,Он делает упражнения каждое утро.
+Daily Routine,We clean the house on Saturdays.,Biz shanba kunlari uyni tozalaymiz.,Мы убираем дом по субботам.
+Daily Routine,I often take a nap in the afternoon.,Men ko'pincha tushdan keyin bir oz uxlayman.,Я часто сплю днём.
+Daily Routine,She cooks dinner for the family.,U oila uchun kechki ovqat pishIRadi.,Она готовит ужин для семьи.
+Daily Routine,He walks the dog every day.,U har kuni itni olib chiqib yuradi.,Он гуляет с собакой каждый день.
+Daily Routine,My routine is busy.,Mening kun tartibim band.,Мой распорядок дня занятой.
+Daily Routine,They have a fixed schedule.,Ular aniq jadvalga ega.,У них фиксированный график.
+Holidays,We celebrate Navruz in spring.,Biz bahorda Navruzni nishollaymiz.,Мы празднуем Навруз весной.
+Holidays,She likes New Year holidays.,U Yangi Yil bayramlarini yoqtiradi.,Она любит новогодние праздники.
+Holidays,He visits his family during holidays.,U bayramlarda oilasini ziyorat qiladi.,Он навещает свою семью во время праздников.
+Holidays,We decorate the Christmas tree.,Biz yangi yil archasini bezatamiz.,Мы украшаем новогоднюю ёлку.
+Holidays,I received many gifts.,Men ko'p sovg'alar oldim.,Я получил много подарков.
+Holidays,They are going on vacation.,Ular ta'tilga ketishyaptilar.,Они уезжают в отпуск.
+Holidays,The holiday was fun.,Bayram qiziqarli edi.,Праздник был весёлым.
+Holidays,She cooks special food for holidays.,U bayramlar uchun maxsus ovqat pishIRadi.,Она готовит специальную еду на праздники.
+Holidays,We have a holiday tomorrow.,Ertaga bizda bayram.,Завтра у нас праздник.
+Holidays,He is excited for the holiday.,U bayramdan xursand.,Он в восторге от праздника.
+Holidays,They are preparing for the celebration.,Ular bayramni nishonlashga tayyorlanmoqdalar.,Они готовятся к празднованию.
+Holidays,We wish you happy holidays!.,Biz sizga baxtli bayramlar tilaymiz!.,Мы желаем вам счастливых праздников!
+Holidays,The streets are decorated during holidays.,Bayramlarda ko'chalar bezatilgan.,Улицы украшены во время праздников.
+Holidays,She sends holiday cards to friends.,U do'stlariga bayramlik ochiq esdalik yuboradi.,Она отправляет праздничные открытки друзьям.
+Holidays,We remember our traditions during holidays.,Biz bayramlarda o'z an'analarimizni eslaymiz.,Мы помним наши традиции во время праздников.
+Holidays,He loves the holiday atmosphere.,U bayram atmosferasini yaxshi ko'radi.,Он любит праздничную атмосферу.
+Holidays,They are watching a holiday movie.,Ular bayram filmini tomosha qilishyaptilar.,Они смотрят праздничный фильм.
+Friends,She has many friends.,Uning ko'p do'stlari bor.,У неё много друзей.
+Friends,We are good friends.,Biz yaxshi do'stmiz.,Мы хорошие друзья.
+Friends,He met his friend yesterday.,U kecha do'sti bilan uchrashdi.,Он встретил своего друга вчера.
+Friends,They have been friends since childhood.,Ular bolalikdan do'st.,Они дружат с детства.
+Friends,I trust my friends.,Men do'stlarimga ishonaman.,Я доверяю своим друзьям.
+Friends,She helps her friends.,U do'stlariga yordam beradi.,Она помогает своим друзьям.
+Friends,We go out with friends on weekends.,Biz dam olish kunlarida do'stlar bilan chiqamiz.,Мы гуляем с друзьями по выходным.
+Friends,He is a loyal friend.,U sadoqatli do'st.,Он верный друг.
+Friends,They are like family.,Ular oila kabi.,Они как семья.
+Friends,I made a new friend at school.,Men maktabda yangi do'st orttirdim.,Я завёл нового друга в школе.
+Friends,She is my best friend.,U mening eng yaqin do'stim.,Она мой лучший друг.
+Friends,We share everything.,Biz hamma narsani bo'lishamiz.,Мы делимся всем.
+Friends,He called his friend.,U do'stiga qo'ng'iroq qildi.,Он позвонил своему другу.
+Friends,They are planning a trip together.,Ular birga sayohat rejalashtirmoqdalar.,Они планируют поездку вместе.
+Friends,I miss my friends.,Men do'stlarimni sog'inaman.,Я скучаю по своим друзьям.
+Friends,She invited her friends to the party.,U do'stlarini ziyofatga taklif qildi.,Она пригласила друзей на вечеринку.
+Friends,We support each other.,Biz bir-birimizni qo'llab-quvvatlaymiz.,Мы поддерживаем друг друга.
+Home,We live in an apartment.,Biz kvartirada yashaymiz.,Мы живём в квартире.
+Home,She is cleaning the house.,U uyni tozalayapti.,Она убирает дом.
+Home,He is repairing the roof.,U tomni ta'mirlayapti.,Он ремонтирует крышу.
+Home,Our home is comfortable.,Bizning uyimiz qulay.,Наш дом удобный.
+Home,I love my home.,Men uyimni sevaman.,Я люблю свой дом.
+Home,They bought a new house.,Ular yangi uy sotib olishdi.,Они купили новый дом.
+Home,We have a garden.,Bizning bog'imiz bor.,У нас есть сад.
+Home,She is decorating her room.,U o'z xonasini bezatyapti.,Она украшает свою комнату.
+Home,He is sitting in the living room.,U mehmonxonada o'tiryapti.,Он сидит в гостиной.
+Home,We are moving to a new home.,Biz yangi uyga ko'chmoqdamiz.,Мы переезжаем в новый дом.
+Home,The kitchen is modern.,Oshxona zamonaviy.,Кухня современная.
+Home,They are building a house.,Ular uy qurayotgan.,Они строят дом.
+Home,I feel safe at home.,Men uyda o'zimni xavfsiz his qilaman.,Я чувствую себя в безопасности дома.
+Home,She is watering the plants.,U o'simliklarni sug'orayapti.,Она поливает растения.
+Home,We have a big family photo in the hall.,Bizning zalda katta oilaviy fotosurat bor.,У нас в зале большая семейная фотография.
+Home,He is sleeping in his bedroom.,U o'z yotoqxonasida uxlayapti.,Он спит в своей спальне.
+Home,Our neighbors are friendly.,Bizning qo'shnilarimiz do'stona.,Наши соседи дружелюбные.
+Nature,I love nature.,Men tabiatni sevaman.,Я люблю природу.
+Nature,The forest is beautiful.,O'rmon go'zal.,Лес красивый.
+Nature,She enjoys walking in the park.,U bog'da sayr qilishni yoqtiradi.,Она любит гулять в парке.
+Nature,He likes to watch the sunset.,U quyosh botishini tomosha qilishni yoqtiradi.,Он любит смотреть на закат.
+Nature,We protect the environment.,Biz atrof-muhitni himoya qilamiz.,Мы защищаем окружающую среду.
+Nature,The river is clean.,Daryo toza.,Река чистая.
+Nature,They are planting trees.,Ular daraxtlar ekmoqdalar.,Они сажают деревья.
+Nature,I saw a beautiful flower.,Men go'zal gul ko'rdim.,Я видел красивый цветок.
+Nature,The mountains are high.,Tog'lar baland.,Горы высокие.
+Nature,She loves the sea.,U dengizni sevadi.,Она любит море.
+Nature,He took a photo of the landscape.,U manzaraning suratini oldi.,Он сфотографировал пейзаж.
+Nature,We went camping in the valley.,Biz vodiyda lager qurdik.,Мы ходили в поход в долине.
+Nature,The air is fresh here.,Bu yerda havo toza.,Здесь воздух свежий.
+Nature,They are watching the stars.,Ular yulduzlarni tomosha qilishyaptilar.,Они смотрят на звёзды.
+Nature,I listen to the sounds of nature.,Men tabiat tovushlarini tinglayman.,Я слушаю звуки природы.
+Nature,She collects rocks.,U toshlar yig'adi.,Она собирает камни.
+Nature,He is studying animals in the wild.,U vahshiy tabiatdagi hayvonlarni o'rganmoqda.,Он изучает животных в дикой природе.
+Animals,I have a cat.,Mening mushugim bor.,У меня есть кот.
+Animals,She loves dogs.,U itlarni sevadi.,Она любит собак.
+Animals,He feeds the birds.,U qushlarni boqadi.,Он кормит птиц.
+Animals,We saw a lion at the zoo.,Biz hayvonot bog'ida arslon ko'rdik.,Мы видели льва в зоопарке.
+Animals,The horse is running.,Ot yugurayapti.,Лошадь бежит.
+Animals,They have a pet rabbit.,Ularining uy hayvoni quyon.,У них есть домашний кролик.
+Animals,I am afraid of snakes.,Men ilonlardan qo'rqaman.,Я боюсь змей.
+Animals,She is training her dog.,U itini mashq qildirmoqda.,Она тренирует свою собаку.
+Animals,He works with animals.,U hayvonlar bilan ishlaydi.,Он работает с животными.
+Animals,We protect wild animals.,Biz yovvoyi hayvonlarni himoya qilamiz.,Мы защищаем диких животных.
+Animals,The elephant is big.,Fil katta.,Слон большой.
+Animals,They are watching a documentary about animals.,Ular hayvonlar haqidagi hujjatli filmini tomosha qilishyaptilar.,Они смотрят документальный фильм о животных.
+Animals,I like to watch dolphins.,Men delfinlarni tomosha qilishni yoqtiraman.,Мне нравится смотреть на дельфинов.
+Animals,She adopted a cat.,U mushuk asrab oldi.,Она взяла кота из приюта.
+Animals,He is a veterinarian.,U veterinariya shifokori.,Он ветеринар.
+Animals,The bird is singing.,Qush kuylayapti.,Птица поёт.
+Culture,We respect our culture.,Biz o'z madaniyatimizni hurmat qilamiz.,Мы уважаем нашу культуру.
+Culture,She learns about different cultures.,U turli madaniyatlar haqida o'rganadi.,Она изучает разные культуры.
+Culture,He participates in cultural events.,U madaniy tadbirlarda ishtirok etadi.,Он участвует в культурных мероприятиях.
+Culture,They celebrate traditional holidays.,Ular an'anaviy bayramlarni nishonlaydilar.,Они празднуют традиционные праздники.
+Culture,This dance is part of our culture.,Bu raqs bizning madaniyatimizning bir qismi.,Этот танец - часть нашей культуры.
+Culture,She wears traditional clothes.,U an'anaviy kiyimlarni kiyadi.,Она носит традиционную одежду.
+Culture,He plays traditional instruments.,U an'anaviy asboblarni chaladi.,Он играет на традиционных инструментах.
+Culture,We have a rich history.,Bizning boy tariximiz bor.,У нас богатая история.
+Culture,They are preserving their culture.,Ular o'z madaniyatlarini saqlab qolmoqdalar.,Они сохраняют свою культуру.
+Culture,I enjoy learning about Uzbek culture.,Men o'zbek madaniyati haqida o'rganishni yoqtiraman.,Мне нравится изучать узбекскую культуру.
+Culture,She visited a museum.,U muzeyga tashrif buyurdi.,Она посетила музей.
+Culture,He is interested in folklore.,U folklor bilan qiziqadi.,Он интересуется фольклором.
+Culture,We have many cultural traditions.,Bizning ko'plab madaniy an'analarimiz bor.,У нас много культурных традиций.
+Culture,They performed a traditional play.,Ular an'anaviy spektakl namoyish etishdi.,Они исполнили традиционную пьесу.
+Culture,The food is part of the culture.,Ovqat madaniyatning bir qismidir.,Еда - часть культуры.
+Culture,She studies cultural anthropology.,U madaniy antropologiyani o'rganadi.,Она изучает культурную антропологию.
+Culture,He wrote a book about culture.,U madaniyat haqida kitob yozdi.,Он написал книгу о культуре.
+Art,She is an artist.,U rassom.,Она художница.
+Art,He painted a picture.,U rasm chizdi.,Он нарисовал картину.
+Art,We visited an art gallery.,Biz san'at galereyasiga bordik.,Мы посетили художественную галерею.
+Art,I like modern art.,Men zamonaviy san'atni yoqtiraman.,Мне нравится современное искусство.
+Art,They are making a sculpture.,Ular haykal yasamoqdalar.,Они делают скульптуру.
+Art,She is good at drawing.,U chizishda yaxshi.,Она хорошо рисует.
+Art,He appreciates art.,U san'atni qadrlaydi.,Он ценит искусство.
+Art,We have art class on Friday.,Juma kuni bizning san'at darsimiz bor.,У нас урок искусства в пятницу.
+Art,The painting is expensive.,Rasm qimmat.,Картина дорогая.
+Art,She is taking a photography course.,U fotosurat kursiga boradi.,Она ходит на курсы фотографии.
+Art,He is a talented musician.,U iqtidorli musiqachi.,Он талантливый музыкант.
+Art,We are going to the theater.,Biz teatrga boramiz.,Мы идём в театр.
+Art,The performance was amazing.,Ijro ajoyib edi.,Выступление было потрясающим.
+Art,She writes poems.,U she'rlar yozadi.,Она пишет стихи.
+Art,He is learning calligraphy.,U xattotlikni o'rganmoqda.,Он изучает каллиграфию.
+Art,We enjoy street art.,Biz ko'cha san'atidan zavqlanamiz.,Мы наслаждаемся уличным искусством.
+Science,She is a scientist.,U olim.,Она учёный.
+Science,He studies physics.,U fizikani o'rganadi.,Он изучает физику.
+Science,We learned about gravity in science class.,Biz fan darsida gravitatsiya haqida o'rgandik.,Мы узнали о гравитации на уроке науки.
+Science,They are doing an experiment.,Ular tajriba o'tkazmoqdalar.,Они проводят эксперимент.
+Science,I am interested in astronomy.,Men astronomiya bilan qiziqaman.,Я интересуюсь астрономией.
+Science,She discovered a new element.,U yangi element kashf qildi.,Она открыла новый элемент.
+Science,He works in a laboratory.,U laboratoriyada ishlaydi.,Он работает в лаборатории.
+Science,We read a science magazine.,Biz fan jurnalini o'qiymiz.,Мы читаем научный журнал.
+Science,The invention changed the world.,Ixtiro dunyoni o'zgartirdi.,Изобретение изменило мир.
+Science,They are researching a new medicine.,Ular yangi dori tadqiq qilmoqdalar.,Они исследуют новое лекарство.
+Science,Science is important for progress.,Fan taraqqiyot uchun muhim.,Наука важна для прогресса.
+Science,She won a science competition.,U fan tanlovida g'olib chiqdi.,Она выиграла научный конкурс.
+Science,He is writing a research paper.,U tadqiqot maqolasi yozmoqda.,Он пишет научную статью.
+Science,We use technology every day.,Biz har kuni texnologiyadan foydalanamiz.,Мы используем технологии каждый день.
+Science,The theory is complicated.,Nazariya murakkab.,Теория сложная.
+Science,She is observing the stars.,U yulduzlarni kuzatmoqda.,Она наблюдает за звёздами.
+History,We study history at school.,Biz maktabda tarixni o'rganamiz.,Мы изучаем историю в школе.
+History,She is reading a history book.,U tarix kitobini o'qiyapti.,Она читает книгу по истории.
+History,He visited a historical place.,U tarixiy joyga tashrif buyurdi.,Он посетил историческое место.
+History,They are learning about ancient civilizations.,Ular qadimiy tsivilizatsiyalar haqida o'rganmoqdalar.,Они изучают древние цивилизации.
+History,I find history fascinating.,Men tarixni ajoyib topaman.,Я нахожу историю увлекательной.
+History,She is a history teacher.,U tarix o'qituvchisi.,Она учитель истории.
+History,He knows a lot about world history.,U jahon tarixi haqida ko'p biladi.,Он много знает о всемирной истории.
+History,We watched a historical movie.,Biz tarixiy film tomosha qildik.,Мы смотрели исторический фильм.
+History,The museum has historical artifacts.,Muzeyda tarixiy artefaktlar bor.,В музее есть исторические артефакты.
+History,They are digging for archaeological finds.,Ular arxeologik topilmalar qidirmoqdalar.,Они копают в поисках археологических находок.
+History,History helps us understand the present.,Tarix hozirgi zamonni tushunishga yordam beradi.,История помогает нам понять настоящее.
+History,She wrote an essay about the Silk Road.,U Buyuk Ipak Yo'li haqida insho yozdi.,Она написала эссе о Шёлковом пути.
+History,He is interested in military history.,U harbiy tarix bilan qiziqadi.,Он интересуется военной историей.
+History,We discussed the events of the past.,Biz o'tmishdagi voqealarni muhokama qildik.,Мы обсудили события прошлого.
+History,The castle is 500 years old.,Qal'a 500 yoshda.,Замку 500 лет.
+Geography,She is good at geography.,U geografiyadan yaxshi.,Она хорошо разбирается в географии.
+Geography,He knows all the capitals.,U barcha poytaxtlarni biladi.,Он знает все столицы.
+Geography,We are learning about continents.,Biz qit'alar haqida o'rganmoqdamiz.,Мы изучаем континенты.
+Geography,They are studying a map.,Ular xaritani o'rganishyaptilar.,Они изучают карту.
+Geography,I want to travel around the world.,Men butun dunyo bo'ylab sayohat qilmoqchiman.,Я хочу путешествовать по всему миру.
+Geography,She can name many rivers.,U ko'plab daryolarni nomlashi mumkin.,Она может назвать много рек.
+Geography,He is looking at the globe.,U globusga qarayapti.,Он смотрит на глобус.
+Geography,We live in Central Asia.,Biz Markaziy Osiyoda yashaymiz.,Мы живём в Центральной Азии.
+Geography,The desert is very hot.,Sahro juda issiq.,Пустыня очень жаркая.
+Geography,They are climbing the mountain.,Ular tog'ga chiqishmoqda.,Они поднимаются на гору.
+Geography,Geography is an interesting subject.,Geografiya qiziqarli fan.,География - интересный предмет.
+Geography,She loves the ocean.,U okeanni sevadi.,Она любит океан.
+Geography,He is drawing a map.,U xarita chizmoqda.,Он рисует карту.
+Geography,We learned about different climates.,Biz turli iqlimlar haqida o'rgandik.,Мы узнали о разных климатах.
+Geography,The country has a diverse landscape.,Mamlakatning landshafti xilma-xil.,У страны разнообразный ландшафт.
+Languages,She speaks three languages.,U uch tilida so'zlashadi.,Она говорит на трёх языках.
+Languages,He is learning English.,U ingliz tilini o'rganmoqda.,Он учит английский язык.
+Languages,We practice speaking.,Biz gapirishni mashq qilamiz.,Мы практикуем разговорную речь.
+Languages,They are bilingual.,Ular ikki tilli.,Они двуязычные.
+Languages,I want to improve my pronunciation.,Men talaffuzimni yaxshilamoqchiman.,Я хочу улучшить своё произношение.
+Languages,She knows many words.,U ko'p so'zlarni biladi.,Она знает много слов.
+Languages,He uses a dictionary.,U lug'atdan foydalanadi.,Он использует словарь.
+Languages,We have a language exchange.,Biz til almashamiz.,У нас языковой обмен.
+Languages,The language is difficult.,Til qiyin.,Язык сложный.
+Languages,They are watching a movie in English.,Ular ingliz tilidagi filmni tomosha qilishyaptilar.,Они смотрят фильм на английском.
+Languages,Language connects people.,Til odamlarni bog'laydi.,Язык соединяет людей.
+Languages,She is a translator.,U tarjimon.,Она переводчик.
+Languages,He is fluent in Russian.,U rus tilida erkin so'zlashadi.,Он свободно говорит по-русски.
+Languages,We learn grammar in class.,Biz darsda grammatikani o'rganamiz.,Мы изучаем грамматику в классе.
+Languages,It's important to practice.,Mashq qilish muhim.,Важно практиковаться.
+Emotions,I am happy.,Men baxtliman.,Я счастлив.
+Emotions,She is sad.,U xafa.,Она грустная.
+Emotions,He was angry.,U g'azablangan edi.,Он был злым.
+Emotions,We are excited.,Biz hayajonlanganmiz.,Мы взволнованы.
+Emotions,They are surprised.,Ular hayratda.,Они удивлены.
+Emotions,I feel nervous.,Men asabiylashyapman.,Я нервничаю.
+Emotions,She is in love.,U sevgiyda.,Она влюблена.
+Emotions,He looks tired.,U charchagan ko'rinadi.,Он выглядит уставшим.
+Emotions,We were scared.,Biz qo'rqqan edik.,Мы испугались.
+Emotions,They are proud of their son.,Ular o'g'illaridan faxrlanadilar.,Они гордятся своим сыном.
+Emotions,I am curious.,Men qiziquvchanman.,Мне любопытно.
+Emotions,She seems worried.,U tashvishlangan ko'rinadi.,Она выглядит обеспокоенной.
+Emotions,He felt relieved.,U yengillik his qildi.,Он почувствовал облегчение.
+Emotions,We are grateful.,Biz minnatdormiz.,Мы благодарны.
+Emotions,They are disappointed.,Ular umidsizlikka tushgan.,Они разочарованы.
+Emotions,I am bored.,Men zerikkanman.,Мне скучно.
+Dreams,I had a strange dream.,Men g'alati tush ko'rdim.,Мне приснился странный сон.
+Dreams,She dreams of traveling the world.,U butun dunyoni kezishni orzu qiladi.,Она мечтает путешествовать по миру.
+Dreams,He wants to be a doctor.,U shifokor bo'lishni xohlaydi.,Он хочет быть врачом.
+Dreams,We have big dreams.,Bizning katta orzularimiz bor.,У нас большие мечты.
+Dreams,They are following their dreams.,Ular o'z orzulariga ergashmoqdalar.,Они следуют своим мечтам.
+Dreams,I hope my dream comes true.,Men orzum amalga oshishiga umid qilaman.,Я надеюсь, моя мечта сбудется.
+Dreams,She remembers her dreams.,U tushlarini eslaydi.,Она помнит свои сны.
+Dreams,He is a dreamer.,U orzupechak.,Он мечтатель.
+Dreams,We talked about our dreams.,Biz o'z orzularimiz haqida gaplashdik.,Мы говорили о наших мечтах.
+Dreams,The dream felt real.,Tush haqiqat his qilindi.,Сон казался реальным.
+Dreams,She achieved her dream.,U o'z orzulariga erishdi.,Она достигла своей мечты.
+Dreams,He has a recurring dream.,U takrorlanuvchi tush ko'radi.,Ему снится повторяющийся сон.
+Dreams,We support each other's dreams.,Biz bir-birimizning orzularini qo'llab-quvvatlaymiz.,Мы поддерживаем мечты друг друга.
+Dreams,I often daydream.,Men ko'pincha xayol surman.,Я часто мечтаю наяву.
+Dreams,She described her dream.,U o'z tushini tasvirlab berdi.,Она описала свой сон.
+Dreams,He is working towards his dream.,U o'z orzusi sari ishlamoqda.,Он работает над своей мечтой.
+Future Plans,I will study abroad.,Men chet elda o'qiyman.,Я буду учиться за границей.
+Future Plans,She wants to get married.,U turmush qurmoqchi.,Она хочет выйти замуж.
+Future Plans,He is going to start a business.,U biznes boshlash niyatida.,Он собирается начать бизнес.
+Future Plans,We plan to buy a house.,Biz uy sotib olishni rejalashtiramiz.,Мы планируем купить дом.
+Future Plans,They are saving money for the future.,Ular kelajak uchun pul yig'moqdalar.,Они копят деньги на будущее.
+Future Plans,I hope to visit Japan.,Men Yaponiyaga tashrif buyurishga umid qilaman.,Я надеюсь посетить Японию.
+Future Plans,She will become a teacher.,U o'qituvchi bo'ladi.,Она станет учительницей.
+Future Plans,He is thinking about his career.,U o'z karerasi haqida o'ylayapti.,Он думает о своей карьере.
+Future Plans,We are planning a trip for next year.,Biz kelasi yil sayohatni rejalashtirmoqdamiz.,Мы планируем поездку на следующий год.
+Future Plans,They want to have children.,Ular farzand ko'rishni xohlaydilar.,Они хотят иметь детей.
+Future Plans,I am learning new skills for my future.,Men kelajagim uchun yangi ko'nikmalarni o'rganyapman.,Я учу новые навыки для своего будущего.
+Future Plans,She is preparing for her future job.,U kelajakdagi ishiga tayyorlanmoqda.,Она готовится к своей будущей работе.
+Future Plans,He has a clear plan for the future.,Uning kelajak uchun aniq rejasi bor.,У него есть чёткий план на будущее.
+Future Plans,We dream about our future together.,Biz kelajagimiz haqida birga orzu qilamiz.,Мы мечтаем о нашем будущем вместе.
+Future Plans,They are investing in their future.,Ular o'z kelajagiga sarmoya kiritmoqdalar.,Они инвестируют в своё будущее.
+Future Plans,I am optimistic about the future.,Men kelajak haqida optimistman.,Я оптимистично настроен насчёт будущего.

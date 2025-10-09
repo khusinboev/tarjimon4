@@ -281,7 +281,8 @@ def cabinet_kb(lang: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=L["practice"], callback_data="mashq:list")],
         [InlineKeyboardButton(text=L["my_books"], callback_data="lughat:list:0"),
          InlineKeyboardButton(text=L["public_vocabs"], callback_data="ommaviy:list:0")],
-        [InlineKeyboardButton(text="📚 Essentiallar", callback_data="essential:main")],
+        [InlineKeyboardButton(text="📚 Essentiallar", callback_data="essential:main"),
+         InlineKeyboardButton(text="🌍 Parallel", callback_data="parallel:main")],  # ⭐ YANGI
         [InlineKeyboardButton(text=L["settings"], callback_data="cab:settings")]
     ])
 

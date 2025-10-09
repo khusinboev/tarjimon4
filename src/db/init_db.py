@@ -1,4 +1,5 @@
 from config import db, sql
+from src.handlers.users.lughatlar.parallel import create_parallel_tables, init_parallel_series
 from src.handlers.users.translate import LANGUAGES
 
 async def create_all_base():
@@ -209,6 +210,14 @@ async def create_all_base():
     CREATE INDEX IF NOT EXISTS idx_book_statistics_book ON book_statistics(book_id);
     """)
     db.commit()
+
+    print("✅ Barcha jadvallar muvaffaqiyatli yaratildi!")
+    try:
+        await create_parallel_tables()
+        await init_parallel_series()
+        print("✅ Parallel tarjimalar jadvallari yaratildi")
+    except Exception as e:
+        print(f"⚠️ Parallel jadvallar yaratishda xato: {e}")
 
     print("✅ Barcha jadvallar muvaffaqiyatli yaratildi!")
 
