@@ -110,21 +110,31 @@ async def create_parallel_tables():
                       created_at TIMESTAMP DEFAULT now
                   (
                   ),
-                      CONSTRAINT fk_parallel_series FOREIGN KEY
+                      CONSTRAINT fk_parallel_series
+                      FOREIGN KEY
                   (
                       series_id
-                  )
-                      REFERENCES parallel_series
+                  ) REFERENCES parallel_series
                   (
                       id
-                  ) ON DELETE CASCADE,
-                      CONSTRAINT uq_series_unit UNIQUE
-                  (
-                      series_id,
-                      unit_number
                   )
+                      ON DELETE CASCADE
                       )
                   """)
+
+    # Unique constraint alohida qo'shish (agar mavjud bo'lmasa)
+    await db_exec("""
+        DO $$ 
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM pg_constraint 
+                WHERE conname = 'uq_series_unit'
+            ) THEN
+                ALTER TABLE parallel_units 
+                ADD CONSTRAINT uq_series_unit UNIQUE (series_id, unit_number);
+            END IF;
+        END $$;
+    """)
 
     # Parallel entries jadvali
     await db_exec("""
@@ -152,23 +162,37 @@ async def create_parallel_tables():
                       created_at TIMESTAMP DEFAULT now
                   (
                   ),
-                      CONSTRAINT fk_parallel_unit FOREIGN KEY
+                      CONSTRAINT fk_parallel_unit
+                      FOREIGN KEY
                   (
                       unit_id
-                  )
-                      REFERENCES parallel_units
+                  ) REFERENCES parallel_units
                   (
                       id
-                  ) ON DELETE CASCADE
+                  )
+                      ON DELETE CASCADE
                       )
                   """)
 
-    # Indekslar
+    # Indekslar (IF NOT EXISTS bilan)
     await db_exec("""
-                  CREATE INDEX IF NOT EXISTS idx_parallel_units_series ON parallel_units(series_id);
-                  CREATE INDEX IF NOT EXISTS idx_parallel_entries_unit ON parallel_entries(unit_id);
-                  CREATE INDEX IF NOT EXISTS idx_parallel_entries_category ON parallel_entries(category);
-                  CREATE INDEX IF NOT EXISTS idx_parallel_entries_frequency ON parallel_entries(frequency_score DESC);
+                  CREATE INDEX IF NOT EXISTS idx_parallel_units_series
+                      ON parallel_units(series_id);
+                  """)
+
+    await db_exec("""
+                  CREATE INDEX IF NOT EXISTS idx_parallel_entries_unit
+                      ON parallel_entries(unit_id);
+                  """)
+
+    await db_exec("""
+                  CREATE INDEX IF NOT EXISTS idx_parallel_entries_category
+                      ON parallel_entries(category);
+                  """)
+
+    await db_exec("""
+                  CREATE INDEX IF NOT EXISTS idx_parallel_entries_frequency
+                      ON parallel_entries(frequency_score DESC);
                   """)
 
 
@@ -555,6 +579,22 @@ async def cmd_import_parallels(msg: Message):
 
     await msg.answer(result_text)
 
+
+# Admin buyrug'ida qo'shing
+@parallel_router.message(lambda m: m.text == "qaytatdan" and m.from_user.id in ADMIN_ID)
+async def cmd_recreate_tables(msg: Message):
+    """Jadvallarni qayta yaratish."""
+    try:
+        await db_exec("DROP TABLE IF EXISTS parallel_entries CASCADE")
+        await db_exec("DROP TABLE IF EXISTS parallel_units CASCADE")
+        await db_exec("DROP TABLE IF EXISTS parallel_series CASCADE")
+
+        await create_parallel_tables()
+        await init_parallel_series()
+
+        await msg.answer("✅ Jadvallar muvaffaqiyatli qayta yaratildi!")
+    except Exception as e:
+        await msg.answer(f"❌ Xatolik: {e}")
 
 # =====================================================
 # 📌 User handlers
