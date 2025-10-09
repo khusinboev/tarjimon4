@@ -414,13 +414,13 @@ async def send_next_essential_question(msg: Message, state: FSMContext, lang: st
 
     """Try to edit message first; if fails, delete and send new one."""
     try:
-        await cb.message.edit_text(question_text, reply_markup=kb, parse_mode="html")
+        await msg.edit_text(question_text, reply_markup=kb, parse_mode="html")
     except Exception:
         try:
-            await cb.message.delete()
+            await msg.delete()
         except Exception:
             pass
-        await cb.message.answer(question_text, reply_markup=kb, parse_mode="html")
+        await msg.answer(question_text, reply_markup=kb, parse_mode="html")
 
 
 # =====================================================
