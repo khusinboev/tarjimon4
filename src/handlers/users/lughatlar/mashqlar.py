@@ -19,6 +19,7 @@ mashqlar_router = Router()
 # =====================================================
 class MashqStates(StatesGroup):
     practicing = State()
+    ready_to_start = State()  # Yangi holat: so'zlar ko'rsatildi, mashq boshlashga tayyor
 
 
 # =====================================================
@@ -55,6 +56,15 @@ def create_practice_books_kb(books: list, current_page: int, total_pages: int, l
     rows.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
 
     return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def start_practice_kb(lang: str) -> InlineKeyboardMarkup:
+    """Mashqni boshlash klaviaturasi."""
+    L = get_locale(lang)
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="▶️ Mashqni boshlash", callback_data="mashq:begin_practice")],
+        [InlineKeyboardButton(text=L["back"], callback_data="mashq:list")]
+    ])
 
 
 # =====================================================
@@ -103,7 +113,7 @@ async def cb_mashqlar(cb: CallbackQuery):
 
 @mashqlar_router.callback_query(lambda c: c.data and c.data.startswith("mashq:start:"))
 async def cb_start_practice(cb: CallbackQuery, state: FSMContext):
-    """Mashqni boshlash."""
+    """Mashqni boshlash - avval so'zlarni ko'rsatish."""
     book_id = int(cb.data.split(":")[2])
     user_id = cb.from_user.id
 
@@ -130,10 +140,22 @@ async def cb_start_practice(cb: CallbackQuery, state: FSMContext):
         await cb.answer("Bu lug'atda yetarli so'z yo'q (kamida 4 ta kerak)", show_alert=True)
         return
 
+    # So'zlar ro'yxatini tayyorlash
+    book_name = book_check["name"]
+    words_list = []
+    for idx, word in enumerate(rows, 1):
+        words_list.append(f"{idx}. <b>{word['word_src']}</b> - {word['word_trg']}")
+    
+    words_text = f"📖 <b>{book_name}</b>\n"
+    words_text += f"📊 Jami: {len(rows)} ta so'z\n\n"
+    words_text += "\n".join(words_list)
+    words_text += "\n\n💡 So'zlarni ko'rib chiqing va tayyor bo'lganingizda mashqni boshlang!"
+
+    # So'zlarni state'ga saqlash
     random.shuffle(rows)
     await state.update_data(
         book_id=book_id,
-        book_name=book_check["name"],
+        book_name=book_name,
         words=rows,
         index=0,
         correct=0,
@@ -145,7 +167,31 @@ async def cb_start_practice(cb: CallbackQuery, state: FSMContext):
         current_cycle_wrong=0,
         cycles_stats=[]
     )
+    await state.set_state(MashqStates.ready_to_start)
+    
+    await safe_edit_or_send(cb, words_text, start_practice_kb(lang), lang)
+    await cb.answer()
+
+
+@mashqlar_router.callback_query(lambda c: c.data == "mashq:begin_practice")
+async def cb_begin_practice(cb: CallbackQuery, state: FSMContext):
+    """Mashqni boshlash."""
+    current_state = await state.get_state()
+    if current_state != MashqStates.ready_to_start:
+        await cb.answer("❌ Xato holat!", show_alert=True)
+        return
+
+    user_data = await get_user_data(cb.from_user.id)
+    lang = user_data["lang"]
+
     await state.set_state(MashqStates.practicing)
+    
+    # Eski xabarni o'chirish
+    try:
+        await cb.message.delete()
+    except:
+        pass
+    
     await send_next_question(cb.message, state, lang)
     await cb.answer()
 
@@ -201,7 +247,14 @@ async def send_next_question(msg: Message, state: FSMContext, lang: str):
     book_name = data.get('book_name', 'Lug\'at')
     question_text = f"📖 {book_name}\n{L['question'].format(word=current['word_src'])}\n\n{progress_text}"
 
-    await msg.edit_text(question_text, reply_markup=kb)
+    # Eski xabarni o'chirish va yangi yuborish
+    try:
+        await msg.delete()
+    except:
+        pass
+    
+    await msg.answer(question_text, reply_markup=kb)
+
 
 @mashqlar_router.callback_query(lambda c: c.data and c.data.startswith("ans:"))
 async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
@@ -234,6 +287,7 @@ async def cb_practice_answer(cb: CallbackQuery, state: FSMContext):
     await state.update_data(**data)
     await send_next_question(cb.message, state, user_data["lang"])
 
+
 @mashqlar_router.callback_query(lambda c: c.data == "mashq:finish")
 async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
     """Mashqni tugatish."""
@@ -256,7 +310,7 @@ async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
 
     # Tsikllar haqida ma'lumot
     if cycles > 0:
-        full_text += f"\n📄 Takrorlangan tsikllar: {cycles}"
+        full_text += f"\n🔄 Takrorlangan tsikllar: {cycles}"
 
     # Motivatsion xabar
     if percent >= 90:
@@ -271,6 +325,13 @@ async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
         full_text += "\n\n📚 Mashq davom eting, har gal yaxshilashasiz!"
 
     await state.clear()
-    await cb.message.edit_text(full_text)
+    
+    # Eski xabarni o'chirish
+    try:
+        await cb.message.delete()
+    except:
+        pass
+    
+    await cb.message.answer(full_text)
     await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(user_data["lang"]))
     await cb.answer()
