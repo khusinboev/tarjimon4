@@ -368,7 +368,7 @@ async def safe_edit_or_send(cb: CallbackQuery, text: str, kb: InlineKeyboardMark
         await cb.message.delete()
     except:
         pass
-    await cb.message.answer(text, reply_markup=kb)
+    await cb.message.answer(text, reply_markup=kb, parse_mode="html")
 
 
 # =====================================================
