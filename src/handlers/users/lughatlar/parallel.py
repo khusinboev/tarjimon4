@@ -369,7 +369,7 @@ async def import_parallel_files(series_code: str, file_paths: list, admin_id: in
     }
 
 
-@parallel_router.message(lambda m: m.text == "import_parallel" and m.from_user.id in ADMIN_ID)
+@parallel_router.message(lambda m: m.text == "📚 Parallellarni kirgizish" and m.from_user.id in ADMIN_ID)
 async def cmd_import_parallel(msg: Message):
     """Parallel fayllarni import qilish."""
 
