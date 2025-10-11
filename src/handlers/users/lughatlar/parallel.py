@@ -589,9 +589,6 @@ async def cmd_recreate_tables(msg: Message):
         await db_exec("DROP TABLE IF EXISTS parallel_units CASCADE")
         await db_exec("DROP TABLE IF EXISTS parallel_series CASCADE")
 
-        await create_parallel_tables()
-        await init_parallel_series()
-
         await msg.answer("✅ Jadvallar muvaffaqiyatli qayta yaratildi!")
     except Exception as e:
         await msg.answer(f"❌ Xatolik: {e}")
