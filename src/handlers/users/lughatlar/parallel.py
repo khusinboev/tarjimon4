@@ -24,12 +24,15 @@ PARALLEL_SERIES = {
     "en_ru": {"name": "Ingliz-Rus", "src_lang": "en", "trg_lang": "ru", "icon": "🇬🇧🇷🇺"}
 }
 
-DIFFICULTY_LEVELS = {
-    1: "Beginner",
-    2: "Elementary",
-    3: "Intermediate",
-    4: "Upper-Intermediate",
-    5: "Advanced"
+# Mavzular darajalari (mavzu nomiga qarab)
+TOPIC_DIFFICULTY = {
+    "Greetings": 1,
+    "Family": 2,
+    "Food": 2,
+    "Travel": 3,
+    "Business": 4,
+    "Technology": 4,
+    "default": 2
 }
 
 
@@ -83,9 +86,9 @@ async def create_parallel_tables():
                       )
                   """)
 
-    # Parallel units jadvali
+    # Parallel topics jadvali (units o'rniga topics)
     await db_exec("""
-                  CREATE TABLE IF NOT EXISTS parallel_units
+                  CREATE TABLE IF NOT EXISTS parallel_topics
                   (
                       id
                       SERIAL
@@ -95,16 +98,16 @@ async def create_parallel_tables():
                       INTEGER
                       NOT
                       NULL,
-                      unit_number
-                      INTEGER
-                      NOT
-                      NULL,
-                      title
+                      topic_name
                       VARCHAR
                   (
                       200
+                  ) NOT NULL,
+                      display_name VARCHAR
+                  (
+                      200
                   ),
-                      difficulty_level INTEGER DEFAULT 1,
+                      difficulty_level INTEGER DEFAULT 2,
                       word_count INTEGER DEFAULT 0,
                       is_active BOOLEAN DEFAULT TRUE,
                       created_at TIMESTAMP DEFAULT now
@@ -118,23 +121,14 @@ async def create_parallel_tables():
                   (
                       id
                   )
-                      ON DELETE CASCADE
+                      ON DELETE CASCADE,
+                      CONSTRAINT uq_series_topic UNIQUE
+                  (
+                      series_id,
+                      topic_name
+                  )
                       )
                   """)
-
-    # Unique constraint alohida qo'shish (agar mavjud bo'lmasa)
-    await db_exec("""
-        DO $$ 
-        BEGIN
-            IF NOT EXISTS (
-                SELECT 1 FROM pg_constraint 
-                WHERE conname = 'uq_series_unit'
-            ) THEN
-                ALTER TABLE parallel_units 
-                ADD CONSTRAINT uq_series_unit UNIQUE (series_id, unit_number);
-            END IF;
-        END $$;
-    """)
 
     # Parallel entries jadvali
     await db_exec("""
@@ -144,7 +138,7 @@ async def create_parallel_tables():
                       SERIAL
                       PRIMARY
                       KEY,
-                      unit_id
+                      topic_id
                       INTEGER
                       NOT
                       NULL,
@@ -157,16 +151,15 @@ async def create_parallel_tables():
                       word_trg TEXT NOT NULL,
                       word_trg2 TEXT,
                       position INTEGER DEFAULT 0,
-                      frequency_score INTEGER DEFAULT 0,
                       is_active BOOLEAN DEFAULT TRUE,
                       created_at TIMESTAMP DEFAULT now
                   (
                   ),
-                      CONSTRAINT fk_parallel_unit
+                      CONSTRAINT fk_parallel_topic
                       FOREIGN KEY
                   (
-                      unit_id
-                  ) REFERENCES parallel_units
+                      topic_id
+                  ) REFERENCES parallel_topics
                   (
                       id
                   )
@@ -176,23 +169,18 @@ async def create_parallel_tables():
 
     # Indekslar (IF NOT EXISTS bilan)
     await db_exec("""
-                  CREATE INDEX IF NOT EXISTS idx_parallel_units_series
-                      ON parallel_units(series_id);
+                  CREATE INDEX IF NOT EXISTS idx_parallel_topics_series
+                      ON parallel_topics(series_id);
                   """)
 
     await db_exec("""
-                  CREATE INDEX IF NOT EXISTS idx_parallel_entries_unit
-                      ON parallel_entries(unit_id);
+                  CREATE INDEX IF NOT EXISTS idx_parallel_entries_topic
+                      ON parallel_entries(topic_id);
                   """)
 
     await db_exec("""
                   CREATE INDEX IF NOT EXISTS idx_parallel_entries_category
                       ON parallel_entries(category);
-                  """)
-
-    await db_exec("""
-                  CREATE INDEX IF NOT EXISTS idx_parallel_entries_frequency
-                      ON parallel_entries(frequency_score DESC);
                   """)
 
 
@@ -210,9 +198,9 @@ async def init_parallel_series():
                       """, (code, info["name"], info["src_lang"], info["trg_lang"], info["icon"]))
 
 
-def parse_parallel_json(file_path: str, series_code: str) -> list:
-    """JSON faylni parse qilish va ma'lumotlarni qaytarish."""
-    entries = []
+def parse_parallel_json(file_path: str, series_code: str) -> dict:
+    """JSON faylni parse qilish va mavzular bo'yicha guruhlab qaytarish."""
+    topics_data = {}
 
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -221,99 +209,69 @@ def parse_parallel_json(file_path: str, series_code: str) -> list:
         # Seriya bo'yicha tillarni aniqlash
         if series_code == "uz_en":
             src_key, trg_key = "uz", "en"
-            trg2_key = None
         elif series_code == "uz_ru":
             src_key, trg_key = "uz", "ru"
-            trg2_key = None
         elif series_code == "en_ru":
             src_key, trg_key = "en", "ru"
-            trg2_key = None
         else:
-            return entries
+            return topics_data
 
-        for category, items in data.items():
+        # Har bir mavzuni alohida guruhlash
+        for topic_name, items in data.items():
+            entries = []
             for item in items:
                 if src_key in item and trg_key in item:
-                    word_trg2 = item.get(trg2_key) if trg2_key else None
-
                     entries.append({
-                        'category': category,
+                        'category': topic_name,
                         'word_src': item[src_key],
                         'word_trg': item[trg_key],
-                        'word_trg2': word_trg2
+                        'word_trg2': item.get('ru') if series_code == "uz_en" else None
                     })
+
+            if entries:  # Faqat bo'sh bo'lmagan mavzularni qo'shamiz
+                topics_data[topic_name] = {
+                    'entries': entries,
+                    'word_count': len(entries),
+                    'difficulty': TOPIC_DIFFICULTY.get(topic_name, TOPIC_DIFFICULTY['default'])
+                }
 
     except Exception as e:
         print(f"JSON faylni o'qishda xato: {e}")
 
-    return entries
+    return topics_data
 
 
-def calculate_difficulty(entries: list, start_idx: int, end_idx: int) -> int:
-    """So'zlar murakkablik darajasini hisoblash."""
-    chunk = entries[start_idx:end_idx]
-
-    # O'rtacha so'z uzunligi asosida
-    avg_length = sum(len(e['word_src'].split()) for e in chunk) / len(chunk)
-
-    if avg_length < 1.5:
-        return 1  # Beginner
-    elif avg_length < 2.5:
-        return 2  # Elementary
-    elif avg_length < 4:
-        return 3  # Intermediate
-    elif avg_length < 6:
-        return 4  # Upper-Intermediate
-    else:
-        return 5  # Advanced
+def get_topic_display_name(topic_name: str) -> str:
+    """Mavzu nomini chiroyli ko'rinishga o'tkazish."""
+    display_names = {
+        "Greetings": "Salomlashish",
+        "Family": "Oila",
+        "Food": "Ovqat",
+        "Travel": "Sayohat",
+        "Business": "Biznes",
+        "Technology": "Texnologiya",
+        "Shopping": "Xarid",
+        "Health": "Sog'liq",
+        "Education": "Ta'lim",
+        "Work": "Ish"
+    }
+    return display_names.get(topic_name, topic_name)
 
 
-def optimize_and_group_entries(entries: list, words_per_unit: int = 50) -> list:
-    """So'zlarni optimallash va guruhlash."""
-
-    # 1. Takrorlarni olib tashlash
-    unique_entries = []
-    seen = set()
-
-    for entry in entries:
-        key = f"{entry['word_src']}:{entry['word_trg']}"
-        if key not in seen:
-            seen.add(key)
-            unique_entries.append(entry)
-
-    # 2. Chastota ball berish (kategoriya va so'z uzunligiga qarab)
-    category_freq = {}
-    for entry in unique_entries:
-        cat = entry['category']
-        category_freq[cat] = category_freq.get(cat, 0) + 1
-
-    for entry in unique_entries:
-        word_length = len(entry['word_src'].split())
-        cat_freq = category_freq.get(entry['category'], 0)
-
-        # Oddiy formulaga asoslangan ball
-        entry['frequency_score'] = (cat_freq * 10) + (10 - min(word_length, 10))
-
-    # 3. Ball bo'yicha saralash (yuqori ball = oddiy, ko'p uchraydigan)
-    sorted_entries = sorted(unique_entries, key=lambda x: x['frequency_score'], reverse=True)
-
-    # 4. Unitlarga ajratish
-    units = []
-    for i in range(0, len(sorted_entries), words_per_unit):
-        chunk = sorted_entries[i:i + words_per_unit]
-        if len(chunk) >= 20:  # Kamida 20 ta so'z bo'lishi kerak
-            difficulty = calculate_difficulty(sorted_entries, i, min(i + words_per_unit, len(sorted_entries)))
-            units.append({
-                'words': chunk,
-                'difficulty': difficulty,
-                'word_count': len(chunk)
-            })
-
-    return units
+def get_difficulty_icon(difficulty: int) -> str:
+    """Daraja bo'yicha icon qaytarish."""
+    icons = {
+        1: "🟢",  # Beginner
+        2: "🔵",  # Elementary
+        3: "🟡",  # Intermediate
+        4: "🟠",  # Upper-Intermediate
+        5: "🔴"  # Advanced
+    }
+    return icons.get(difficulty, "⚪")
 
 
 async def import_parallel_files(series_code: str, file_paths: list, admin_id: int) -> dict:
-    """Parallel fayllarni bazaga import qilish."""
+    """Parallel fayllarni bazaga import qilish (mavzular bo'yicha)."""
 
     # Series ID olish
     series = await db_exec(
@@ -327,79 +285,83 @@ async def import_parallel_files(series_code: str, file_paths: list, admin_id: in
     series_id = series['id']
 
     # Barcha fayllardan ma'lumotlarni yig'ish
-    all_entries = []
+    all_topics = {}
     for file_path in file_paths:
         if Path(file_path).exists():
-            entries = parse_parallel_json(file_path, series_code)
-            all_entries.extend(entries)
+            topics_data = parse_parallel_json(file_path, series_code)
+            # Mavzularni birlashtirish
+            for topic_name, topic_info in topics_data.items():
+                if topic_name in all_topics:
+                    # Agar mavzu allaqachon mavjud bo'lsa, yangi so'zlarni qo'shamiz
+                    all_topics[topic_name]['entries'].extend(topic_info['entries'])
+                    all_topics[topic_name]['word_count'] += topic_info['word_count']
+                else:
+                    all_topics[topic_name] = topic_info
 
-    if not all_entries:
+    if not all_topics:
         return {"success": False, "error": "Fayllar bo'sh yoki noto'g'ri format"}
 
-    # Optimallash va guruhlash
-    units = optimize_and_group_entries(all_entries)
-
-    if not units:
-        return {"success": False, "error": "Yetarli so'z topilmadi"}
-
     total_words = 0
-    imported_units = 0
+    imported_topics = 0
 
     # Eski ma'lumotlarni o'chirish
     await db_exec("""
                   DELETE
                   FROM parallel_entries
-                  WHERE unit_id IN (SELECT id
-                                    FROM parallel_units
-                                    WHERE series_id = %s)
+                  WHERE topic_id IN (SELECT id
+                                     FROM parallel_topics
+                                     WHERE series_id = %s)
                   """, (series_id,))
-    await db_exec("DELETE FROM parallel_units WHERE series_id = %s", (series_id,))
+    await db_exec("DELETE FROM parallel_topics WHERE series_id = %s", (series_id,))
 
-    # Yangi unitlarni qo'shish
-    for idx, unit_data in enumerate(units, 1):
+    # Yangi mavzularni qo'shish
+    for topic_name, topic_data in all_topics.items():
         try:
-            # Unit yaratish
-            difficulty_name = DIFFICULTY_LEVELS.get(unit_data['difficulty'], 'Unknown')
-            unit = await db_exec("""
-                                 INSERT INTO parallel_units (series_id, unit_number, title, difficulty_level, word_count)
-                                 VALUES (%s, %s, %s, %s, %s) RETURNING id
-                                 """, (series_id, idx, f"Unit {idx} - {difficulty_name}",
-                                       unit_data['difficulty'], unit_data['word_count']), fetch=True)
+            # Topic yaratish
+            display_name = get_topic_display_name(topic_name)
+            difficulty = topic_data['difficulty']
 
-            unit_id = unit['id']
+            topic = await db_exec("""
+                                  INSERT INTO parallel_topics
+                                      (series_id, topic_name, display_name, difficulty_level, word_count)
+                                  VALUES (%s, %s, %s, %s, %s) RETURNING id
+                                  """, (series_id, topic_name, display_name, difficulty, topic_data['word_count']),
+                                  fetch=True)
+
+            topic_id = topic['id']
 
             # So'zlarni qo'shish
             word_count = 0
-            for pos, entry in enumerate(unit_data['words'], 1):
+            for pos, entry in enumerate(topic_data['entries'], 1):
                 try:
                     await db_exec("""
                                   INSERT INTO parallel_entries
-                                  (unit_id, category, word_src, word_trg, word_trg2, position, frequency_score)
-                                  VALUES (%s, %s, %s, %s, %s, %s, %s)
-                                  """, (unit_id, entry['category'], entry['word_src'],
-                                        entry['word_trg'], entry.get('word_trg2'),
-                                        pos, entry['frequency_score']))
+                                      (topic_id, category, word_src, word_trg, word_trg2, position)
+                                  VALUES (%s, %s, %s, %s, %s, %s)
+                                  """, (topic_id, entry['category'], entry['word_src'],
+                                        entry['word_trg'], entry.get('word_trg2'), pos))
                     word_count += 1
                 except Exception as e:
                     print(f"So'z qo'shishda xato: {entry['word_src']} - {e}")
                     continue
 
-            # Unit word_count yangilash
-            await db_exec(
-                "UPDATE parallel_units SET word_count = %s WHERE id = %s",
-                (word_count, unit_id)
-            )
+            # Topic word_count yangilash (agar kerak bo'lsa)
+            if word_count != topic_data['word_count']:
+                await db_exec(
+                    "UPDATE parallel_topics SET word_count = %s WHERE id = %s",
+                    (word_count, topic_id)
+                )
 
             total_words += word_count
-            imported_units += 1
+            imported_topics += 1
 
         except Exception as e:
-            print(f"Unit {idx} import qilishda xato: {e}")
+            print(f"Mavzu {topic_name} import qilishda xato: {e}")
             continue
 
     return {
         "success": True,
-        "units": imported_units,
+        "topics": imported_topics,
         "words": total_words,
         "series": series_code
     }
@@ -422,16 +384,17 @@ def parallel_main_kb(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-def parallel_units_kb(series_code: str, units: list, page: int, total_pages: int, lang: str) -> InlineKeyboardMarkup:
-    """Parallel units ro'yxati klaviaturasi."""
+def parallel_topics_kb(series_code: str, topics: list, page: int, total_pages: int, lang: str) -> InlineKeyboardMarkup:
+    """Parallel topics ro'yxati klaviaturasi."""
     L = get_locale(lang)
     rows = []
 
-    # Units tugmalari
-    for unit in units:
-        difficulty_icon = "⭐" * unit['difficulty_level']
-        text = f"{difficulty_icon} Unit {unit['unit_number']} ({unit['word_count']})"
-        callback = f"parallel:unit:{unit['id']}"
+    # Topics tugmalari
+    for topic in topics:
+        difficulty_icon = get_difficulty_icon(topic['difficulty_level'])
+        display_name = topic['display_name'] or get_topic_display_name(topic['topic_name'])
+        text = f"{difficulty_icon} {display_name} ({topic['word_count']})"
+        callback = f"parallel:topic:{topic['id']}"
         rows.append([InlineKeyboardButton(text=text, callback_data=callback)])
 
     # Sahifalash
@@ -445,6 +408,10 @@ def parallel_units_kb(series_code: str, units: list, page: int, total_pages: int
                                                 callback_data=f"parallel:series:{series_code}:{page + 1}"))
         if nav_row:
             rows.append(nav_row)
+
+        # Sahifa ma'lumoti
+        page_info = L["page_info"].format(current=page + 1, total=total_pages)
+        rows.append([InlineKeyboardButton(text=page_info, callback_data="noop")])
 
     rows.append([InlineKeyboardButton(text=L["back"], callback_data="parallel:main")])
 
@@ -463,15 +430,15 @@ def start_parallel_practice_kb(lang: str) -> InlineKeyboardMarkup:
 # =====================================================
 # 📌 Practice functions
 # =====================================================
-async def get_unit_words(unit_id: int) -> list:
-    """Unit so'zlarini olish."""
+async def get_topic_words(topic_id: int) -> list:
+    """Topic so'zlarini olish."""
     words = await db_exec("""
                           SELECT word_src, word_trg, word_trg2, category
                           FROM parallel_entries
-                          WHERE unit_id = %s
+                          WHERE topic_id = %s
                             AND is_active = TRUE
                           ORDER BY position
-                          """, (unit_id,), fetch=True, many=True)
+                          """, (topic_id,), fetch=True, many=True)
 
     return words or []
 
@@ -520,8 +487,8 @@ async def send_next_parallel_question(msg: Message, state: FSMContext, lang: str
 
     # Progress ko'rsatish
     progress_text = f"📊 {data.get('correct', 0)}/{data.get('answers', 0)} to'g'ri"
-    unit_title = data.get('unit_title', 'Parallel Unit')
-    question_text = f"📖 {unit_title}\n\n<b>❓ {current['word_src']}</b>\n\n{progress_text}"
+    topic_title = data.get('topic_title', 'Parallel Topic')
+    question_text = f"📖 {topic_title}\n\n<b>❓ {current['word_src']}</b>\n\n{progress_text}"
 
     try:
         await msg.edit_text(question_text, reply_markup=kb, parse_mode="html")
@@ -554,7 +521,7 @@ async def cmd_import_parallels(msg: Message):
 
     results = []
     total_words = 0
-    total_units = 0
+    total_topics = 0
 
     # Har bir seriya uchun
     for series_code, info in PARALLEL_SERIES.items():
@@ -568,9 +535,9 @@ async def cmd_import_parallels(msg: Message):
 
             if result["success"]:
                 results.append(
-                    f"✅ {info['name']}: {result['units']} unit, {result['words']} so'z")
+                    f"✅ {info['name']}: {result['topics']} mavzu, {result['words']} so'z")
                 total_words += result["words"]
-                total_units += result["units"]
+                total_topics += result["topics"]
             else:
                 results.append(f"❌ {info['name']}: {result['error']}")
         else:
@@ -579,7 +546,7 @@ async def cmd_import_parallels(msg: Message):
     # Natijani yuborish
     result_text = "📚 Parallel tarjimalar import natijasi:\n\n"
     result_text += "\n".join(results)
-    result_text += f"\n\n📊 Jami: {total_units} unit, {total_words} so'z"
+    result_text += f"\n\n📊 Jami: {total_topics} mavzu, {total_words} so'z"
 
     await msg.answer(result_text)
 
@@ -590,7 +557,7 @@ async def cmd_recreate_tables(msg: Message):
     """Jadvallarni qayta yaratish."""
     try:
         await db_exec("DROP TABLE IF EXISTS parallel_entries CASCADE")
-        await db_exec("DROP TABLE IF EXISTS parallel_units CASCADE")
+        await db_exec("DROP TABLE IF EXISTS parallel_topics CASCADE")
         await db_exec("DROP TABLE IF EXISTS parallel_series CASCADE")
 
         await msg.answer("✅ Jadvallar muvaffaqiyatli qayta yaratildi!")
@@ -616,7 +583,7 @@ async def cb_parallel_main(cb: CallbackQuery):
 
 @parallel_router.callback_query(lambda c: c.data and c.data.startswith("parallel:series:"))
 async def cb_parallel_series(cb: CallbackQuery):
-    """Parallel seriya units ro'yxati."""
+    """Parallel seriya topics ro'yxati."""
     parts = cb.data.split(":")
     series_code = parts[2]
     page = int(parts[3]) if len(parts) > 3 else 0
@@ -633,33 +600,33 @@ async def cb_parallel_series(cb: CallbackQuery):
         await cb.answer("❌ Series topilmadi!", show_alert=True)
         return
 
-    # Units ro'yxatini olish
+    # Topics ro'yxatini olish
     offset = page * BOOKS_PER_PAGE
-    units = await db_exec("""
-                          SELECT id, unit_number, word_count, difficulty_level, title
-                          FROM parallel_units
-                          WHERE series_id = %s
-                            AND is_active = TRUE
-                          ORDER BY unit_number
-                              LIMIT %s
-                          OFFSET %s
-                          """, (series['id'], BOOKS_PER_PAGE, offset), fetch=True, many=True)
+    topics = await db_exec("""
+                           SELECT id, topic_name, display_name, word_count, difficulty_level
+                           FROM parallel_topics
+                           WHERE series_id = %s
+                             AND is_active = TRUE
+                           ORDER BY topic_name
+                               LIMIT %s
+                           OFFSET %s
+                           """, (series['id'], BOOKS_PER_PAGE, offset), fetch=True, many=True)
 
     total_count = await db_exec(
-        "SELECT COUNT(*) as count FROM parallel_units WHERE series_id = %s AND is_active = TRUE",
+        "SELECT COUNT(*) as count FROM parallel_topics WHERE series_id = %s AND is_active = TRUE",
         (series['id'],), fetch=True
     )
 
     total = total_count.get('count', 0) if total_count else 0
 
-    if not units and page == 0:
-        await cb.answer("❌ Bu seriyada unitlar mavjud emas!", show_alert=True)
+    if not topics and page == 0:
+        await cb.answer("❌ Bu seriyada mavzular mavjud emas!", show_alert=True)
         return
 
     total_pages = ceil(total / BOOKS_PER_PAGE)
-    kb = parallel_units_kb(series_code, units, page, total_pages, lang)
+    kb = parallel_topics_kb(series_code, topics, page, total_pages, lang)
 
-    header_text = f"{series['icon']} {series['name']}\n📊 Jami {total} ta unit"
+    header_text = f"{series['icon']} {series['name']}\n📊 Jami {total} ta mavzu"
     if total_pages > 1:
         header_text += f"\n📄 {page + 1}/{total_pages} sahifa"
 
@@ -667,41 +634,42 @@ async def cb_parallel_series(cb: CallbackQuery):
     await cb.answer()
 
 
-@parallel_router.callback_query(lambda c: c.data and c.data.startswith("parallel:unit:"))
-async def cb_parallel_unit_practice(cb: CallbackQuery, state: FSMContext):
-    """Parallel unit bilan mashq boshlash."""
-    unit_id = int(cb.data.split(":")[2])
+@parallel_router.callback_query(lambda c: c.data and c.data.startswith("parallel:topic:"))
+async def cb_parallel_topic_practice(cb: CallbackQuery, state: FSMContext):
+    """Parallel topic bilan mashq boshlash."""
+    topic_id = int(cb.data.split(":")[2])
     user_id = cb.from_user.id
 
-    unit_info = await db_exec("""
-                              SELECT pu.unit_number,
-                                     pu.title,
-                                     pu.word_count,
-                                     pu.difficulty_level,
-                                     ps.name as series_name,
-                                     ps.icon
-                              FROM parallel_units pu
-                                       JOIN parallel_series ps ON pu.series_id = ps.id
-                              WHERE pu.id = %s
-                                AND pu.is_active = TRUE
-                              """, (unit_id,), fetch=True)
+    topic_info = await db_exec("""
+                               SELECT pt.topic_name,
+                                      pt.display_name,
+                                      pt.word_count,
+                                      pt.difficulty_level,
+                                      ps.name as series_name,
+                                      ps.icon
+                               FROM parallel_topics pt
+                                        JOIN parallel_series ps ON pt.series_id = ps.id
+                               WHERE pt.id = %s
+                                 AND pt.is_active = TRUE
+                               """, (topic_id,), fetch=True)
 
-    if not unit_info:
-        await cb.answer("❌ Unit topilmadi!", show_alert=True)
+    if not topic_info:
+        await cb.answer("❌ Mavzu topilmadi!", show_alert=True)
         return
 
-    words = await get_unit_words(unit_id)
+    words = await get_topic_words(topic_id)
 
     if len(words) < 4:
-        await cb.answer("❌ Bu unitda yetarli so'z yo'q (kamida 4 ta kerak)!", show_alert=True)
+        await cb.answer("❌ Bu mavzuda yetarli so'z yo'q (kamida 4 ta kerak)!", show_alert=True)
         return
 
     user_data = await get_user_data(user_id)
     lang = user_data["lang"]
 
     # So'zlar ro'yxatini tayyorlash
-    difficulty_name = DIFFICULTY_LEVELS.get(unit_info['difficulty_level'], 'Unknown')
-    unit_title = f"{unit_info['icon']} {unit_info['series_name']} - Unit {unit_info['unit_number']}"
+    difficulty_icon = get_difficulty_icon(topic_info['difficulty_level'])
+    display_name = topic_info['display_name'] or get_topic_display_name(topic_info['topic_name'])
+    topic_title = f"{topic_info['icon']} {topic_info['series_name']} - {display_name}"
 
     words_list = []
     for idx, word in enumerate(words, 1):
@@ -710,16 +678,16 @@ async def cb_parallel_unit_practice(cb: CallbackQuery, state: FSMContext):
             trg_text += f" / {word['word_trg2']}"
         words_list.append(f"{idx}. <b>{word['word_src']}</b> - {trg_text}")
 
-    words_text = f"📖 <b>{unit_title}</b>\n"
-    words_text += f"⭐ Daraja: {difficulty_name}\n"
+    words_text = f"📖 <b>{topic_title}</b>\n"
+    words_text += f"{difficulty_icon} Daraja: {topic_info['difficulty_level']}\n"
     words_text += f"📊 Jami: {len(words)} ta so'z\n\n"
     words_text += "\n".join(words_list)
     words_text += "\n\n💡 So'zlarni ko'rib chiqing va tayyor bo'lganingizda mashqni boshlang!"
 
     random.shuffle(words)
     await state.update_data(
-        unit_id=unit_id,
-        unit_title=unit_title,
+        topic_id=topic_id,
+        topic_title=topic_title,
         words=words,
         index=0,
         correct=0,
@@ -799,7 +767,7 @@ async def cb_parallel_finish(cb: CallbackQuery, state: FSMContext):
     total_answers = data.get("answers", 0)
     total_correct = data.get("correct", 0)
     total_wrong = data.get("wrong", 0)
-    unit_title = data.get("unit_title", "Parallel Unit")
+    topic_title = data.get("topic_title", "Parallel Mavzu")
     cycles = data.get("cycles", 0)
 
     percent = (total_correct / total_answers * 100) if total_answers else 0.0
@@ -807,7 +775,7 @@ async def cb_parallel_finish(cb: CallbackQuery, state: FSMContext):
     user_data = await get_user_data(cb.from_user.id)
     L = get_locale(user_data["lang"])
 
-    full_text = f"📖 {unit_title}\n"
+    full_text = f"📖 {topic_title}\n"
     full_text += f"{L['results_header']}\n\n"
     full_text += f"{L['results_lines'].format(unique=total_unique, answers=total_answers, correct=total_correct, wrong=total_wrong, percent=percent)}"
 
@@ -816,7 +784,7 @@ async def cb_parallel_finish(cb: CallbackQuery, state: FSMContext):
 
     # Motivatsional xabar
     if percent >= 90:
-        full_text += "\n\n🎉 Mukammal! Siz bu unitni juda yaxshi bilasiz!"
+        full_text += "\n\n🎉 Mukammal! Siz bu mavzuni juda yaxshi bilasiz!"
     elif percent >= 80:
         full_text += "\n\n⭐ Ajoyib natija! Davom eting!"
     elif percent >= 70:
