@@ -6,6 +6,7 @@ import random
 from math import ceil
 from pathlib import Path
 import re
+import json
 
 from src.handlers.users.lughatlar.vocabs import (
     get_user_data, db_exec, get_locale, safe_edit_or_send,
@@ -128,7 +129,7 @@ async def create_parallel_tables():
         BEGIN
             IF NOT EXISTS (
                 SELECT 1 FROM pg_constraint 
-                WHERE conname = 'uq_series_unit'
+                WHERE conname = 'uq_series_unit')
             ) THEN
                 ALTER TABLE parallel_units 
                 ADD CONSTRAINT uq_series_unit UNIQUE (series_id, unit_number);
@@ -210,22 +211,19 @@ async def init_parallel_series():
                       """, (code, info["name"], info["src_lang"], info["trg_lang"], info["icon"]))
 
 
-def parse_parallel_file(file_path: str) -> list:
-    """Parallel faylni parse qilish va ma'lumotlarni qaytarish."""
+def parse_parallel_json(file_path: str, src_lang: str, trg_lang: str) -> list:
+    """Parallel JSON faylni parse qilish va ma'lumotlarni qaytarish."""
     entries = []
 
     with open(file_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
+        data = json.load(f)
 
-            parts = line.split(',')
-            if len(parts) >= 3:
-                category = parts[0].strip()
-                word_src = parts[1].strip()
-                word_trg = parts[2].strip()
-                word_trg2 = parts[3].strip() if len(parts) > 3 else None
+    for category, items in data.items():
+        for item in items:
+            if src_lang in item and trg_lang in item:
+                word_src = item[src_lang].strip()
+                word_trg = item[trg_lang].strip()
+                word_trg2 = None  # Agar kerak bo'lsa, boshqa tilni qo'shish mumkin
 
                 if category and word_src and word_trg:
                     entries.append({
@@ -317,226 +315,67 @@ async def import_parallel_files(series_code: str, file_paths: list, admin_id: in
 
     # Barcha fayllardan ma'lumotlarni yig'ish
     all_entries = []
+    src_lang = PARALLEL_SERIES[series_code]["src_lang"]
+    trg_lang = PARALLEL_SERIES[series_code]["trg_lang"]
     for file_path in file_paths:
         if Path(file_path).exists():
-            entries = parse_parallel_file(file_path)
+            entries = parse_parallel_json(file_path, src_lang, trg_lang)
             all_entries.extend(entries)
 
     if not all_entries:
-        return {"success": False, "error": "Fayllar bo'sh yoki noto'g'ri format"}
+        return {"success": False, "error": "Fayllar bo'sh yoki xato"}
 
-    # Optimallash va guruhlash
+    # Unitlarga guruhlash
     units = optimize_and_group_entries(all_entries)
-
     if not units:
         return {"success": False, "error": "Yetarli so'z topilmadi"}
 
     total_words = 0
-    imported_units = 0
+    total_units = len(units)
 
-    # Eski ma'lumotlarni o'chirish
-    await db_exec("""
-                  DELETE
-                  FROM parallel_entries
-                  WHERE unit_id IN (SELECT id
-                                    FROM parallel_units
-                                    WHERE series_id = %s)
-                  """, (series_id,))
-    await db_exec("DELETE FROM parallel_units WHERE series_id = %s", (series_id,))
+    # Avvalgi unitlarni o'chirish
+    await db_exec(
+        "DELETE FROM parallel_units WHERE series_id = %s",
+        (series_id,)
+    )
 
-    # Yangi unitlarni qo'shish
-    for idx, unit_data in enumerate(units, 1):
-        try:
-            # Unit yaratish
-            difficulty_name = DIFFICULTY_LEVELS.get(unit_data['difficulty'], 'Unknown')
-            unit = await db_exec("""
-                                 INSERT INTO parallel_units (series_id, unit_number, title, difficulty_level, word_count)
-                                 VALUES (%s, %s, %s, %s, %s) RETURNING id
-                                 """, (series_id, idx, f"Unit {idx} - {difficulty_name}",
-                                       unit_data['difficulty'], unit_data['word_count']), fetch=True)
+    for unit_num, unit in enumerate(units, 1):
+        title = f"Unit {unit_num} - {DIFFICULTY_LEVELS[unit['difficulty']]}"
 
-            unit_id = unit['id']
+        # Unit qo'shish
+        unit_id = await db_exec("""
+            INSERT INTO parallel_units
+            (series_id, unit_number, title, difficulty_level, word_count)
+            VALUES (%s, %s, %s, %s, %s) RETURNING id
+        """, (series_id, unit_num, title, unit['difficulty'], unit['word_count']), fetch=True)
 
-            # So'zlarni qo'shish
-            word_count = 0
-            for pos, entry in enumerate(unit_data['words'], 1):
-                try:
-                    await db_exec("""
-                                  INSERT INTO parallel_entries
-                                  (unit_id, category, word_src, word_trg, word_trg2, position, frequency_score)
-                                  VALUES (%s, %s, %s, %s, %s, %s, %s)
-                                  """, (unit_id, entry['category'], entry['word_src'],
-                                        entry['word_trg'], entry.get('word_trg2'),
-                                        pos, entry['frequency_score']))
-                    word_count += 1
-                except Exception as e:
-                    print(f"So'z qo'shishda xato: {entry['word_src']} - {e}")
-                    continue
+        unit_id = unit_id['id']
 
-            # Unit word_count yangilash
-            await db_exec(
-                "UPDATE parallel_units SET word_count = %s WHERE id = %s",
-                (word_count, unit_id)
-            )
+        # Entries qo'shish
+        for pos, word in enumerate(unit['words'], 1):
+            await db_exec("""
+                INSERT INTO parallel_entries
+                (unit_id, category, word_src, word_trg, word_trg2, position, frequency_score)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (unit_id, word['category'], word['word_src'], word['word_trg'],
+                  word.get('word_trg2'), pos, word['frequency_score']))
 
-            total_words += word_count
-            imported_units += 1
-
-        except Exception as e:
-            print(f"Unit {idx} import qilishda xato: {e}")
-            continue
+        total_words += unit['word_count']
 
     return {
         "success": True,
-        "units": imported_units,
-        "words": total_words,
-        "series": series_code
+        "units": total_units,
+        "words": total_words
     }
 
 
-# =====================================================
-# 📌 UI Builders
-# =====================================================
-def parallel_main_kb(lang: str) -> InlineKeyboardMarkup:
-    """Parallel tarjimalar asosiy menyu."""
-    L = get_locale(lang)
+@parallel_router.message(lambda m: m.text == "import_parallel" and m.from_user.id in ADMIN_ID)
+async def cmd_import_parallel(msg: Message):
+    """Parallel fayllarni import qilish."""
 
-    buttons = []
-    for code, info in PARALLEL_SERIES.items():
-        text = f"{info['icon']} {info['name']}"
-        buttons.append([InlineKeyboardButton(text=text, callback_data=f"parallel:series:{code}")])
-
-    buttons.append([InlineKeyboardButton(text=L["back"], callback_data="cab:back")])
-
-    return InlineKeyboardMarkup(inline_keyboard=buttons)
-
-
-def parallel_units_kb(series_code: str, units: list, page: int, total_pages: int, lang: str) -> InlineKeyboardMarkup:
-    """Parallel units ro'yxati klaviaturasi."""
-    L = get_locale(lang)
-    rows = []
-
-    # Units tugmalari
-    for unit in units:
-        difficulty_icon = "⭐" * unit['difficulty_level']
-        text = f"{difficulty_icon} Unit {unit['unit_number']} ({unit['word_count']})"
-        callback = f"parallel:unit:{unit['id']}"
-        rows.append([InlineKeyboardButton(text=text, callback_data=callback)])
-
-    # Sahifalash
-    if total_pages > 1:
-        nav_row = []
-        if page > 0:
-            nav_row.append(InlineKeyboardButton(text=L["prev_page"],
-                                                callback_data=f"parallel:series:{series_code}:{page - 1}"))
-        if page < total_pages - 1:
-            nav_row.append(InlineKeyboardButton(text=L["next_page"],
-                                                callback_data=f"parallel:series:{series_code}:{page + 1}"))
-        if nav_row:
-            rows.append(nav_row)
-
-    rows.append([InlineKeyboardButton(text=L["back"], callback_data="parallel:main")])
-
-    return InlineKeyboardMarkup(inline_keyboard=rows)
-
-
-def start_parallel_practice_kb(lang: str) -> InlineKeyboardMarkup:
-    """Mashqni boshlash klaviaturasi."""
-    L = get_locale(lang)
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="▶️ Mashqni boshlash", callback_data="parallel:begin_practice")],
-        [InlineKeyboardButton(text=L["back"], callback_data="parallel:main")]
-    ])
-
-
-# =====================================================
-# 📌 Practice functions
-# =====================================================
-async def get_unit_words(unit_id: int) -> list:
-    """Unit so'zlarini olish."""
-    words = await db_exec("""
-                          SELECT word_src, word_trg, word_trg2, category
-                          FROM parallel_entries
-                          WHERE unit_id = %s
-                            AND is_active = TRUE
-                          ORDER BY position
-                          """, (unit_id,), fetch=True, many=True)
-
-    return words or []
-
-
-async def send_next_parallel_question(msg: Message, state: FSMContext, lang: str):
-    """Parallel mashq savolini yuborish."""
-    data = await state.get_data()
-    words, index = data["words"], data["index"]
-    L = get_locale(lang)
-
-    if index >= len(words):
-        cycles = data.get("cycles", 0) + 1
-        cycles_stats = data.get("cycles_stats", [])
-        cycles_stats.append({
-            "correct": data.get("current_cycle_correct", 0),
-            "wrong": data.get("current_cycle_wrong", 0)
-        })
-        random.shuffle(words)
-        await state.update_data(
-            words=words, index=0, cycles=cycles, cycles_stats=cycles_stats,
-            current_cycle_correct=0, current_cycle_wrong=0
-        )
-        data = await state.get_data()
-        index = 0
-
-    current = data["words"][index]
-    correct_answer = current["word_trg"]
-    options = [correct_answer]
-    seen = set(options)
-
-    # Noto'g'ri javoblar qo'shish
-    while len(options) < 4 and len(options) < len(data["words"]):
-        candidate = random.choice(data["words"])["word_trg"]
-        if candidate not in seen:
-            options.append(candidate)
-            seen.add(candidate)
-
-    random.shuffle(options)
-
-    kb_rows = [[InlineKeyboardButton(text=o, callback_data=f"parallel_ans:{index}:{o}")] for o in options]
-    kb_rows.extend([
-        [InlineKeyboardButton(text=L["finish"], callback_data="parallel:finish")],
-        [InlineKeyboardButton(text=L["main_menu"], callback_data="cab:back")]
-    ])
-    kb = InlineKeyboardMarkup(inline_keyboard=kb_rows)
-
-    # Progress ko'rsatish
-    progress_text = f"📊 {data.get('correct', 0)}/{data.get('answers', 0)} to'g'ri"
-    unit_title = data.get('unit_title', 'Parallel Unit')
-    question_text = f"📖 {unit_title}\n\n<b>❓ {current['word_src']}</b>\n\n{progress_text}"
-
-    try:
-        await msg.edit_text(question_text, reply_markup=kb, parse_mode="html")
-    except Exception:
-        try:
-            await msg.delete()
-        except Exception:
-            pass
-        await msg.answer(question_text, reply_markup=kb, parse_mode="html")
-
-
-# =====================================================
-# 📌 Admin commands
-# =====================================================
-@parallel_router.message(lambda m: m.text == "📚 Parallellarni kirgizish" and m.from_user.id in ADMIN_ID)
-async def cmd_import_parallels(msg: Message):
-    """Parallel tarjimalarni import qilish."""
-
-    await create_parallel_tables()
-    await init_parallel_series()
-
-    current_dir = Path(__file__).parent
-    parallel_folder = current_dir / "parallel"
-
+    parallel_folder = Path("data/parallel")
     if not parallel_folder.exists():
-        await msg.answer("❌ 'parallel' papkasi topilmadi!")
+        await msg.answer("❌ Parallel folder topilmadi!")
         return
 
     await msg.answer("⏳ Parallel tarjimalar import qilinmoqda...")
@@ -545,21 +384,13 @@ async def cmd_import_parallels(msg: Message):
     total_words = 0
     total_units = 0
 
+    # JSON fayl yo'li
+    json_file = str(parallel_folder / "q1.json")
+
     # Har bir seriya uchun
     for series_code, info in PARALLEL_SERIES.items():
-        file_patterns = {
-            "uz_en": ["d1.txt", "g1.txt"],
-            "uz_ru": ["d2.txt", "g2.txt"],
-            "en_ru": ["d2.txt"]  # Bu yerda ingliz-rus uchun yangi fayl kerak
-        }
-
-        file_paths = []
-        for pattern in file_patterns.get(series_code, []):
-            file_path = parallel_folder / pattern
-            if file_path.exists():
-                file_paths.append(str(file_path))
-
-        if file_paths:
+        file_paths = [json_file]
+        if Path(json_file).exists():
             result = await import_parallel_files(series_code, file_paths, msg.from_user.id)
 
             if result["success"]:
@@ -570,7 +401,7 @@ async def cmd_import_parallels(msg: Message):
             else:
                 results.append(f"❌ {info['name']}: {result['error']}")
         else:
-            results.append(f"⚠️ {info['name']}: Fayllar topilmadi")
+            results.append(f"⚠️ {info['name']}: q1.json topilmadi")
 
     # Natijani yuborish
     result_text = "📚 Parallel tarjimalar import natijasi:\n\n"
@@ -592,6 +423,188 @@ async def cmd_recreate_tables(msg: Message):
         await msg.answer("✅ Jadvallar muvaffaqiyatli qayta yaratildi!")
     except Exception as e:
         await msg.answer(f"❌ Xatolik: {e}")
+
+
+async def get_unit_words(unit_id: int) -> list:
+    """Unitdagi so'zlarni olish."""
+    words = await db_exec("""
+        SELECT word_src, word_trg, word_trg2
+        FROM parallel_entries
+        WHERE unit_id = %s AND is_active = TRUE
+        ORDER BY position
+    """, (unit_id,), fetch=True, many=True)
+    return words or []
+
+
+def parallel_main_kb(lang: str) -> InlineKeyboardMarkup:
+    """Parallel asosiy menyu klaviaturasi."""
+    L = get_locale(lang)
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(text=f"{PARALLEL_SERIES['uz_en']['icon']} {PARALLEL_SERIES['uz_en']['name']}",
+                                 callback_data="parallel:series:uz_en"),
+            InlineKeyboardButton(text=f"{PARALLEL_SERIES['uz_ru']['icon']} {PARALLEL_SERIES['uz_ru']['name']}",
+                                 callback_data="parallel:series:uz_ru")
+        ],
+        [
+            InlineKeyboardButton(text=f"{PARALLEL_SERIES['en_ru']['icon']} {PARALLEL_SERIES['en_ru']['name']}",
+                                 callback_data="parallel:series:en_ru")
+        ],
+        [InlineKeyboardButton(text=L["back"], callback_data="cab:back")]
+    ])
+
+
+def parallel_units_kb(series_code: str, units: list, page: int, total_pages: int, lang: str) -> InlineKeyboardMarkup:
+    """Parallel unitlar klaviaturasi."""
+    L = get_locale(lang)
+    rows = []
+    for unit in units:
+        title = unit.get('title', f"Unit {unit['unit_number']}")
+        rows.append([
+            InlineKeyboardButton(
+                text=f"📖 {title} ({unit['word_count']}) ⭐{unit['difficulty_level']}",
+                callback_data=f"parallel:unit:{unit['id']}"
+            )
+        ])
+
+    # Sahifalash
+    nav_row = []
+    if page > 0:
+        nav_row.append(InlineKeyboardButton(text=L["prev_page"], callback_data=f"parallel:series:{series_code}:{page-1}"))
+    if page < total_pages - 1:
+        nav_row.append(InlineKeyboardButton(text=L["next_page"], callback_data=f"parallel:series:{series_code}:{page+1}"))
+    if nav_row:
+        rows.append(nav_row)
+
+    rows.append([InlineKeyboardButton(text=L["back"], callback_data="parallel:main")])
+
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def start_parallel_practice_kb(lang: str) -> InlineKeyboardMarkup:
+    """Mashqni boshlash klaviaturasi."""
+    L = get_locale(lang)
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🏁 Boshlash", callback_data="parallel:begin_practice")],
+        [InlineKeyboardButton(text=L["back"], callback_data="parallel:main")]
+    ])
+
+
+async def send_next_parallel_question(message: Message, state: FSMContext, lang: str):
+    """Keyingi savolni yuborish."""
+    data = await state.get_data()
+    index = data.get("index", 0)
+    words = data.get("words", [])
+    unit_title = data.get("unit_title", "Parallel Unit")
+    total = data.get("total", 0)
+    correct = data.get("correct", 0)
+    wrong = data.get("wrong", 0)
+    cycles = data.get("cycles", 0)
+    current_cycle_correct = data.get("current_cycle_correct", 0)
+    current_cycle_wrong = data.get("current_cycle_wrong", 0)
+
+    L = get_locale(lang)
+
+    if index >= total:
+        # Tsikl tugadi
+        cycles += 1
+        cycles_stats = data.get("cycles_stats", [])
+        cycles_stats.append({
+            "cycle": cycles,
+            "correct": current_cycle_correct,
+            "wrong": current_cycle_wrong
+        })
+
+        if current_cycle_wrong == 0 or cycles >= 3:
+            # Mashqni tugatish
+            await message.answer(L["session_end"])
+            await parallel_finish(message, state, lang)
+            return
+
+        # Yangi tsikl boshlash
+        wrong_words = [w for w in words if 'answered_correctly' not in w]
+        random.shuffle(wrong_words)
+        await state.update_data(
+            words=wrong_words,
+            index=0,
+            total=len(wrong_words),
+            cycles=cycles,
+            cycles_stats=cycles_stats,
+            current_cycle_correct=0,
+            current_cycle_wrong=0
+        )
+        index = 0
+        words = wrong_words
+        total = len(words)
+
+        cycle_text = f"🔄 {cycles}-tsikl: Xatolar ustida ishlaymiz ({len(words)} ta)"
+        await message.answer(cycle_text)
+
+    current = words[index]
+    question_text = f"📖 {unit_title}\n"
+    question_text += f"🔄 Tsikllar: {cycles} | ✅ {correct} | ❌ {wrong}\n"
+    question_text += f"❓ {current['word_src']}"
+
+    # Variantlar tayyorlash
+    choices = [current['word_trg']]
+    all_trgs = set(w['word_trg'] for w in words)
+    all_trgs.discard(current['word_trg'])
+    choices.extend(random.sample(list(all_trgs), min(3, len(all_trgs))))
+    random.shuffle(choices)
+
+    kb = InlineKeyboardMarkup(inline_keyboard=[])
+    for choice in choices:
+        kb.inline_keyboard.append([
+            InlineKeyboardButton(text=choice, callback_data=f"parallel_ans:{index}:{choice}")
+        ])
+    kb.inline_keyboard.append([
+        InlineKeyboardButton(text=L["finish"], callback_data="parallel:finish")
+    ])
+
+    await message.answer(question_text, reply_markup=kb)
+
+
+async def parallel_finish(message: Message, state: FSMContext, lang: str):
+    """Mashqni yakunlash."""
+    data = await state.get_data()
+    total_unique = data.get("total", 0)
+    total_answers = data.get("answers", 0)
+    total_correct = data.get("correct", 0)
+    total_wrong = data.get("wrong", 0)
+    unit_title = data.get("unit_title", "Parallel Unit")
+    cycles = data.get("cycles", 0)
+    cycles_stats = data.get("cycles_stats", [])
+
+    percent = (total_correct / total_answers * 100) if total_answers else 0.0
+
+    L = get_locale(lang)
+
+    full_text = f"📖 {unit_title}\n"
+    full_text += L["results_header"] + "\n\n"
+    full_text += L["results_lines"].format(unique=total_unique, answers=total_answers,
+                                           correct=total_correct, wrong=total_wrong, percent=percent)
+
+    if cycles > 0:
+        full_text += f"\n🔄 Jami tsikllar: {cycles}"
+        for stat in cycles_stats:
+            full_text += f"\n   - Tsikl {stat['cycle']}: ✅ {stat['correct']} | ❌ {stat['wrong']}"
+
+    # Motivatsion xabar
+    if percent >= 90:
+        full_text += "\n\n🎉 Mukammal! Siz bu unitni juda yaxshi bilasiz!"
+    elif percent >= 80:
+        full_text += "\n\n⭐ Ajoyib natija! Davom eting!"
+    elif percent >= 70:
+        full_text += "\n\n👍 Yaxshi natija! Yanada yaxshilashga harakat qiling!"
+    elif percent >= 50:
+        full_text += "\n\n💪 Yomon emas! Yana mashq qiling!"
+    else:
+        full_text += "\n\n📚 Mashq davom eting, har gal yaxshilashasiz!"
+
+    await state.clear()
+    await message.answer(full_text)
+    await message.answer(L["cabinet"], reply_markup=cabinet_kb(lang))
+
 
 # =====================================================
 # 📌 User handlers
@@ -775,6 +788,7 @@ async def cb_parallel_answer(cb: CallbackQuery, state: FSMContext):
     if chosen == correct_answer:
         data["correct"] = data.get("correct", 0) + 1
         data["current_cycle_correct"] = data.get("current_cycle_correct", 0) + 1
+        current['answered_correctly'] = True
         await cb.answer(L["correct"])
     else:
         data["wrong"] = data.get("wrong", 0) + 1
@@ -803,8 +817,8 @@ async def cb_parallel_finish(cb: CallbackQuery, state: FSMContext):
     L = get_locale(user_data["lang"])
 
     full_text = f"📖 {unit_title}\n"
-    full_text += f"{L['results_header']}\n\n"
-    full_text += f"{L['results_lines'].format(unique=total_unique, answers=total_answers, correct=total_correct, wrong=total_wrong, percent=percent)}"
+    full_text += L["results_header"] + "\n\n"
+    full_text += L["results_lines"].format(unique=total_unique, answers=total_answers, correct=total_correct, wrong=total_wrong, percent=percent)
 
     if cycles > 0:
         full_text += f"\n🔄 Takrorlangan tsikllar: {cycles}"
@@ -831,6 +845,3 @@ async def cb_parallel_finish(cb: CallbackQuery, state: FSMContext):
     await cb.message.answer(full_text)
     await cb.message.answer(L["cabinet"], reply_markup=cabinet_kb(user_data["lang"]))
     await cb.answer()
-
-
-
