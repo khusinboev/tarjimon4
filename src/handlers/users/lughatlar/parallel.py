@@ -373,7 +373,8 @@ async def import_parallel_files(series_code: str, file_paths: list, admin_id: in
 async def cmd_import_parallel(msg: Message):
     """Parallel fayllarni import qilish."""
 
-    parallel_folder = Path("data/parallel")
+    current_dir = Path(__file__).parent
+    parallel_folder = current_dir / "parallel"
     if not parallel_folder.exists():
         await msg.answer("❌ Parallel folder topilmadi!")
         return
