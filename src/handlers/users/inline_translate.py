@@ -1,7 +1,9 @@
 import asyncio
 from aiogram import Router
 from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent
-from src.handlers.users.translate import get_user_langs, LANGUAGES, translate_text
+
+from config import LANGUAGES
+from src.handlers.users.translate import get_user_langs, translate_text
 from uuid import uuid4
 
 inline_router = Router()

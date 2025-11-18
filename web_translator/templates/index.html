@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tarjimon — Web</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/">Oddiy Web Tarjimon</a>
+      <span class="navbar-text text-white small">Telegram botdagi tillar bilan mos</span>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form id="translatorForm" onsubmit="return false;">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label for="source" class="form-label">Manba tili</label>
+              <div class="input-group">
+                <select id="source" class="form-select">
+                  {% for code, name, flag in languages %}
+                    <option value="{{ code }}">{{ flag }}  {{ name }} — {{ code }}</option>
+                  {% endfor %}
+                </select>
+                <button type="button" id="swapBtn" class="btn btn-outline-secondary" title="Almashtirish">⇄</button>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="target" class="form-label">Maqsad tili</label>
+              <select id="target" class="form-select">
+                {% for code, name, flag in languages %}
+                  {% if code != 'auto' %}
+                    <option value="{{ code }}">{{ flag }}  {{ name }} — {{ code }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-12">
+              <label for="text" class="form-label">Matn (maks {{ max_len }} belgigacha)</label>
+              <textarea id="text" class="form-control" rows="6" maxlength="{{ max_len }}" placeholder="Bu yerga matn kiriting..."></textarea>
+              <div class="form-text" id="charCount">0 / {{ max_len }}</div>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+              <button type="button" id="translateBtn" class="btn btn-primary">Tarjima qilish</button>
+              <button type="button" id="clearBtn" class="btn btn-outline-secondary">Tozalash</button>
+              <button type="button" id="exampleBtn" class="btn btn-outline-info">Namuna</button>
+            </div>
+
+            <div class="col-12">
+              <div id="alertPlaceholder"></div>
+              <div class="card mt-3">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="card-title mb-0">Natija <small id="detectedLang" class="text-muted"></small></h6>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button id="copyBtn" class="btn btn-outline-secondary" title="Nusxalash">Nusxalash</button>
+                    </div>
+                  </div>
+                  <pre id="result" class="mt-2 mb-0 bg-light p-3 rounded" style="min-height:80px;white-space:pre-wrap;"></pre>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <footer class="mt-4 text-muted small">
+      <div class="d-flex justify-content-between">
+        <div>© Tarjimon Web</div>
+        <div>Max matn hajmi: {{ max_len }} belgi</div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Provide LANG_MAP to client-side JS -->
+  <script>
+    const LANG_MAP = {{ lang_map_json | safe }};
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

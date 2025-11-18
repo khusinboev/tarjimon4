@@ -7,38 +7,12 @@ from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKe
 from deep_translator import GoogleTranslator
 from googletrans import Translator as GoogleTransFallback  # pip install googletrans==4.0.0-rc1
 
-from config import sql, db, bot, ADMIN_ID 
+from config import sql, db, bot, ADMIN_ID, LANGUAGES
 from src.keyboards.buttons import UserPanels
 from src.keyboards.keyboard_func import CheckData
 
 translate_router = Router()
 
-LANGUAGES = {
-    "auto": {"name": "Avto", "flag": "🌐"},
-    "uz": {"name": "O‘zbek", "flag": "🇺🇿"},
-    "en": {"name": "English", "flag": "🇬🇧"},
-    "ru": {"name": "Русский", "flag": "🇷🇺"},
-    "tr": {"name": "Türkçe", "flag": "🇹🇷"},
-    "ar": {"name": "العربية", "flag": "🇸🇦"},
-    "fr": {"name": "Français", "flag": "🇫🇷"},
-    "de": {"name": "Deutsch", "flag": "🇩🇪"},
-    "zh": {"name": "中文", "flag": "🇨🇳"},
-    "ja": {"name": "日本語", "flag": "🇯🇵"},
-    "ko": {"name": "한국어", "flag": "🇰🇷"},
-    "hi": {"name": "हिन्दी", "flag": "🇮🇳"},
-    "id": {"name": "Bahasa Indonesia", "flag": "🇮🇩"},
-    "fa": {"name": "فارسی", "flag": "🇮🇷"},
-    "es": {"name": "Español", "flag": "🇪🇸"},
-    "it": {"name": "Italiano", "flag": "🇮🇹"},
-    "kk": {"name": "Qazaqşa", "flag": "🇰🇿"},   # lotin alifbosida
-    "ky": {"name": "Кыргызча", "flag": "🇰🇬"}, # faqat kirill
-    "az": {"name": "Azərbaycan dili", "flag": "🇦🇿"},
-    "tk": {"name": "Türkmençe", "flag": "🇹🇲"},
-    "tg": {"name": "Тоҷикӣ", "flag": "🇹🇯"},
-    "pl": {"name": "Polski", "flag": "🇵🇱"},
-    "pt": {"name": "Português", "flag": "🇵🇹"},
-    "am": {"name": "አማርኛ", "flag": "🇪🇹"},
-}
 
 fallback_translator = GoogleTransFallback()
 

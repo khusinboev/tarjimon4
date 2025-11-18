@@ -1,6 +1,5 @@
-from config import db, sql
+from config import db, sql, LANGUAGES
 from src.handlers.users.lughatlar.parallel import create_parallel_tables, init_parallel_series
-from src.handlers.users.translate import LANGUAGES
 
 async def create_all_base():
     """Barcha jadvallarni yaratish."""
