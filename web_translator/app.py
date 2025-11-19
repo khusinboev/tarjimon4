@@ -11,28 +11,19 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("web_translator")
 
 # Load languages from config.py (expecting LANGUAGES dict)
-project_languages = None
 try:
-    import config as project_config
-    project_languages = getattr(project_config, "LANGUAGES", None)
+    from config import LANGUAGES as project_languages
     if not isinstance(project_languages, dict):
-        logger.warning("config.LANGUAGES exists but is not a dict; ignoring.")
-        project_languages = None
-    else:
-        logger.info("Loaded LANGUAGES from config.py (%d entries)", len(project_languages))
+        logger.warning("LANGUAGES dict emas. Fallback ishlatiladi.")
+        raise ValueError
 except Exception as e:
-    logger.info("config.py not found or error reading it: %s", e)
-    project_languages = None
-
-# Fallback default if config missing (shouldn't be used since you provided config.py)
-if not project_languages:
+    logger.info("config.py yoki LANGUAGES o‘qishda xato: %s", e)
     project_languages = {
         "auto": {"name": "Auto", "flag": "🌐"},
         "en": {"name": "English", "flag": "🇬🇧"},
         "ru": {"name": "Русский", "flag": "🇷🇺"},
         "uz": {"name": "Oʻzbek", "flag": "🇺🇿"},
     }
-
 # Try to import translate function from main.py if available
 translate_func = None
 try:
