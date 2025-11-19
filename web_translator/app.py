@@ -11,8 +11,32 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("web_translator")
 
 # Load languages from config.py (expecting LANGUAGES dict)
-
-from config import LANGUAGES as project_languages
+project_languages = {
+    "auto": {"name": "Avto", "flag": "🌐"},
+    "uz": {"name": "O‘zbek", "flag": "🇺🇿"},
+    "en": {"name": "English", "flag": "🇬🇧"},
+    "ru": {"name": "Русский", "flag": "🇷🇺"},
+    "tr": {"name": "Türkçe", "flag": "🇹🇷"},
+    "ar": {"name": "العربية", "flag": "🇸🇦"},
+    "fr": {"name": "Français", "flag": "🇫🇷"},
+    "de": {"name": "Deutsch", "flag": "🇩🇪"},
+    "zh": {"name": "中文", "flag": "🇨🇳"},
+    "ja": {"name": "日本語", "flag": "🇯🇵"},
+    "ko": {"name": "한국어", "flag": "🇰🇷"},
+    "hi": {"name": "हिन्दी", "flag": "🇮🇳"},
+    "id": {"name": "Bahasa Indonesia", "flag": "🇮🇩"},
+    "fa": {"name": "فارسی", "flag": "🇮🇷"},
+    "es": {"name": "Español", "flag": "🇪🇸"},
+    "it": {"name": "Italiano", "flag": "🇮🇹"},
+    "kk": {"name": "Qazaqşa", "flag": "🇰🇿"},   # lotin alifbosida
+    "ky": {"name": "Кыргызча", "flag": "🇰🇬"}, # faqat kirill
+    "az": {"name": "Azərbaycan dili", "flag": "🇦🇿"},
+    "tk": {"name": "Türkmençe", "flag": "🇹🇲"},
+    "tg": {"name": "Тоҷикӣ", "flag": "🇹🇯"},
+    "pl": {"name": "Polski", "flag": "🇵🇱"},
+    "pt": {"name": "Português", "flag": "🇵🇹"},
+    "am": {"name": "አማርኛ", "flag": "🇪🇹"},
+}
     
 # Try to import translate function from main.py if available
 translate_func = None
