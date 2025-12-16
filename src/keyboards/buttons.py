@@ -1,4 +1,3 @@
-from aiogram import types
 from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardButton, KeyboardButton, InlineKeyboardMarkup
 
 from config import sql, bot
@@ -8,22 +7,13 @@ class AdminPanel:
     @staticmethod
     async def admin_menu():
         btn=ReplyKeyboardMarkup(
-                    keyboard=[
-                        [
-                            KeyboardButton(text="📊Statistika"),
-                            KeyboardButton(text="🔧Kanallar")
-                        ],
-                        [
-                            KeyboardButton(text="✍Xabarlar"),
-                            KeyboardButton(text="📊Tillar")
-                        ],
-                        [
-                            KeyboardButton(text="📚 Kitoblarni kirgizish"),
-                            KeyboardButton(text="📚 Parallellarni kirgizish")
-                        ]
-                    ],
-                    resize_keyboard=True,
-                )
+            keyboard=[
+                [KeyboardButton(text="📊Statistika"), KeyboardButton(text="🔧Kanallar")],
+                [KeyboardButton(text="✍Xabarlar"), KeyboardButton(text="📊Tillar")],
+                [KeyboardButton(text="📚 Kitoblarni kirgizish"), KeyboardButton(text="📚 Parallellarni kirgizish")],
+            ],
+            resize_keyboard=True,
+        )
         return btn
 
     @staticmethod
@@ -98,6 +88,18 @@ class UserPanels:
         join_inline.append([InlineKeyboardButton(text="✅Obuna bo'ldim", callback_data="check")])
         button = InlineKeyboardMarkup(inline_keyboard=join_inline)
         return button
+
+    @staticmethod
+    async def user_main_menu():
+        btn = ReplyKeyboardMarkup(
+            keyboard=[
+                [KeyboardButton(text="🌐 Tilni tanlash"), KeyboardButton(text="📝 Tarjima qilish")],
+                [KeyboardButton(text="📅 Dars jadvali"), KeyboardButton(text="ℹ️ Yordam")],
+                [KeyboardButton(text="📚 Lug'atlar va Mashqlar")],
+            ],
+            resize_keyboard=True,
+        )
+        return btn
 
 
     @staticmethod

@@ -56,8 +56,8 @@ async def main():
     dp.include_router(essential_router)    # essential_router lug'atlar bo'limi
     dp.include_router(parallel_router)  # ⭐ YANGI: Parallel tarjimalar
     dp.include_router(user_router)
-    dp.include_router(translate_router)
     dp.include_router(inline_router)
+    dp.include_router(translate_router)
     
     #for other
     dp.include_router(group_router)

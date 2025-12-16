@@ -10,11 +10,7 @@ other_router = Router()
 
 @other_router.message()
 async def chosen_lang(message: Message, state: FSMContext):
-    try:
-        await message.delete()
-        await state.clear()
-    except: pass
-    await message.answer("<b>salom</b>", parse_mode="html")
+    await message.answer("<b>Bu tur topilmadi</b>", parse_mode="html")
 
 
 # Shu yerda keyingi bosqichni (fac5 va hokazo) davom ettirishingiz mumkin.

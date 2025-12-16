@@ -293,3 +293,135 @@ async def new(message: Message):
         await message.answer("Ma'lumotlar yangilandi")
     else:
         await message.answer("O'zgarishlar bo'lmadi")
+
+
+# ==================== ADMIN STATISTIKA ====================
+
+@admin_router.message(Command("adminstats"), F.chat.type == ChatType.PRIVATE, F.from_user.id.in_(ADMIN_ID))
+async def admin_statistics(message: Message):
+    """Admin uchun to'liq statistika"""
+    try:
+        # Umumiy foydalanuvchilar soni
+        sql.execute("SELECT COUNT(*) FROM users")
+        total_users = sql.fetchone()[0]
+        
+        # Bugun qo'shilgan foydalanuvchilar
+        sql.execute("""
+            SELECT COUNT(*) FROM users 
+            WHERE DATE(created_at) = CURRENT_DATE
+        """)
+        today_users = sql.fetchone()[0]
+        
+        # Faol foydalanuvchilar (oxirgi 7 kun ichida)
+        sql.execute("""
+            SELECT COUNT(DISTINCT user_id) FROM translation_history 
+            WHERE created_at > NOW() - INTERVAL '7 days'
+        """)
+        active_users = sql.fetchone()[0]
+        
+        # Jami tarjimalar soni
+        sql.execute("SELECT COUNT(*) FROM translation_history")
+        total_translations = sql.fetchone()[0]
+        
+        # Bugungi tarjimalar
+        sql.execute("""
+            SELECT COUNT(*) FROM translation_history 
+            WHERE DATE(created_at) = CURRENT_DATE
+        """)
+        today_translations = sql.fetchone()[0]
+        
+        # Eng faol foydalanuvchi
+        sql.execute("""
+            SELECT user_id, COUNT(*) as trans_count 
+            FROM translation_history 
+            GROUP BY user_id 
+            ORDER BY trans_count DESC 
+            LIMIT 1
+        """)
+        top_user_row = sql.fetchone()
+        top_user = f"{top_user_row[0]} ({top_user_row[1]} tarjima)" if top_user_row else "Ma'lumot yo'q"
+        
+        # Eng ko'p ishlatiladigan til juftligi
+        sql.execute("""
+            SELECT from_lang, to_lang, COUNT(*) as usage_count 
+            FROM translation_history 
+            GROUP BY from_lang, to_lang 
+            ORDER BY usage_count DESC 
+            LIMIT 1
+        """)
+        top_lang_pair_row = sql.fetchone()
+        top_lang_pair = f"{top_lang_pair_row[0]} → {top_lang_pair_row[1]} ({top_lang_pair_row[2]}x)" if top_lang_pair_row else "Ma'lumot yo'q"
+        
+        # Oxirgi 24 soat ichidagi tarjimalar
+        sql.execute("""
+            SELECT COUNT(*) FROM translation_history 
+            WHERE created_at > NOW() - INTERVAL '24 hours'
+        """)
+        last_24h_translations = sql.fetchone()[0]
+        
+        text = (
+            "👨‍💼 <b>ADMIN STATISTIKASI</b>\n"
+            "━━━━━━━━━━━━━━━━━━━━\n\n"
+            "👥 <b>FOYDALANUVCHILAR:</b>\n"
+            f"├ Jami: <b>{total_users}</b>\n"
+            f"├ Bugun qo'shildi: <b>{today_users}</b>\n"
+            f"└ Faol (7 kun): <b>{active_users}</b>\n\n"
+            "🔄 <b>TARJIMALAR:</b>\n"
+            f"├ Jami tarjimalar: <b>{total_translations}</b>\n"
+            f"├ Bugun: <b>{today_translations}</b>\n"
+            f"└ 24 soat: <b>{last_24h_translations}</b>\n\n"
+            "📊 <b>TOP MA'LUMOTLAR:</b>\n"
+            f"├ Eng faol user: <code>{top_user}</code>\n"
+            f"└ Top til: <code>{top_lang_pair}</code>\n\n"
+            "━━━━━━━━━━━━━━━━━━━━\n"
+            f"🕐 <i>{datetime.now().strftime('%d.%m.%Y %H:%M')}</i>"
+        )
+        
+        await message.answer(text, parse_mode="HTML")
+        
+    except Exception as e:
+        await message.answer(
+            f"❌ <b>Statistikani yuklashda xatolik:</b>\n\n"
+            f"<code>{str(e)}</code>",
+            parse_mode="HTML"
+        )
+
+
+@admin_router.message(Command("adminlogs"), F.chat.type == ChatType.PRIVATE, F.from_user.id.in_(ADMIN_ID))
+async def admin_view_logs(message: Message):
+    """Oxirgi loglarni ko'rish"""
+    try:
+        import os
+        log_file = "logs/bot_errors.log"
+        
+        if not os.path.exists(log_file):
+            await message.answer("❌ Log fayli topilmadi!")
+            return
+        
+        # Oxirgi 30 qatorni o'qish
+        with open(log_file, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+            last_lines = lines[-30:] if len(lines) > 30 else lines
+        
+        if not last_lines:
+            await message.answer("📭 Log fayli bo'sh")
+            return
+        
+        log_text = "".join(last_lines)
+        
+        # Telegram xabar limitiga mos kelishi uchun
+        if len(log_text) > 4000:
+            log_text = log_text[-4000:]
+        
+        await message.answer(
+            f"📋 <b>OXIRGI ERRORLAR:</b>\n\n"
+            f"<pre>{log_text}</pre>",
+            parse_mode="HTML"
+        )
+        
+    except Exception as e:
+        await message.answer(
+            f"❌ <b>Loglarni o'qishda xatolik:</b>\n\n"
+            f"<code>{str(e)}</code>",
+            parse_mode="HTML"
+        )

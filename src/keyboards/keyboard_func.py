@@ -57,19 +57,26 @@ class PanelFunc:
     @staticmethod
     async def channel_list():
         sql.execute("SELECT chat_id, username from public.mandatorys")
-        str = ''
+        result = ''
         for row in sql.fetchall():
             chat_id = row[0]
+            username_or_link = row[1] or f"ID: {chat_id}"
             try:
                 all_details = await bot.get_chat(chat_id=chat_id)
                 title = all_details.title
                 channel_id = all_details.id
-                channel_id = row[1]
                 info = all_details.description
-                str += f"------------------------------------------------\nKanal useri: > @{all_details.username}\nKamal nomi: > {title}\nKanal id si: > {channel_id}\nKanal haqida: > {info}\n"
+                result += f"------------------------------------------------\nKanal useri: > @{all_details.username}\nKamal nomi: > {title}\nKanal id si: > {channel_id}\nKanal haqida: > {info}\n"
             except Exception as e:
-                str += f"Kanalni admin qiling\n\nError: {e}"
-        return str
+                # Include username or link in the error for easier deletion
+                result += (
+                    f"Kanalni admin qiling yoki o'chiring:\n"
+                    f"User/Link: {username_or_link}\n"
+                    f"ID: {chat_id}\n"
+                    f"Error: {e}\n"
+                    f"O'chirish uchun: ❌Kanalni olib tashlash tugmasidan foydalaning."
+                )
+        return result
 
     @staticmethod
     async def admin_add(chat_id):
