@@ -11,28 +11,33 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("web_translator")
 
 # Load languages from config.py (expecting LANGUAGES dict)
-project_languages = None
-try:
-    import config as project_config
-    project_languages = getattr(project_config, "LANGUAGES", None)
-    if not isinstance(project_languages, dict):
-        logger.warning("config.LANGUAGES exists but is not a dict; ignoring.")
-        project_languages = None
-    else:
-        logger.info("Loaded LANGUAGES from config.py (%d entries)", len(project_languages))
-except Exception as e:
-    logger.info("config.py not found or error reading it: %s", e)
-    project_languages = None
-
-# Fallback default if config missing (shouldn't be used since you provided config.py)
-if not project_languages:
-    project_languages = {
-        "auto": {"name": "Auto", "flag": "🌐"},
-        "en": {"name": "English", "flag": "🇬🇧"},
-        "ru": {"name": "Русский", "flag": "🇷🇺"},
-        "uz": {"name": "Oʻzbek", "flag": "🇺🇿"},
-    }
-
+project_languages = {
+    "auto": {"name": "Avto", "flag": "🌐"},
+    "uz": {"name": "O‘zbek", "flag": "🇺🇿"},
+    "en": {"name": "English", "flag": "🇬🇧"},
+    "ru": {"name": "Русский", "flag": "🇷🇺"},
+    "tr": {"name": "Türkçe", "flag": "🇹🇷"},
+    "ar": {"name": "العربية", "flag": "🇸🇦"},
+    "fr": {"name": "Français", "flag": "🇫🇷"},
+    "de": {"name": "Deutsch", "flag": "🇩🇪"},
+    "zh": {"name": "中文", "flag": "🇨🇳"},
+    "ja": {"name": "日本語", "flag": "🇯🇵"},
+    "ko": {"name": "한국어", "flag": "🇰🇷"},
+    "hi": {"name": "हिन्दी", "flag": "🇮🇳"},
+    "id": {"name": "Bahasa Indonesia", "flag": "🇮🇩"},
+    "fa": {"name": "فارسی", "flag": "🇮🇷"},
+    "es": {"name": "Español", "flag": "🇪🇸"},
+    "it": {"name": "Italiano", "flag": "🇮🇹"},
+    "kk": {"name": "Qazaqşa", "flag": "🇰🇿"},   # lotin alifbosida
+    "ky": {"name": "Кыргызча", "flag": "🇰🇬"}, # faqat kirill
+    "az": {"name": "Azərbaycan dili", "flag": "🇦🇿"},
+    "tk": {"name": "Türkmençe", "flag": "🇹🇲"},
+    "tg": {"name": "Тоҷикӣ", "flag": "🇹🇯"},
+    "pl": {"name": "Polski", "flag": "🇵🇱"},
+    "pt": {"name": "Português", "flag": "🇵🇹"},
+    "am": {"name": "አማርኛ", "flag": "🇪🇹"},
+}
+    
 # Try to import translate function from main.py if available
 translate_func = None
 try:
