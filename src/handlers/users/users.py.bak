@@ -1,0 +1,105 @@
+
+from aiogram import Router, F
+from aiogram.enums import ChatType
+from aiogram.filters import CommandStart, Command
+from aiogram.types import Message, CallbackQuery
+from config import bot, ADMIN_ID
+from src.handlers.users.timetable import save_timetable, get_daily_timetable
+from src.keyboards.buttons import UserPanels
+from src.keyboards.keyboard_func import CheckData
+
+user_router = Router()
+
+# Main menu button handlers
+@user_router.message(F.text == "🌐 Tilni tanlash")
+async def menu_lang(msg: Message):
+    from src.handlers.users.translate import get_language_keyboard
+    await msg.answer(
+        "🌐 <b>Tillarni tanlang</b>\n"
+        "✅ Chap: Kiruvchi (Input) | ✅ O‘ng: Chiquvchi (Output)\n"
+        "<i>Til ustiga bosing va tanlang. Orqaga qaytish uchun ⬅️ tugmasini bosing.</i>",
+        reply_markup=get_language_keyboard(msg.from_user.id),
+        parse_mode="HTML"
+    )
+
+@user_router.message(F.text == "📝 Tarjima qilish")
+async def menu_translate(msg: Message):
+    await msg.answer("✍️ Tarjima qilish uchun matn yuboring yoki ovozli xabar yuboring.")
+
+@user_router.message(F.text == "📅 Dars jadvali")
+async def menu_timetable(msg: Message):
+    from src.handlers.users.timetable import save_timetable, get_daily_timetable
+    await msg.answer(get_daily_timetable(await save_timetable()), parse_mode="HTML")
+
+@user_router.message(F.text == "ℹ️ Yordam")
+async def menu_help(msg: Message):
+    from src.handlers.users.translate import cmd_help
+    await cmd_help(msg)
+
+@user_router.message(F.text == "📚 Lug‘atlar")
+async def menu_lughat(msg: Message):
+    await msg.answer("📚 <b>Lug‘atlar bo‘limi:</b>\nO‘z lug‘atlaringizni yaratish, ko‘rish va tahrirlash uchun /lughatlarim buyrug‘idan foydalaning.", parse_mode="HTML")
+
+@user_router.message(F.text == "🧩 Mashqlar")
+async def menu_mashq(msg: Message):
+    await msg.answer("🧩 <b>Mashqlar bo‘limi:</b>\nSo‘zlarni mustahkamlash uchun /mashqlar buyrug‘idan foydalaning.", parse_mode="HTML")
+from aiogram import Router, F
+from aiogram.enums import ChatType
+from aiogram.filters import CommandStart, Command
+from aiogram.types import Message, CallbackQuery
+
+from config import bot, ADMIN_ID
+from src.handlers.users.timetable import save_timetable, get_daily_timetable
+from src.keyboards.buttons import UserPanels
+from src.keyboards.keyboard_func import CheckData
+
+user_router = Router()
+
+
+@user_router.message(F.from_user.id == 7638932125)
+async def blocked_user_handler(message: Message):
+    await message.answer(
+        "Siz adminimiz @adkhambek_4 ni bloklaganingiz sababli bot tomonidan bloklangansiz.\n"
+        "Agar blokdan chiqishni istasangiz, admin bilan bog‘laning."
+    )
+
+@user_router.message(Command("jadval"))
+async def cmd_help(msg: Message):
+    await msg.answer(get_daily_timetable(await save_timetable()), parse_mode="HTML")
+
+@user_router.message(CommandStart())
+async def start_cmd1(message: Message):
+    from src.keyboards.buttons import UserPanels
+    await message.answer(
+        "👋 <b>Botimizga xush kelibsiz!</b>\n\n" +
+        "Quyidagi menyudan kerakli bo‘limni tanlang yoki buyruqdan foydalaning:",
+        reply_markup=await UserPanels.user_main_menu(),
+        parse_mode="HTML"
+    )
+
+@user_router.callback_query(F.data == "check", F.message.chat.type == ChatType.PRIVATE)
+async def check(call: CallbackQuery):
+    user_id = call.from_user.id
+    try:
+        check_status, channels = await CheckData.check_member(bot, user_id)
+        if check_status:
+            await call.message.delete()
+            await bot.send_message(chat_id=user_id,
+                                   text="/lang",
+                                   parse_mode="html")
+            try:
+                await call.answer()
+            except:
+                pass
+        else:
+            try:
+                await call.answer(show_alert=True, text="Botimizdan foydalanish uchun barcha kanallarga a'zo bo'ling")
+            except:
+                try:
+                    await call.answer()
+                except:
+                    pass
+    except Exception as e:
+        try: await bot.forward_message(chat_id=ADMIN_ID[0], from_chat_id=call.message.chat.id, message_id=call.message.message_id)
+        except: pass
+        await bot.send_message(chat_id=ADMIN_ID[0], text=f"Error in check:\n{e}")

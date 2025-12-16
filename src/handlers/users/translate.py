@@ -11,9 +11,46 @@ from googletrans import Translator as GoogleTransFallback  # pip install googlet
 from config import sql, db, bot, ADMIN_ID, LANGUAGES
 from src.keyboards.buttons import UserPanels
 from src.keyboards.keyboard_func import CheckData
-from src.utils.logger import translate_logger, log_translation, log_error, log_user_action
-from src.utils.rate_limiter import rate_limiter
-from src.utils.translation_history import save_translation_history, get_translation_history, get_user_translation_stats
+
+# Optional imports - graceful fallback if modules not available
+try:
+    from src.utils.logger import translate_logger, log_translation, log_error, log_user_action
+    LOGGING_ENABLED = True
+except ImportError:
+    LOGGING_ENABLED = False
+    # Fallback to print
+    class FakeLogger:
+        def debug(self, msg): print(f"[DEBUG] {msg}")
+        def info(self, msg): print(f"[INFO] {msg}")
+        def warning(self, msg): print(f"[WARNING] {msg}")
+        def error(self, msg): print(f"[ERROR] {msg}")
+    translate_logger = FakeLogger()
+    log_translation = lambda *args, **kwargs: None
+    log_error = lambda *args, **kwargs: None
+    log_user_action = lambda *args, **kwargs: None
+
+try:
+    from src.utils.rate_limiter import rate_limiter
+    RATE_LIMITING_ENABLED = True
+except ImportError:
+    RATE_LIMITING_ENABLED = False
+    # Fallback - no rate limiting
+    class FakeRateLimiter:
+        def check_rate_limit(self, user_id):
+            return True, ""
+    rate_limiter = FakeRateLimiter()
+
+try:
+    from src.utils.translation_history import save_translation_history, get_translation_history, get_user_translation_stats
+    HISTORY_ENABLED = True
+except ImportError:
+    HISTORY_ENABLED = False
+    save_translation_history = lambda *args, **kwargs: None
+    get_translation_history = lambda *args, **kwargs: []
+    get_user_translation_stats = lambda user_id: {
+        'total': 0, 'today': 0, 'this_month': 0, 
+        'favorites': 0, 'most_used_lang_pair': None
+    }
 
 translate_router = Router()
 
@@ -392,6 +429,15 @@ async def handle_media(msg: Message):
 @translate_router.message(Command("history"))
 async def show_translation_history(msg: Message):
     """Oxirgi 10ta tarjimani ko'rsatish"""
+    if not HISTORY_ENABLED:
+        return await msg.answer(
+            "⚠️ <b>Feature mavjud emas</b>\n\n"
+            "Tarjima tarixi funksiyasi hozircha faol emas.\n\n"
+            "⚠️ <b>Feature not available</b>\n\n"
+            "Translation history feature is currently unavailable.",
+            parse_mode="HTML"
+        )
+    
     try:
         log_user_action(msg.from_user.id, "view_history", "Requested translation history")
         
@@ -446,6 +492,15 @@ async def show_translation_history(msg: Message):
 @translate_router.message(Command("stats"))
 async def show_user_stats(msg: Message):
     """Foydalanuvchi statistikasini ko'rsatish"""
+    if not HISTORY_ENABLED:
+        return await msg.answer(
+            "⚠️ <b>Feature mavjud emas</b>\n\n"
+            "Statistika funksiyasi hozircha faol emas.\n\n"
+            "⚠️ <b>Feature not available</b>\n\n"
+            "Statistics feature is currently unavailable.",
+            parse_mode="HTML"
+        )
+    
     try:
         log_user_action(msg.from_user.id, "view_stats", "Requested statistics")
         
