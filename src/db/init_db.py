@@ -24,7 +24,7 @@ async def create_all_base():
     sql.execute("""
     CREATE TABLE IF NOT EXISTS public.mandatorys (
         id SERIAL PRIMARY KEY,
-        chat_id BIGINT NOT NULL,
+        chat_id BIGINT NOT NULL UNIQUE,
         title VARCHAR(255),
         username VARCHAR(100),
         types VARCHAR(50),

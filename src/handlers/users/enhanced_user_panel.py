@@ -676,7 +676,7 @@ async def back_from_vocab(callback: CallbackQuery):
 @enhanced_user_router.callback_query(F.data.startswith("lang:set:"))
 async def set_language(callback: CallbackQuery):
     """Handle language selection"""
-    _, direction, lang_code = callback.data.split(":")
+    _, _, direction, lang_code = callback.data.split(":")
     user_id = callback.from_user.id
     
     # Update database
