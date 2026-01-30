@@ -11,6 +11,22 @@ from src.handlers.users.lughatlar.vocabs import (
     get_paginated_books, create_paginated_kb, BOOKS_PER_PAGE
 )
 
+# Gamification imports
+try:
+    from src.utils.gamification import (
+        GamificationEngine,
+        XPRewards,
+        check_user_achievements,
+        DailyChallengeManager
+    )
+    GAMIFICATION_ENABLED = True
+except ImportError:
+    GAMIFICATION_ENABLED = False
+    GamificationEngine = None
+    XPRewards = None
+    check_user_achievements = lambda *args, **kwargs: []
+    DailyChallengeManager = None
+
 lughatlarim_router = Router()
 
 
@@ -141,10 +157,27 @@ async def add_book(msg: Message, state: FSMContext):
                         fetch=True)
     book_id = row["id"] if row else None
 
+    # Award XP for creating a book
+    xp_text = ""
+    if GAMIFICATION_ENABLED and GamificationEngine and XPRewards:
+        try:
+            xp_result = GamificationEngine.add_xp(user_id, XPRewards.VOCAB_BOOK_CREATE, "Created vocabulary book")
+            if xp_result.get("success"):
+                xp_text = f"\n\n💎 <b>+{xp_result['xp_added']} XP</b> lug'at yaratish uchun!"
+                if xp_result.get("level_up"):
+                    xp_text += f"\n🎉 <b>Level up!</b> Siz {xp_result['new_level']}-leveldasiz!"
+                
+                # Check for new achievements
+                new_achievements = check_user_achievements(user_id)
+                for ach in new_achievements:
+                    xp_text += f"\n🏆 <b>Yangi yutuq:</b> {ach['code']}! +{ach['xp_reward']} XP"
+        except Exception as e:
+            print(f"[ERROR] Gamification error in create book: {e}")
+
     kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="📚 Lug'atlarim", callback_data="lughat:list:0")]
     ])
-    await msg.answer(L["book_created"].format(name=name, id=book_id), reply_markup=kb)
+    await msg.answer(L["book_created"].format(name=name, id=book_id) + xp_text, reply_markup=kb, parse_mode="HTML")
     await state.clear()
 
 
@@ -315,7 +348,29 @@ async def add_words(msg: Message, state: FSMContext):
             continue
 
     if added_count > 0:
-        await msg.answer(L["added_pairs"].format(n=added_count), reply_markup=add_words_back_kb(book_id, lang))
+        # Award XP for adding words
+        xp_text = ""
+        if GAMIFICATION_ENABLED and GamificationEngine and XPRewards:
+            try:
+                total_xp = added_count * XPRewards.VOCAB_ADD
+                xp_result = GamificationEngine.add_xp(msg.from_user.id, total_xp, f"Added {added_count} words")
+                if xp_result.get("success"):
+                    xp_text = f"\n\n💎 <b>+{total_xp} XP</b> so'zlar qo'shish uchun!"
+                    if xp_result.get("level_up"):
+                        xp_text += f"\n🎉 <b>Level up!</b> Siz {xp_result['new_level']}-leveldasiz!"
+                    
+                    # Update daily challenge progress
+                    if DailyChallengeManager:
+                        DailyChallengeManager.update_progress(msg.from_user.id, "words", added_count)
+                    
+                    # Check for new achievements
+                    new_achievements = check_user_achievements(msg.from_user.id)
+                    for ach in new_achievements:
+                        xp_text += f"\n🏆 <b>Yangi yutuq:</b> {ach['code']}! +{ach['xp_reward']} XP"
+            except Exception as e:
+                print(f"[ERROR] Gamification error in add words: {e}")
+        
+        await msg.answer(L["added_pairs"].format(n=added_count) + xp_text, reply_markup=add_words_back_kb(book_id, lang), parse_mode="HTML")
     else:
         await msg.answer("❌ Hech qanday yangi so'z qo'shilmadi", reply_markup=add_words_back_kb(book_id, lang))
 

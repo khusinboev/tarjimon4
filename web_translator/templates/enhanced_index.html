@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 Tarjimon Pro — Professional Translation</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        accent: {
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'bounce-slow': 'bounce 2s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .dark .glass {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        /* Gradient Background */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Input Focus Animation */
+        .input-focus-ring {
+            transition: all 0.3s ease;
+        }
+        
+        .input-focus-ring:focus-within {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Language Card Hover */
+        .lang-card {
+            transition: all 0.2s ease;
+        }
+        
+        .lang-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Typing Indicator */
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        /* Result Highlight */
+        .result-text {
+            background: linear-gradient(120deg, transparent 0%, rgba(139, 92, 246, 0.1) 50%, transparent 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Stats Counter */
+        .counter {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+    <!-- Animated Background -->
+    <div class="fixed inset-0 gradient-bg opacity-10 dark:opacity-5 pointer-events-none"></div>
+    
+    <!-- Header -->
+    <header class="glass sticky top-0 z-50 border-b border-gray-200 dark:border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center text-white text-xl animate-float">
+                        🌐
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                            Tarjimon Pro
+                        </h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Professional Translation</p>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <div class="text-center">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Tillar</p>
+                        <p class="text-lg font-bold text-primary-600 dark:text-primary-400 counter" id="langCount">25+</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Tarjimalar</p>
+                        <p class="text-lg font-bold text-accent-600 dark:text-accent-400 counter" id="transCount">1M+</p>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors" title="Mavzuni o'zgartirish">
+                        <i class="fas fa-moon dark:hidden text-gray-600"></i>
+                        <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+                    </button>
+                    <a href="https://t.me/tarjimon_bot" target="_blank" class="hidden sm:flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
+                        <i class="fab fa-telegram"></i>
+                        <span>Botga o'tish</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Section -->
+        <div class="text-center mb-10 animate-fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Tez va aniq <span class="text-primary-600 dark:text-primary-400">tarjima</span>
+            </h2>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                25 dan ortiq tillar orasida professional tarjima. Matn, ovoz va hujjatlar qo'llab-quvvatlanadi.
+            </p>
+        </div>
+        
+        <!-- Translator Card -->
+        <div class="glass rounded-2xl shadow-xl overflow-hidden animate-slide-up">
+            <!-- Toolbar -->
+            <div class="bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 p-4">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <!-- Language Selector -->
+                    <div class="flex items-center space-x-3 flex-wrap">
+                        <!-- Source Language -->
+                        <div class="relative">
+                            <button onclick="toggleLangDropdown('source')" id="sourceLangBtn" class="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg hover:border-primary-500 transition-colors">
+                                <span id="sourceFlag">🌐</span>
+                                <span id="sourceLangName" class="font-medium text-gray-700 dark:text-gray-300">Avto-aniqlash</span>
+                                <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                            </button>
+                            
+                            <!-- Dropdown -->
+                            <div id="sourceDropdown" class="hidden absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-700 rounded-lg shadow-xl border border-gray-200 dark:border-slate-600 z-50 max-h-80 overflow-y-auto">
+                                <div class="p-2">
+                                    <button onclick="selectLanguage('source', 'auto', '🌐', 'Avto-aniqlash')" class="w-full flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-600 transition-colors text-left">
+                                        <span>🌐</span>
+                                        <span class="text-gray-700 dark:text-gray-300">Avto-aniqlash</span>
+                                    </button>
+                                    <hr class="my-2 border-gray-200 dark:border-slate-600">
+                                    <div id="sourceLangList"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Swap Button -->
+                        <button onclick="swapLanguages()" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors transform hover:rotate-180 duration-300" title="Tillarni almashtirish">
+                            <i class="fas fa-exchange-alt text-gray-600 dark:text-gray-400"></i>
+                        </button>
+                        
+                        <!-- Target Language -->
+                        <div class="relative">
+                            <button onclick="toggleLangDropdown('target')" id="targetLangBtn" class="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg hover:border-primary-500 transition-colors">
+                                <span id="targetFlag">🇺🇿</span>
+                                <span id="targetLangName" class="font-medium text-gray-700 dark:text-gray-300">O'zbek</span>
+                                <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                            </button>
+                            
+                            <div id="targetDropdown" class="hidden absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-700 rounded-lg shadow-xl border border-gray-200 dark:border-slate-600 z-50 max-h-80 overflow-y-auto">
+                                <div class="p-2" id="targetLangList"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="flex items-center space-x-2">
+                        <button onclick="clearText()" class="p-2 text-gray-500 hover:text-red-500 transition-colors" title="Tozalash">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        <button onclick="pasteText()" class="p-2 text-gray-500 hover:text-primary-500 transition-colors" title="Qo'shish">
+                            <i class="fas fa-paste"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Translation Area -->
+            <div class="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-slate-700">
+                <!-- Source Input -->
+                <div class="p-4 md:p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Manba matn</span>
+                        <div class="flex items-center space-x-2">
+                            <span id="charCount" class="text-xs text-gray-400">0 / 5000</span>
+                            <button onclick="speakText('source')" class="p-1.5 text-gray-400 hover:text-primary-500 transition-colors" title="O'qish">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-focus-ring rounded-xl">
+                        <textarea 
+                            id="sourceText" 
+                            class="w-full h-48 md:h-64 p-4 bg-transparent border-0 resize-none focus:ring-0 text-gray-800 dark:text-gray-200 text-lg leading-relaxed"
+                            placeholder="Matnni shu yerga kiriting..."
+                            maxlength="5000"
+                            oninput="updateCharCount()"
+                            onkeydown="handleKeyDown(event)"
+                        ></textarea>
+                    </div>
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex space-x-2">
+                            <button onclick="insertSample()" class="text-xs px-3 py-1 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400 rounded-full hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-magic mr-1"></i>Namuna
+                            </button>
+                        </div>
+                        <button onclick="translateText()" id="translateBtn" class="px-6 py-2.5 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white font-medium rounded-xl shadow-lg shadow-primary-500/30 transition-all transform hover:scale-105 active:scale-95 flex items-center space-x-2">
+                            <span>Tarjima</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Target Output -->
+                <div class="p-4 md:p-6 bg-gray-50/50 dark:bg-slate-800/50">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Tarjima</span>
+                        <div class="flex items-center space-x-2">
+                            <span id="detectedLang" class="hidden text-xs px-2 py-1 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full"></span>
+                            <button onclick="speakText('target')" class="p-1.5 text-gray-400 hover:text-primary-500 transition-colors" title="O'qish">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                            <button onclick="copyResult()" class="p-1.5 text-gray-400 hover:text-primary-500 transition-colors" title="Nusxa olish">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div 
+                            id="targetText" 
+                            class="w-full h-48 md:h-64 p-4 bg-transparent border-0 resize-none text-gray-800 dark:text-gray-200 text-lg leading-relaxed overflow-y-auto"
+                        >
+                            <span class="text-gray-400 dark:text-gray-600 italic">Tarjima shu yerda paydo bo'ladi...</span>
+                        </div>
+                        
+                        <!-- Loading Indicator -->
+                        <div id="loadingIndicator" class="hidden absolute inset-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="spinner mx-auto mb-3"></div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Tarjima qilinmoqda...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between mt-3">
+                        <div id="translationMeta" class="text-xs text-gray-400 hidden">
+                            <span id="transTime"></span> • <span id="charLen"></span> belgi
+                        </div>
+                        <div class="flex space-x-2 ml-auto">
+                            <button onclick="saveToFavorites()" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors" title="Sevimlilarga saqlash">
+                                <i class="far fa-star"></i>
+                            </button>
+                            <button onclick="shareTranslation()" class="p-2 text-gray-400 hover:text-primary-500 transition-colors" title="Ulashish">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features Grid -->
+        <div class="mt-12 grid md:grid-cols-3 gap-6 animate-slide-up" style="animation-delay: 0.1s">
+            <!-- Feature 1 -->
+            <div class="glass rounded-xl p-6 text-center lang-card">
+                <div class="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center text-white text-2xl">
+                    ⚡
+                </div>
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Tez tarjima</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Soniyalar ichida professional darajada tarjima</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="glass rounded-xl p-6 text-center lang-card">
+                <div class="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-400 rounded-2xl flex items-center justify-center text-white text-2xl">
+                    🎯
+                </div>
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Aniq natija</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Sun'iy intellekt yordamida kontekstga mos tarjima</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="glass rounded-xl p-6 text-center lang-card">
+                <div class="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-400 rounded-2xl flex items-center justify-center text-white text-2xl">
+                    🔒
+                </div>
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Xavfsizlik</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Ma'lumotlaringiz xavfsiz saqlanadi va himoyalangan</p>
+            </div>
+        </div>
+        
+        <!-- Language Showcase -->
+        <div class="mt-12 animate-slide-up" style="animation-delay: 0.2s">
+            <h3 class="text-xl font-bold text-center text-gray-900 dark:text-white mb-6">
+                Qo'llab-quvvatlanadigan tillar
+            </h3>
+            <div class="flex flex-wrap justify-center gap-3" id="languageShowcase">
+                <!-- Languages will be populated by JS -->
+            </div>
+        </div>
+        
+        <!-- History Section -->
+        <div class="mt-12 glass rounded-2xl p-6 animate-slide-up" style="animation-delay: 0.3s">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    <i class="fas fa-history mr-2 text-primary-500"></i>
+                    So'nggi tarjimalar
+                </h3>
+                <button onclick="clearHistory()" class="text-sm text-red-500 hover:text-red-600 transition-colors">
+                    <i class="fas fa-trash mr-1"></i>Tozalash
+                </button>
+            </div>
+            <div id="historyList" class="space-y-3">
+                <p class="text-gray-500 dark:text-gray-400 text-center py-8">Hali tarjima tarixi yo'q</p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="mt-16 border-t border-gray-200 dark:border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                    <span class="text-2xl">🌐</span>
+                    <span class="font-semibold text-gray-900 dark:text-white">Tarjimon Pro</span>
+                </div>
+                <div class="flex items-center space-x-6 text-sm text-gray-500 dark:text-gray-400">
+                    <a href="#" class="hover:text-primary-500 transition-colors">Haqida</a>
+                    <a href="#" class="hover:text-primary-500 transition-colors">Maxfiylik</a>
+                    <a href="#" class="hover:text-primary-500 transition-colors">Bog'lanish</a>
+                </div>
+                <p class="mt-4 md:mt-0 text-sm text-gray-400">
+                    © 2025 Tarjimon Pro. Barcha huquqlar himoyalangan.
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
+    
+    <!-- Scripts -->
+    <script>
+        // Language data
+        const languages = {{ lang_map_json | safe }};
+        let currentSource = 'auto';
+        let currentTarget = 'uz';
+        let translationHistory = JSON.parse(localStorage.getItem('translations') || '[]');
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            populateLanguageDropdowns();
+            populateLanguageShowcase();
+            renderHistory();
+            updateCharCount();
+            
+            // Check for saved theme
+            if (localStorage.getItem('theme') === 'dark' || 
+                (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        });
+        
+        // Theme toggle
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
+        
+        // Populate dropdowns
+        function populateLanguageDropdowns() {
+            const sourceList = document.getElementById('sourceLangList');
+            const targetList = document.getElementById('targetLangList');
+            
+            Object.entries(languages).forEach(([code, data]) => {
+                if (code === 'auto') return;
+                
+                const btn = `
+                    <button onclick="selectLanguage('source', '${code}', '${data.flag}', '${data.name}')" 
+                            class="w-full flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-600 transition-colors text-left">
+                        <span>${data.flag}</span>
+                        <span class="text-gray-700 dark:text-gray-300">${data.name}</span>
+                    </button>
+                `;
+                sourceList.innerHTML += btn;
+                targetList.innerHTML += btn.replace("'source'", "'target'");
+            });
+        }
+        
+        // Populate language showcase
+        function populateLanguageShowcase() {
+            const showcase = document.getElementById('languageShowcase');
+            const popular = ['en', 'ru', 'uz', 'tr', 'ar', 'de', 'fr', 'es', 'zh', 'ja', 'ko'];
+            
+            popular.forEach(code => {
+                if (languages[code]) {
+                    showcase.innerHTML += `
+                        <span class="px-4 py-2 bg-white dark:bg-slate-800 rounded-full shadow-sm text-sm">
+                            ${languages[code].flag} ${languages[code].name}
+                        </span>
+                    `;
+                }
+            });
+        }
+        
+        // Toggle dropdown
+        function toggleLangDropdown(type) {
+            const dropdown = document.getElementById(type + 'Dropdown');
+            const otherDropdown = document.getElementById(type === 'source' ? 'targetDropdown' : 'sourceDropdown');
+            otherDropdown.classList.add('hidden');
+            dropdown.classList.toggle('hidden');
+        }
+        
+        // Select language
+        function selectLanguage(type, code, flag, name) {
+            if (type === 'source') {
+                currentSource = code;
+                document.getElementById('sourceFlag').textContent = flag;
+                document.getElementById('sourceLangName').textContent = name;
+                document.getElementById('sourceDropdown').classList.add('hidden');
+            } else {
+                currentTarget = code;
+                document.getElementById('targetFlag').textContent = flag;
+                document.getElementById('targetLangName').textContent = name;
+                document.getElementById('targetDropdown').classList.add('hidden');
+            }
+        }
+        
+        // Swap languages
+        function swapLanguages() {
+            if (currentSource === 'auto') {
+                showToast('Avto-aniqlash bilan almashtirish mumkin emas', 'warning');
+                return;
+            }
+            
+            const temp = currentSource;
+            currentSource = currentTarget;
+            currentTarget = temp;
+            
+            // Update UI
+            const sourceData = languages[currentSource];
+            const targetData = languages[currentTarget];
+            
+            document.getElementById('sourceFlag').textContent = sourceData.flag;
+            document.getElementById('sourceLangName').textContent = sourceData.name;
+            document.getElementById('targetFlag').textContent = targetData.flag;
+            document.getElementById('targetLangName').textContent = targetData.name;
+            
+            // Swap text
+            const sourceText = document.getElementById('sourceText').value;
+            const targetText = document.getElementById('targetText').textContent;
+            
+            if (!targetText.includes('Tarjima shu yerda')) {
+                document.getElementById('sourceText').value = targetText;
+                document.getElementById('targetText').innerHTML = `<span class="result-text">${sourceText}</span>`;
+                updateCharCount();
+            }
+        }
+        
+        // Update character count
+        function updateCharCount() {
+            const count = document.getElementById('sourceText').value.length;
+            const max = 5000;
+            document.getElementById('charCount').textContent = `${count} / ${max}`;
+            
+            if (count > max * 0.9) {
+                document.getElementById('charCount').classList.add('text-red-500');
+            } else {
+                document.getElementById('charCount').classList.remove('text-red-500');
+            }
+        }
+        
+        // Handle keyboard shortcuts
+        function handleKeyDown(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                translateText();
+            }
+        }
+        
+        // Translate text
+        async function translateText() {
+            const text = document.getElementById('sourceText').value.trim();
+            if (!text) {
+                showToast('Iltimos, matn kiriting', 'warning');
+                return;
+            }
+            
+            const loading = document.getElementById('loadingIndicator');
+            const targetText = document.getElementById('targetText');
+            const startTime = Date.now();
+            
+            loading.classList.remove('hidden');
+            
+            try {
+                const response = await fetch('/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: text,
+                        source: currentSource,
+                        target: currentTarget
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.ok) {
+                    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+                    targetText.innerHTML = `<span class="result-text">${escapeHtml(data.translated)}</span>`;
+                    
+                    // Show detected language
+                    if (data.detected && currentSource === 'auto') {
+                        const detected = document.getElementById('detectedLang');
+                        const langName = languages[data.detected]?.name || data.detected;
+                        detected.textContent = `Aniqlangan: ${langName}`;
+                        detected.classList.remove('hidden');
+                    }
+                    
+                    // Update meta
+                    document.getElementById('translationMeta').classList.remove('hidden');
+                    document.getElementById('transTime').textContent = `${duration}s`;
+                    document.getElementById('charLen').textContent = data.translated.length;
+                    
+                    // Add to history
+                    addToHistory(text, data.translated, currentSource, currentTarget);
+                    
+                    showToast('Tarjima tayyor!', 'success');
+                } else {
+                    throw new Error(data.error || 'Tarjima xatosi');
+                }
+            } catch (error) {
+                targetText.innerHTML = `<span class="text-red-500">❌ Xatolik: ${error.message}</span>`;
+                showToast(error.message, 'error');
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+        
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Add to history
+        function addToHistory(original, translated, from, to) {
+            const item = {
+                original,
+                translated,
+                from,
+                to,
+                timestamp: new Date().toISOString()
+            };
+            
+            translationHistory.unshift(item);
+            if (translationHistory.length > 10) translationHistory.pop();
+            
+            localStorage.setItem('translations', JSON.stringify(translationHistory));
+            renderHistory();
+        }
+        
+        // Render history
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            
+            if (translationHistory.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-8">Hali tarjima tarixi yo\'q</p>';
+                return;
+            }
+            
+            list.innerHTML = translationHistory.map((item, i) => `
+                <div class="p-4 bg-white dark:bg-slate-700 rounded-lg border border-gray-200 dark:border-slate-600 hover:border-primary-500 transition-colors cursor-pointer" onclick="loadFromHistory(${i})">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs text-primary-600 dark:text-primary-400">
+                            ${languages[item.from]?.flag || '🌐'} → ${languages[item.to]?.flag || '🏳️'}
+                        </span>
+                        <span class="text-xs text-gray-400">${formatTime(item.timestamp)}</span>
+                    </div>
+                    <p class="text-sm text-gray-800 dark:text-gray-200 truncate">${escapeHtml(item.original)}</p>
+                </div>
+            `).join('');
+        }
+        
+        // Format time
+        function formatTime(iso) {
+            const date = new Date(iso);
+            return date.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Load from history
+        function loadFromHistory(index) {
+            const item = translationHistory[index];
+            document.getElementById('sourceText').value = item.original;
+            document.getElementById('targetText').innerHTML = `<span class="result-text">${escapeHtml(item.translated)}</span>`;
+            updateCharCount();
+            
+            // Update languages
+            selectLanguage('source', item.from, languages[item.from]?.flag || '🌐', languages[item.from]?.name || 'Avto');
+            selectLanguage('target', item.to, languages[item.to]?.flag || '🏳️', languages[item.to]?.name || 'Unknown');
+        }
+        
+        // Clear history
+        function clearHistory() {
+            translationHistory = [];
+            localStorage.removeItem('translations');
+            renderHistory();
+            showToast('Tarix tozalandi', 'success');
+        }
+        
+        // Clear text
+        function clearText() {
+            document.getElementById('sourceText').value = '';
+            document.getElementById('targetText').innerHTML = '<span class="text-gray-400 dark:text-gray-600 italic">Tarjima shu yerda paydo bo\'ladi...</span>';
+            document.getElementById('detectedLang').classList.add('hidden');
+            document.getElementById('translationMeta').classList.add('hidden');
+            updateCharCount();
+        }
+        
+        // Paste text
+        async function pasteText() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('sourceText').value = text;
+                updateCharCount();
+                showToast('Qo\'shildi!', 'success');
+            } catch {
+                showToast('Ruxsat berilmagan', 'error');
+            }
+        }
+        
+        // Copy result
+        async function copyResult() {
+            const text = document.getElementById('targetText').textContent;
+            if (text.includes('Tarjima shu yerda')) return;
+            
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('Nusxa olindi!', 'success');
+            } catch {
+                showToast('Nusxa olishda xatolik', 'error');
+            }
+        }
+        
+        // Insert sample text
+        function insertSample() {
+            const samples = [
+                "Hello, how are you today?",
+                "Machine learning is a subset of artificial intelligence.",
+                "The quick brown fox jumps over the lazy dog.",
+                "Science is organized knowledge. Wisdom is organized life.",
+                "In the middle of difficulty lies opportunity."
+            ];
+            const sample = samples[Math.floor(Math.random() * samples.length)];
+            document.getElementById('sourceText').value = sample;
+            updateCharCount();
+        }
+        
+        // Speak text (placeholder)
+        function speakText(type) {
+            showToast('Ovozli o\'qish tez orada!', 'info');
+        }
+        
+        // Save to favorites (placeholder)
+        function saveToFavorites() {
+            showToast('Sevimlilarga saqlandi!', 'success');
+        }
+        
+        // Share translation (placeholder)
+        function shareTranslation() {
+            const text = document.getElementById('targetText').textContent;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Tarjima',
+                    text: text
+                });
+            } else {
+                copyResult();
+                showToast('Ulashish uchun nusxa olindi!', 'success');
+            }
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2 min-w-[200px]`;
+            toast.innerHTML = `
+                <i class="fas ${icons[type]}"></i>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'fadeIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#sourceLangBtn') && !e.target.closest('#sourceDropdown')) {
+                document.getElementById('sourceDropdown').classList.add('hidden');
+            }
+            if (!e.target.closest('#targetLangBtn') && !e.target.closest('#targetDropdown')) {
+                document.getElementById('targetDropdown').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

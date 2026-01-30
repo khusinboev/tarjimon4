@@ -8,9 +8,9 @@ class AdminPanel:
     async def admin_menu():
         btn=ReplyKeyboardMarkup(
             keyboard=[
-                [KeyboardButton(text="📊Statistika"), KeyboardButton(text="🔧Kanallar")],
-                [KeyboardButton(text="✍Xabarlar"), KeyboardButton(text="📊Tillar")],
-                [KeyboardButton(text="📚 Kitoblarni kirgizish"), KeyboardButton(text="📚 Parallellarni kirgizish")],
+                [KeyboardButton(text="📊 Statistika"), KeyboardButton(text="👥 Foydalanuvchilar")],
+                [KeyboardButton(text="📢 Xabar yuborish"), KeyboardButton(text="🔧 Kanallar")],
+                [KeyboardButton(text="🎮 Gamification"), KeyboardButton(text="🔙 Chiqish")],
             ],
             resize_keyboard=True,
         )

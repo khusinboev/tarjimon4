@@ -36,7 +36,7 @@ async def save_timetable():
             f.write(svg_content)
 
         await browser.close()
-    print(f"✅ Yangi SVG saqlandi: {svg_path}")
+    print(f"[OK] Yangi SVG saqlandi: {svg_path}")
     return svg_path
 
 
@@ -239,4 +239,6 @@ def get_week_info(week_type, current_index, total_count):
     else:
         return f"📚 {current_index}-dars"
 
-print(get_daily_timetable(asyncio.run(save_timetable())))
+# Test code - commented out to prevent execution on import
+# if __name__ == "__main__":
+#     print(get_daily_timetable(asyncio.run(save_timetable())))

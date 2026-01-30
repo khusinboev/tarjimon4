@@ -30,10 +30,12 @@ class Form(StatesGroup):
     clear_base = State()
 
 
-# Admin panelga kirish
-@admin_router.message(Command("panel", "admin"), F.from_user.id.in_(ADMIN_ID), F.chat.type == ChatType.PRIVATE)#,
+# Admin panelga kirish - Note: /admin is now handled by admin_panel_complete.py
+# This handler serves as backup for /panel command
+@admin_router.message(Command("panel"), F.from_user.id.in_(ADMIN_ID), F.chat.type == ChatType.PRIVATE)
 async def panel_handler(message: Message) -> None:
-    await message.answer("panel", reply_markup=await AdminPanel.admin_menu())
+    from src.keyboards.buttons import AdminPanel
+    await message.answer("Admin panel", reply_markup=await AdminPanel.admin_menu())
 
 
 markup = ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[[KeyboardButton(text="🔙Orqaga qaytish")]])
@@ -61,18 +63,18 @@ async def new(message: Message):
     cur = conn.cursor()
 
     # Jami foydalanuvchilar
-    cur.execute("SELECT COUNT(*) FROM users_status")
+    cur.execute("SELECT COUNT(*) FROM users WHERE is_active = TRUE")
     all_users = cur.fetchone()[0]
 
     # Oxirgi 3 oydagi jami foydalanuvchilar
-    cur.execute("SELECT COUNT(*) FROM users_status WHERE date >= %s", (months[-1],))
+    cur.execute("SELECT COUNT(*) FROM users WHERE DATE(created_at) >= %s", (months[-1],))
     last_3_months = cur.fetchone()[0]
 
     # Har bir oy bo‘yicha statistikalar
     month_counts = {}
     for month in months:
         cur.execute(
-            "SELECT COUNT(*) FROM users_status WHERE date >= %s AND date < %s",
+            "SELECT COUNT(*) FROM users WHERE DATE(created_at) >= %s AND DATE(created_at) < %s",
             (month, month + relativedelta(months=1))
         )
         month_counts[month.strftime("%B")] = cur.fetchone()[0] or 0
@@ -81,11 +83,11 @@ async def new(message: Message):
     last_7_days = {}
     for i in range(7):
         date_str = (now - timedelta(days=i)).strftime("%Y-%m-%d")
-        cur.execute("SELECT COUNT(*) FROM users_status WHERE date = %s", (date_str,))
+        cur.execute("SELECT COUNT(*) FROM users WHERE DATE(created_at) = %s", (date_str,))
         last_7_days[date_str] = cur.fetchone()[0] or 0
 
     # --- Yangi qo'shiladigan qism: tillar kesimi ---
-    cur.execute("SELECT lang_code, COUNT(*) FROM accounts GROUP BY lang_code ORDER BY COUNT(*) DESC")
+    cur.execute("SELECT interface_lang, COUNT(*) FROM users GROUP BY interface_lang ORDER BY COUNT(*) DESC")
     lang_stats = cur.fetchall()
 
 
@@ -117,10 +119,10 @@ async def new(message: Message):
     #     await message.answer(part, parse_mode="Markdown")
     # --- Oxirgi 48 soatda tillar kesimi (TOP 10) ---
     cur.execute("""
-        SELECT lang_code, COUNT(*) 
-        FROM accounts 
-        WHERE date >= NOW() - interval '48 hours'
-        GROUP BY lang_code 
+        SELECT interface_lang, COUNT(*) 
+        FROM users 
+        WHERE created_at >= NOW() - interval '48 hours'
+        GROUP BY interface_lang 
         ORDER BY COUNT(*) DESC 
         LIMIT 10
     """)
@@ -128,9 +130,9 @@ async def new(message: Message):
 
     # --- Xabar matni ---
     langs_48_text = "⏰ *Oxirgi 48 soatda qo‘shilganlar (TOP 10 tillar):*\n\n"
-    for lang_code, count in lang_last_48:
-        flag = get_flag(lang_code) if lang_code else "🌐"
-        langs_48_text += f" - {flag} {lang_code or 'None'}: {count} ta\n"
+    for interface_lang, count in lang_last_48:
+        flag = get_flag(interface_lang) if interface_lang else "🌐"
+        langs_48_text += f" - {flag} {interface_lang or 'None'}: {count} ta\n"
 
     await message.answer(langs_48_text, parse_mode="Markdown") 
 

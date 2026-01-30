@@ -216,7 +216,7 @@ async def get_user_ids_paginated(batch_size: int = 1000):
     offset = 0
     user_ids = []
     while True:
-        sql.execute(f"SELECT user_id FROM public.accounts LIMIT {batch_size} OFFSET {offset}")
+        sql.execute(f"SELECT user_id FROM users WHERE is_blocked = FALSE LIMIT {batch_size} OFFSET {offset}")
         rows = sql.fetchall()
         if not rows:
             break

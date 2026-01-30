@@ -14,12 +14,5 @@ async def chosen_lang(message: Message, state: FSMContext):
 
 
 # Shu yerda keyingi bosqichni (fac5 va hokazo) davom ettirishingiz mumkin.
-@other_router.callback_query()
-async def handle_hello(callback: CallbackQuery):
-    try:
-        await callback.message.delete()
-    except Exception as e:
-        try:
-            await bot.delete_message(chat_id=callback.from_user.id, message_id=callback.inline_message_id )
-        except:
-            pass
+# NOTE: Removed catch-all callback handler that was causing inline buttons to disappear
+# All callbacks should be handled by specific handlers in their respective routers

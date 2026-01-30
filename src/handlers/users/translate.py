@@ -52,6 +52,22 @@ except ImportError:
         'favorites': 0, 'most_used_lang_pair': None
     }
 
+# Gamification imports
+try:
+    from src.utils.gamification import (
+        award_translation_xp, 
+        check_user_achievements,
+        DailyChallengeManager,
+        GamificationEngine
+    )
+    GAMIFICATION_ENABLED = True
+except ImportError:
+    GAMIFICATION_ENABLED = False
+    award_translation_xp = lambda *args, **kwargs: {}
+    check_user_achievements = lambda *args, **kwargs: []
+    DailyChallengeManager = None
+    GamificationEngine = None
+
 translate_router = Router()
 
 
@@ -320,6 +336,34 @@ async def handle_text(msg: Message):
             
             # Uzun matnni bo'lib yuborish
             await split_and_send(msg, result, reply_markup=get_translation_keyboard())
+            
+            # Award XP for translation
+            if GAMIFICATION_ENABLED:
+                try:
+                    xp_result = award_translation_xp(msg.from_user.id, len(msg.text))
+                    if xp_result.get("level_up"):
+                        await msg.answer(
+                            f"🎉 <b>Level up!</b>\n"
+                            f"Siz {xp_result['new_level']}-levelga ko'tarildingiz!\n"
+                            f"💎 Jami XP: {xp_result['total_xp']}",
+                            parse_mode="HTML"
+                        )
+                    
+                    # Update daily challenge progress
+                    if DailyChallengeManager:
+                        DailyChallengeManager.update_progress(msg.from_user.id, "translations", 1)
+                    
+                    # Check for new achievements
+                    new_achievements = check_user_achievements(msg.from_user.id)
+                    for ach in new_achievements:
+                        await msg.answer(
+                            f"🏆 <b>Yangi yutuq!</b>\n"
+                            f"{ach['code']} ochildi!\n"
+                            f"🎁 +{ach['xp_reward']} XP",
+                            parse_mode="HTML"
+                        )
+                except Exception as e:
+                    translate_logger.error(f"Gamification error: {e}")
     except Exception as e:
         log_error(e, "handle_text")
         translate_logger.error(f"Translation error for user {msg.from_user.id}: {e}")
@@ -406,6 +450,31 @@ async def handle_media(msg: Message):
                     reply_markup=get_translation_keyboard(),
                     parse_mode="HTML"
                 )
+                
+                # Award XP for caption translation (smaller amount)
+                if GAMIFICATION_ENABLED:
+                    try:
+                        xp_result = award_translation_xp(msg.from_user.id, len(msg.caption))
+                        if xp_result.get("level_up"):
+                            await msg.answer(
+                                f"🎉 <b>Level up!</b>\n"
+                                f"Siz {xp_result['new_level']}-levelga ko'tarildingiz!",
+                                parse_mode="HTML"
+                            )
+                        
+                        # Update daily challenge progress
+                        if DailyChallengeManager:
+                            DailyChallengeManager.update_progress(msg.from_user.id, "translations", 1)
+                        
+                        # Check for new achievements
+                        new_achievements = check_user_achievements(msg.from_user.id)
+                        for ach in new_achievements:
+                            await msg.answer(
+                                f"🏆 <b>Yangi yutuq!</b> {ach['code']} ochildi! 🎁 +{ach['xp_reward']} XP",
+                                parse_mode="HTML"
+                            )
+                    except Exception as e:
+                        translate_logger.error(f"Gamification error: {e}")
         except Exception as e:
             print(f"[ERROR] Media caption translation error: {e}")
             await msg.answer(

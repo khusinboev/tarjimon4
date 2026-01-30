@@ -145,11 +145,13 @@ async def create_all_base():
     db.commit()
 
     # 9) Practice Questions - mashq savollari jadvali (yaxshilangan)
+    # NOTE: This table is now created by comprehensive_schema.py with more fields
+    # We only create it here if it doesn't exist yet (for backward compatibility)
     sql.execute("""
     CREATE TABLE IF NOT EXISTS practice_questions (
         id SERIAL PRIMARY KEY,
         session_id INTEGER NOT NULL,
-        entry_id INTEGER,
+        vocab_entry_id INTEGER,
         presented_text TEXT NOT NULL,
         correct_translation TEXT NOT NULL,
         choices JSONB,
@@ -159,13 +161,13 @@ async def create_all_base():
         asked_at TIMESTAMP DEFAULT now(),
         answered_at TIMESTAMP,
         CONSTRAINT fk_question_session FOREIGN KEY (session_id) REFERENCES practice_sessions(id) ON DELETE CASCADE,
-        CONSTRAINT fk_question_entry FOREIGN KEY (entry_id) REFERENCES vocab_entries(id) ON DELETE SET NULL
+        CONSTRAINT fk_question_entry FOREIGN KEY (vocab_entry_id) REFERENCES vocab_entries(id) ON DELETE SET NULL
     )""")
 
     # Indekslar
     sql.execute("""
     CREATE INDEX IF NOT EXISTS idx_practice_questions_session ON practice_questions(session_id);
-    CREATE INDEX IF NOT EXISTS idx_practice_questions_entry ON practice_questions(entry_id);
+    CREATE INDEX IF NOT EXISTS idx_practice_questions_vocab ON practice_questions(vocab_entry_id);
     CREATE INDEX IF NOT EXISTS idx_practice_questions_asked ON practice_questions(asked_at DESC);
     """)
     db.commit()
@@ -210,15 +212,15 @@ async def create_all_base():
     """)
     db.commit()
 
-    print("✅ Barcha jadvallar muvaffaqiyatli yaratildi!")
+    print("[OK] Barcha jadvallar muvaffaqiyatli yaratildi!")
     try:
         await create_parallel_tables()
         await init_parallel_series()
-        print("✅ Parallel tarjimalar jadvallari yaratildi")
+        print("[OK] Parallel tarjimalar jadvallari yaratildi")
     except Exception as e:
-        print(f"⚠️ Parallel jadvallar yaratishda xato: {e}")
+        print(f"[WARN] Parallel jadvallar yaratishda xato: {e}")
 
-    print("✅ Barcha jadvallar muvaffaqiyatli yaratildi!")
+    print("[OK] Barcha jadvallar muvaffaqiyatli yaratildi!")
 
 def init_languages_table():
     """Tillar jadvalini ma'lumotlar bilan to'ldirish."""
@@ -226,17 +228,17 @@ def init_languages_table():
     count = sql.fetchone()[0]
 
     if count == 0:
-        print("📚 Tillar bazaga qo'shilmoqda...")
+        print("[DB] Tillar bazaga qo'shilmoqda...")
         for code, data in LANGUAGES.items():
             sql.execute(
                 "INSERT INTO languages (code, name, flag) VALUES (%s, %s, %s) ON CONFLICT (code) DO NOTHING;",
                 (code, data["name"], data["flag"])
             )
         db.commit()
-        print(f"✅ {len(LANGUAGES)} ta til qo'shildi.")
+        print(f"[OK] {len(LANGUAGES)} ta til qo'shildi.")
         return True
     else:
-        print(f"ℹ️ {count} ta til allaqachon mavjud.")
+        print(f"[INFO] {count} ta til allaqachon mavjud.")
         return False
 
 def create_indexes_and_constraints():
@@ -255,6 +257,6 @@ def create_indexes_and_constraints():
             sql.execute(index_sql)
             db.commit()
         except Exception as e:
-            print(f"⚠️ Index yaratishda xato: {e}")
+            print(f"[WARN] Index yaratishda xato: {e}")
 
-    print("✅ Qo'shimcha indekslar yaratildi!")
+    print("[OK] Qo'shimcha indekslar yaratildi!")

@@ -149,10 +149,10 @@ async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: b
 async def get_user_data(user_id: int) -> Dict[str, Any]:
     """Fetch user lang and books in one query batch for optimization."""
     lang_row = await db_exec(
-        "SELECT lang_code FROM accounts WHERE user_id=%s ORDER BY id DESC LIMIT 1",
+        "SELECT interface_lang FROM users WHERE user_id=%s",
         (user_id,), fetch=True
     )
-    lang = lang_row["lang_code"] if lang_row else "uz"
+    lang = lang_row["interface_lang"] if lang_row else "uz"
 
     # Lug'atlar bilan birga ularning holati ham olinadi
     books = await db_exec(
@@ -193,7 +193,7 @@ async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS
                         vb.created_at::date as created_date, COALESCE(a.user_id::text, 'Unknown') as author_name,
                         COUNT(ve.id) as word_count
                  FROM vocab_books vb
-                          LEFT JOIN accounts a ON vb.user_id = a.user_id
+                          LEFT JOIN users a ON vb.user_id = a.user_id
                           LEFT JOIN vocab_entries ve ON vb.id = ve.book_id
                  WHERE 1 = 1 \
                  """
@@ -242,13 +242,13 @@ async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS
 
 async def set_user_lang(user_id: int, lang: str):
     row = await db_exec(
-        "SELECT id FROM accounts WHERE user_id=%s ORDER BY id DESC LIMIT 1",
+        "SELECT id FROM users WHERE user_id=%s",
         (user_id,), fetch=True
     )
     if row:
-        await db_exec("UPDATE accounts SET lang_code=%s WHERE id=%s", (lang, row["id"]))
+        await db_exec("UPDATE users SET interface_lang=%s WHERE id=%s", (lang, row["id"]))
     else:
-        await db_exec("INSERT INTO accounts (user_id, lang_code) VALUES (%s,%s)", (user_id, lang))
+        await db_exec("INSERT INTO users (user_id, interface_lang) VALUES (%s,%s)", (user_id, lang))
 
 
 # =====================================================

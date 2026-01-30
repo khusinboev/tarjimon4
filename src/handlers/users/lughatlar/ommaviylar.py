@@ -124,7 +124,7 @@ async def get_mixed_public_books(user_id: int, page: int = 0, per_page: int = BO
                    CASE WHEN vb.user_id = %s THEN true ELSE false END as is_own,
                    vb.user_id as author_id
             FROM vocab_books vb
-                     LEFT JOIN accounts a ON vb.user_id = a.user_id
+                     LEFT JOIN users a ON vb.user_id = a.user_id
                      LEFT JOIN vocab_entries ve ON vb.id = ve.book_id
             WHERE vb.is_public = TRUE
             GROUP BY vb.id, vb.name, vb.is_public, vb.user_id, vb.created_at, a.user_id

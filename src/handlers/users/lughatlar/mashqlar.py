@@ -11,6 +11,20 @@ from src.handlers.users.lughatlar.vocabs import (
     get_paginated_books
 )
 
+# Gamification imports
+try:
+    from src.utils.gamification import (
+        award_practice_xp,
+        check_user_achievements,
+        DailyChallengeManager
+    )
+    GAMIFICATION_ENABLED = True
+except ImportError:
+    GAMIFICATION_ENABLED = False
+    award_practice_xp = lambda *args, **kwargs: {}
+    check_user_achievements = lambda *args, **kwargs: []
+    DailyChallengeManager = None
+
 mashqlar_router = Router()
 
 
@@ -303,6 +317,7 @@ async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
 
     user_data = await get_user_data(cb.from_user.id)
     L = get_locale(user_data["lang"])
+    user_id = cb.from_user.id
 
     full_text = f"📖 {book_name}\n"
     full_text += f"{L['results_header']}\n\n"
@@ -323,6 +338,27 @@ async def cb_practice_finish(cb: CallbackQuery, state: FSMContext):
         full_text += "\n\n💪 Yomon emas! Yana mashq qiling!"
     else:
         full_text += "\n\n📚 Mashq davom eting, har gal yaxshilashasiz!"
+
+    # Award XP for practice
+    if GAMIFICATION_ENABLED and total_answers > 0:
+        try:
+            xp_result = award_practice_xp(user_id, total_correct, total_answers)
+            if xp_result.get("success"):
+                full_text += f"\n\n💎 <b>+{xp_result['xp_added']} XP</b> mashq uchun!"
+                
+                if xp_result.get("level_up"):
+                    full_text += f"\n🎉 <b>Level up!</b> Siz {xp_result['new_level']}-leveldasiz!"
+            
+            # Update daily challenge progress
+            if DailyChallengeManager:
+                DailyChallengeManager.update_progress(user_id, "practice", 1)
+            
+            # Check for new achievements
+            new_achievements = check_user_achievements(user_id)
+            for ach in new_achievements:
+                full_text += f"\n🏆 <b>Yangi yutuq:</b> {ach['code']}! +{ach['xp_reward']} XP"
+        except Exception as e:
+            print(f"[ERROR] Gamification error in practice: {e}")
 
     await state.clear()
     
