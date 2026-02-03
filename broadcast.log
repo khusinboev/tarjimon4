@@ -1,0 +1,945 @@
+2026-01-31 20:15:47,363 - INFO - [START] Starting Tarjimon Bot...
+2026-01-31 20:15:47,363 - INFO - [DB] Creating comprehensive analytics schema...
+2026-01-31 20:15:47,363 - INFO - [DB] Initializing achievements...
+2026-01-31 20:15:47,379 - INFO - [DB] Creating legacy tables...
+2026-01-31 20:15:47,406 - INFO - [DB] Running legacy migrations...
+2026-01-31 20:15:47,447 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-01-31 20:15:47,450 - INFO - [DB] Initializing languages...
+2026-01-31 20:15:47,451 - INFO - [DB] Creating indexes...
+2026-01-31 20:15:47,454 - INFO - [OK] Database initialization complete!
+2026-01-31 20:15:47,480 - INFO - [OK] Comprehensive analytics system ready!
+2026-01-31 20:15:47,480 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-01-31 20:15:47,480 - INFO - [INIT] Registering admin routers...
+2026-01-31 20:15:47,482 - INFO - [INIT] Registering user routers...
+2026-01-31 20:15:47,482 - INFO - [INIT] Registering vocabulary routers...
+2026-01-31 20:15:47,482 - INFO - [INIT] Registering other routers...
+2026-01-31 20:15:47,482 - INFO - [OK] All routers registered successfully!
+2026-01-31 20:15:47,482 - INFO - [START] Starting polling...
+2026-01-31 20:15:47,484 - INFO - Start polling
+2026-01-31 20:15:48,287 - INFO - Run polling for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-01-31 20:15:48,642 - INFO - User 1918760732 - translate_text - Text length: 1
+2026-01-31 20:15:49,603 - ERROR - Translation error for user 1918760732: 'NoneType' object has no attribute 'startswith'
+2026-01-31 20:15:50,202 - INFO - Update id=881442622 is handled. Duration 1594 ms by bot id=7260931021
+2026-01-31 20:15:50,205 - INFO - Update id=881442621 is handled. Duration 1719 ms by bot id=7260931021
+2026-01-31 20:15:58,269 - INFO - Update id=881442623 is handled. Duration 265 ms by bot id=7260931021
+2026-01-31 20:16:00,782 - INFO - Update id=881442624 is handled. Duration 500 ms by bot id=7260931021
+2026-01-31 20:16:05,386 - INFO - Update id=881442625 is handled. Duration 405 ms by bot id=7260931021
+2026-01-31 20:16:07,127 - INFO - Update id=881442626 is handled. Duration 609 ms by bot id=7260931021
+2026-01-31 20:16:08,253 - INFO - Update id=881442627 is handled. Duration 421 ms by bot id=7260931021
+2026-01-31 20:16:09,385 - INFO - Update id=881442628 is handled. Duration 421 ms by bot id=7260931021
+2026-01-31 20:16:10,505 - INFO - Update id=881442629 is handled. Duration 609 ms by bot id=7260931021
+2026-01-31 20:16:10,915 - INFO - Update id=881442630 is handled. Duration 407 ms by bot id=7260931021
+2026-01-31 20:16:14,090 - INFO - Update id=881442631 is handled. Duration 500 ms by bot id=7260931021
+2026-01-31 20:16:16,682 - INFO - Update id=881442632 is handled. Duration 233 ms by bot id=7260931021
+2026-01-31 20:16:19,596 - INFO - Update id=881442633 is not handled. Duration 78 ms by bot id=7260931021
+2026-01-31 20:16:22,754 - INFO - Update id=881442634 is not handled. Duration 61 ms by bot id=7260931021
+2026-01-31 20:16:22,755 - ERROR - Cause exception while process update id=881442634 by bot id=7260931021
+UndefinedColumn: column a.icon_emoji does not exist
+LINE 2:         SELECT a.code, a.name, a.description, a.icon_emoji, ...
+                                                      ^
+Traceback (most recent call last):
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "E:\projects\python\tarjimon4\src\middlewares\comprehensive_middleware.py", line 54, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "E:\projects\python\tarjimon4\src\handlers\users\enhanced_user_panel.py", line 361, in show_achievements_callback
+    sql.execute("""
+psycopg2.errors.UndefinedColumn: column a.icon_emoji does not exist
+LINE 2:         SELECT a.code, a.name, a.description, a.icon_emoji, ...
+                                                      ^
+
+2026-01-31 20:16:24,088 - INFO - Update id=881442635 is not handled. Duration 63 ms by bot id=7260931021
+2026-01-31 20:16:24,088 - ERROR - Cause exception while process update id=881442635 by bot id=7260931021
+UndefinedTable: relation "study_sessions" does not exist
+LINE 4:         FROM study_sessions WHERE user_id = 1918760732
+                     ^
+Traceback (most recent call last):
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "E:\projects\python\tarjimon4\src\middlewares\comprehensive_middleware.py", line 54, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "E:\projects\python\tarjimon4\src\handlers\users\enhanced_user_panel.py", line 282, in detailed_stats
+    sql.execute("""
+psycopg2.errors.UndefinedTable: relation "study_sessions" does not exist
+LINE 4:         FROM study_sessions WHERE user_id = 1918760732
+                     ^
+
+2026-01-31 20:16:25,663 - INFO - Update id=881442636 is handled. Duration 516 ms by bot id=7260931021
+2026-01-31 20:16:26,480 - INFO - Update id=881442637 is handled. Duration 405 ms by bot id=7260931021
+2026-01-31 20:16:28,118 - INFO - Update id=881442638 is handled. Duration 405 ms by bot id=7260931021
+2026-01-31 20:16:30,480 - INFO - Update id=881442639 is handled. Duration 265 ms by bot id=7260931021
+2026-01-31 20:16:31,871 - INFO - Update id=881442640 is not handled. Duration 63 ms by bot id=7260931021
+2026-01-31 20:16:31,872 - ERROR - Cause exception while process update id=881442640 by bot id=7260931021
+UndefinedColumn: column "reward_xp" does not exist
+LINE 2: ... title, description, challenge_type, target_value, reward_xp
+                                                              ^
+Traceback (most recent call last):
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "E:\projects\python\tarjimon4\src\middlewares\comprehensive_middleware.py", line 54, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "E:\projects\python\tarjimon4\src\handlers\users\enhanced_user_panel.py", line 568, in daily_challenge
+    sql.execute("""
+psycopg2.errors.UndefinedColumn: column "reward_xp" does not exist
+LINE 2: ... title, description, challenge_type, target_value, reward_xp
+                                                              ^
+
+2026-01-31 20:16:33,618 - INFO - Update id=881442641 is not handled. Duration 77 ms by bot id=7260931021
+2026-01-31 20:16:35,798 - INFO - Update id=881442642 is handled. Duration 500 ms by bot id=7260931021
+2026-01-31 20:19:44,010 - INFO - Polling stopped for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-01-31 20:19:44,010 - INFO - Polling stopped
+2026-02-01 01:22:03,406 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 01:22:03,406 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 01:22:03,410 - INFO - [DB] Initializing achievements...
+2026-02-01 01:22:03,442 - INFO - [DB] Creating legacy tables...
+2026-02-01 01:22:03,463 - INFO - [DB] Running legacy migrations...
+2026-02-01 01:22:03,502 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 01:22:03,505 - INFO - [DB] Initializing languages...
+2026-02-01 01:22:03,507 - INFO - [DB] Creating indexes...
+2026-02-01 01:22:03,508 - INFO - [OK] Database initialization complete!
+2026-02-01 01:22:03,508 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 01:22:03,509 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 01:22:03,509 - INFO - [INIT] Registering admin routers...
+2026-02-01 01:22:03,509 - INFO - [INIT] Registering user routers...
+2026-02-01 01:22:03,509 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 01:22:03,509 - INFO - [INIT] Registering other routers...
+2026-02-01 01:22:03,509 - INFO - [OK] All routers registered successfully!
+2026-02-01 01:22:03,509 - INFO - [START] Starting polling...
+2026-02-01 01:22:03,510 - INFO - Start polling
+2026-02-01 01:23:24,562 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 01:23:24,562 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 01:23:24,567 - INFO - [DB] Initializing achievements...
+2026-02-01 01:23:24,576 - INFO - [DB] Creating legacy tables...
+2026-02-01 01:23:24,600 - INFO - [DB] Running legacy migrations...
+2026-02-01 01:23:24,640 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 01:23:24,642 - INFO - [DB] Initializing languages...
+2026-02-01 01:23:24,645 - INFO - [DB] Creating indexes...
+2026-02-01 01:23:24,647 - INFO - [OK] Database initialization complete!
+2026-02-01 01:23:24,647 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 01:23:24,647 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 01:23:24,648 - INFO - [INIT] Registering admin routers...
+2026-02-01 01:23:24,648 - INFO - [INIT] Registering user routers...
+2026-02-01 01:23:24,648 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 01:23:24,649 - INFO - [INIT] Registering other routers...
+2026-02-01 01:23:24,649 - INFO - [OK] All routers registered successfully!
+2026-02-01 01:23:24,649 - INFO - [START] Starting polling...
+2026-02-01 01:23:24,650 - INFO - Start polling
+2026-02-01 01:23:25,393 - INFO - Run polling for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 01:23:47,105 - INFO - Update id=881442643 is handled. Duration 811 ms by bot id=7260931021
+2026-02-01 01:23:58,680 - INFO - Update id=881442644 is handled. Duration 311 ms by bot id=7260931021
+2026-02-01 01:24:01,947 - INFO - Update id=881442645 is handled. Duration 203 ms by bot id=7260931021
+2026-02-01 01:24:06,897 - INFO - Update id=881442646 is handled. Duration 250 ms by bot id=7260931021
+2026-02-01 01:24:13,103 - INFO - Update id=881442647 is handled. Duration 500 ms by bot id=7260931021
+2026-02-01 01:24:16,592 - INFO - Update id=881442648 is handled. Duration 2046 ms by bot id=7260931021
+2026-02-01 01:24:17,110 - INFO - Update id=881442649 is handled. Duration 922 ms by bot id=7260931021
+2026-02-01 01:24:19,700 - INFO - Update id=881442650 is handled. Duration 344 ms by bot id=7260931021
+2026-02-01 01:24:20,990 - INFO - Update id=881442651 is handled. Duration 327 ms by bot id=7260931021
+2026-02-01 01:24:25,500 - INFO - Update id=881442652 is handled. Duration 609 ms by bot id=7260931021
+2026-02-01 01:24:28,466 - INFO - Update id=881442653 is handled. Duration 407 ms by bot id=7260931021
+2026-02-01 01:24:32,659 - INFO - Update id=881442654 is handled. Duration 422 ms by bot id=7260931021
+2026-02-01 01:24:36,144 - INFO - Update id=881442655 is handled. Duration 608 ms by bot id=7260931021
+2026-02-01 01:24:39,106 - INFO - Update id=881442656 is handled. Duration 2125 ms by bot id=7260931021
+2026-02-01 01:24:45,861 - INFO - Update id=881442657 is handled. Duration 609 ms by bot id=7260931021
+2026-02-01 01:24:50,996 - INFO - Update id=881442658 is handled. Duration 515 ms by bot id=7260931021
+2026-02-01 01:24:58,870 - INFO - Update id=881442659 is handled. Duration 609 ms by bot id=7260931021
+2026-02-01 01:24:59,845 - INFO - Update id=881442660 is not handled. Duration 32 ms by bot id=7260931021
+2026-02-01 01:24:59,845 - ERROR - Cause exception while process update id=881442660 by bot id=7260931021
+UndefinedTable: relation "essential_series" does not exist
+LINE 1: SELECT id, name FROM essential_series WHERE code = 'essentia...
+                             ^
+Traceback (most recent call last):
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "E:\projects\python\tarjimon4\src\middlewares\comprehensive_middleware.py", line 54, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "E:\projects\python\tarjimon4\src\handlers\users\lughatlar\essential.py", line 501, in cb_essential_series
+    series = await db_exec(
+  File "E:\projects\python\tarjimon4\src\handlers\users\lughatlar\vocabs.py", line 146, in db_exec
+    return await asyncio.to_thread(run)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "E:\projects\python\tarjimon4\src\handlers\users\lughatlar\vocabs.py", line 129, in run
+    cur.execute(query, params or ())
+psycopg2.errors.UndefinedTable: relation "essential_series" does not exist
+LINE 1: SELECT id, name FROM essential_series WHERE code = 'essentia...
+                             ^
+
+2026-02-01 01:25:04,715 - INFO - Update id=881442661 is handled. Duration 500 ms by bot id=7260931021
+2026-02-01 01:25:06,156 - INFO - Update id=881442662 is handled. Duration 202 ms by bot id=7260931021
+2026-02-01 01:29:23,042 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2026-02-01 01:29:23,052 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7260931021)
+2026-02-01 01:29:34,637 - INFO - Connection established (tryings = 1, bot id = 7260931021)
+2026-02-01 01:35:27,603 - INFO - Update id=881442663 is handled. Duration 890 ms by bot id=7260931021
+2026-02-01 01:35:28,630 - INFO - Update id=881442664 is handled. Duration 311 ms by bot id=7260931021
+2026-02-01 01:35:30,467 - INFO - Update id=881442665 is handled. Duration 609 ms by bot id=7260931021
+2026-02-01 01:35:56,072 - INFO - Update id=881442666 is handled. Duration 422 ms by bot id=7260931021
+2026-02-01 01:36:44,757 - INFO - Polling stopped
+2026-02-01 01:36:44,757 - INFO - Polling stopped for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 01:44:17,150 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 01:44:17,150 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 01:44:17,150 - INFO - [DB] Initializing achievements...
+2026-02-01 01:44:17,196 - INFO - [DB] Creating legacy tables...
+2026-02-01 01:44:17,216 - INFO - [DB] Running legacy migrations...
+2026-02-01 01:44:17,260 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 01:44:17,264 - INFO - [DB] Initializing languages...
+2026-02-01 01:44:17,264 - INFO - [DB] Creating indexes...
+2026-02-01 01:44:17,264 - INFO - [OK] Database initialization complete!
+2026-02-01 01:44:17,269 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 01:44:17,269 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 01:44:17,269 - INFO - [INIT] Registering admin routers...
+2026-02-01 01:44:17,269 - INFO - [INIT] Registering user routers...
+2026-02-01 01:44:17,269 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 01:44:17,271 - ERROR - Fatal error:
+Traceback (most recent call last):
+  File "E:\projects\python\tarjimon4\main.py", line 172, in <module>
+    asyncio.run(main())
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 646, in run_until_complete
+    return future.result()
+  File "E:\projects\python\tarjimon4\main.py", line 147, in main
+    dp.include_router(vocabs_router)          # Main cabinet
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 248, in include_router
+    router.parent_router = self
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 211, in parent_router
+    raise RuntimeError(f"Router is already attached to {self._parent_router!r}")
+RuntimeError: Router is already attached to <Router '0x1e8ca881690'>
+2026-02-01 01:44:46,310 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 01:44:46,310 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 01:44:46,310 - INFO - [DB] Initializing achievements...
+2026-02-01 01:44:46,326 - INFO - [DB] Creating legacy tables...
+2026-02-01 01:44:46,348 - INFO - [DB] Running legacy migrations...
+2026-02-01 01:44:46,379 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 01:44:46,379 - INFO - [DB] Initializing languages...
+2026-02-01 01:44:46,389 - INFO - [DB] Creating indexes...
+2026-02-01 01:44:46,389 - INFO - [OK] Database initialization complete!
+2026-02-01 01:44:46,389 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 01:44:46,391 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 01:44:46,391 - INFO - [INIT] Registering admin routers...
+2026-02-01 01:44:46,391 - INFO - [INIT] Registering user routers...
+2026-02-01 01:44:46,391 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 01:44:46,391 - ERROR - Fatal error:
+Traceback (most recent call last):
+  File "E:\projects\python\tarjimon4\main.py", line 172, in <module>
+    asyncio.run(main())
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 646, in run_until_complete
+    return future.result()
+  File "E:\projects\python\tarjimon4\main.py", line 147, in main
+    dp.include_router(vocabs_router)          # Main cabinet
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 248, in include_router
+    router.parent_router = self
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 211, in parent_router
+    raise RuntimeError(f"Router is already attached to {self._parent_router!r}")
+RuntimeError: Router is already attached to <Router '0x2473aa41750'>
+2026-02-01 01:46:12,588 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 01:46:12,588 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 01:46:12,607 - INFO - [DB] Initializing achievements...
+2026-02-01 01:46:12,640 - INFO - [DB] Creating legacy tables...
+2026-02-01 01:46:12,685 - INFO - [DB] Running legacy migrations...
+2026-02-01 01:46:12,730 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 01:46:12,731 - INFO - [DB] Initializing languages...
+2026-02-01 01:46:12,731 - INFO - [DB] Creating indexes...
+2026-02-01 01:46:12,766 - INFO - [OK] Database initialization complete!
+2026-02-01 01:46:12,766 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 01:46:12,766 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 01:46:12,766 - INFO - [INIT] Registering admin routers...
+2026-02-01 01:46:12,766 - INFO - [INIT] Registering user routers...
+2026-02-01 01:46:12,766 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 01:46:12,766 - INFO - [INIT] Registering other routers...
+2026-02-01 01:46:12,766 - INFO - [OK] All routers registered successfully!
+2026-02-01 01:46:12,766 - INFO - [START] Starting polling...
+2026-02-01 01:46:12,766 - INFO - Start polling
+2026-02-01 01:46:13,738 - INFO - Run polling for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 01:48:16,085 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [WinError 1236] The network connection was aborted by the local system
+2026-02-01 01:48:16,093 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7260931021)
+2026-02-01 01:48:27,877 - INFO - Connection established (tryings = 1, bot id = 7260931021)
+2026-02-01 01:49:11,708 - INFO - Update id=881442668 is handled. Duration 735 ms by bot id=7260931021
+2026-02-01 01:49:15,698 - INFO - Update id=881442669 is handled. Duration 297 ms by bot id=7260931021
+2026-02-01 01:49:18,884 - INFO - Update id=881442670 is handled. Duration 702 ms by bot id=7260931021
+2026-02-01 01:49:20,611 - INFO - Update id=881442671 is handled. Duration 405 ms by bot id=7260931021
+2026-02-01 01:49:26,085 - INFO - Update id=881442672 is handled. Duration 1390 ms by bot id=7260931021
+2026-02-01 01:49:29,929 - INFO - Update id=881442673 is handled. Duration 1015 ms by bot id=7260931021
+2026-02-01 01:49:35,680 - INFO - Update id=881442674 is handled. Duration 703 ms by bot id=7260931021
+2026-02-01 01:49:36,952 - INFO - Update id=881442675 is not handled. Duration 47 ms by bot id=7260931021
+2026-02-01 01:49:36,952 - ERROR - Cause exception while process update id=881442675 by bot id=7260931021
+UndefinedTable: relation "essential_series" does not exist
+LINE 1: SELECT id, name FROM essential_series WHERE code = 'essentia...
+                             ^
+Traceback (most recent call last):
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "E:\projects\python\tarjimon4\src\middlewares\comprehensive_middleware.py", line 54, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "E:\projects\python\tarjimon4\src\handlers\users\lughatlar\essential.py", line 499, in cb_essential_series
+    series = await db_exec(
+  File "E:\projects\python\tarjimon4\src\handlers\users\lughatlar\vocabs.py", line 146, in db_exec
+    return await asyncio.to_thread(run)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "E:\projects\python\tarjimon4\src\handlers\users\lughatlar\vocabs.py", line 129, in run
+    cur.execute(query, params or ())
+psycopg2.errors.UndefinedTable: relation "essential_series" does not exist
+LINE 1: SELECT id, name FROM essential_series WHERE code = 'essentia...
+                             ^
+
+2026-02-01 01:49:42,582 - INFO - Update id=881442676 is not handled. Duration 63 ms by bot id=7260931021
+2026-02-01 01:49:42,584 - ERROR - Cause exception while process update id=881442676 by bot id=7260931021
+UndefinedTable: relation "essential_series" does not exist
+LINE 1: SELECT id, name FROM essential_series WHERE code = 'essentia...
+                             ^
+Traceback (most recent call last):
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "E:\projects\python\tarjimon4\src\middlewares\comprehensive_middleware.py", line 54, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "E:\projects\python\tarjimon4\src\handlers\users\lughatlar\essential.py", line 499, in cb_essential_series
+    series = await db_exec(
+  File "E:\projects\python\tarjimon4\src\handlers\users\lughatlar\vocabs.py", line 146, in db_exec
+    return await asyncio.to_thread(run)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "E:\projects\python\tarjimon4\src\handlers\users\lughatlar\vocabs.py", line 129, in run
+    cur.execute(query, params or ())
+psycopg2.errors.UndefinedTable: relation "essential_series" does not exist
+LINE 1: SELECT id, name FROM essential_series WHERE code = 'essentia...
+                             ^
+
+2026-02-01 01:49:44,383 - INFO - Update id=881442677 is handled. Duration 1014 ms by bot id=7260931021
+2026-02-01 01:49:48,101 - INFO - Update id=881442678 is handled. Duration 561 ms by bot id=7260931021
+2026-02-01 01:49:54,122 - INFO - Update id=881442679 is handled. Duration 922 ms by bot id=7260931021
+2026-02-01 01:49:55,734 - INFO - Update id=881442680 is handled. Duration 500 ms by bot id=7260931021
+2026-02-01 01:50:00,023 - INFO - Update id=881442681 is handled. Duration 405 ms by bot id=7260931021
+2026-02-01 01:50:05,755 - INFO - Update id=881442682 is handled. Duration 609 ms by bot id=7260931021
+2026-02-01 01:50:08,380 - INFO - Update id=881442683 is handled. Duration 264 ms by bot id=7260931021
+2026-02-01 01:50:10,485 - INFO - Update id=881442684 is handled. Duration 405 ms by bot id=7260931021
+2026-02-01 01:50:12,113 - INFO - Update id=881442685 is handled. Duration 313 ms by bot id=7260931021
+2026-02-01 01:50:14,370 - INFO - Update id=881442686 is handled. Duration 703 ms by bot id=7260931021
+2026-02-01 01:50:16,008 - INFO - Update id=881442687 is handled. Duration 406 ms by bot id=7260931021
+2026-02-01 01:50:18,153 - INFO - Update id=881442688 is handled. Duration 265 ms by bot id=7260931021
+2026-02-01 01:50:20,001 - INFO - Update id=881442689 is handled. Duration 203 ms by bot id=7260931021
+2026-02-01 01:50:22,754 - INFO - Update id=881442690 is handled. Duration 296 ms by bot id=7260931021
+2026-02-01 01:50:25,170 - INFO - Update id=881442691 is handled. Duration 750 ms by bot id=7260931021
+2026-02-01 01:50:29,108 - INFO - Update id=881442692 is handled. Duration 296 ms by bot id=7260931021
+2026-02-01 01:50:33,208 - INFO - Update id=881442693 is handled. Duration 422 ms by bot id=7260931021
+2026-02-01 01:50:36,896 - INFO - Update id=881442694 is handled. Duration 405 ms by bot id=7260931021
+2026-02-01 01:50:38,988 - INFO - Update id=881442695 is handled. Duration 344 ms by bot id=7260931021
+2026-02-01 01:50:41,507 - INFO - Update id=881442696 is handled. Duration 313 ms by bot id=7260931021
+2026-02-01 01:50:43,759 - INFO - Update id=881442697 is handled. Duration 609 ms by bot id=7260931021
+2026-02-01 01:50:45,598 - INFO - Update id=881442698 is handled. Duration 405 ms by bot id=7260931021
+2026-02-01 01:50:55,329 - INFO - Update id=881442699 is handled. Duration 202 ms by bot id=7260931021
+2026-02-01 01:50:58,402 - INFO - Update id=881442700 is handled. Duration 202 ms by bot id=7260931021
+2026-02-01 01:51:01,334 - INFO - Update id=881442701 is handled. Duration 578 ms by bot id=7260931021
+2026-02-01 01:53:57,640 - INFO - Polling stopped for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 01:53:57,642 - INFO - Polling stopped
+2026-02-01 01:57:12,655 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 01:57:12,655 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 01:57:12,655 - INFO - [DB] Initializing achievements...
+2026-02-01 01:57:12,666 - INFO - [DB] Creating legacy tables...
+2026-02-01 01:57:12,682 - INFO - [DB] Running legacy migrations...
+2026-02-01 01:57:12,719 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 01:57:12,719 - INFO - [DB] Initializing languages...
+2026-02-01 01:57:12,719 - INFO - [DB] Creating indexes...
+2026-02-01 01:57:12,719 - INFO - [DB] Creating vocabulary tables...
+2026-02-01 01:57:12,796 - INFO - [OK] Essential tables created
+2026-02-01 01:57:12,811 - INFO - [OK] Parallel tables created
+2026-02-01 01:57:12,811 - INFO - [OK] Database initialization complete!
+2026-02-01 01:57:12,811 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 01:57:12,811 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 01:57:12,811 - INFO - [INIT] Registering admin routers...
+2026-02-01 01:57:12,815 - INFO - [INIT] Registering user routers...
+2026-02-01 01:57:12,815 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 01:57:12,815 - INFO - [INIT] Registering other routers...
+2026-02-01 01:57:12,815 - INFO - [OK] All routers registered successfully!
+2026-02-01 01:57:12,815 - INFO - [START] Starting polling...
+2026-02-01 01:57:12,815 - INFO - Start polling
+2026-02-01 01:57:13,593 - INFO - Run polling for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 01:57:24,085 - INFO - Polling stopped for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 01:57:24,091 - INFO - Polling stopped
+2026-02-01 01:57:34,218 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 01:57:34,218 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 01:57:34,224 - INFO - [DB] Initializing achievements...
+2026-02-01 01:57:34,227 - INFO - [DB] Creating legacy tables...
+2026-02-01 01:57:34,287 - INFO - [DB] Running legacy migrations...
+2026-02-01 01:57:34,321 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 01:57:34,331 - INFO - [DB] Initializing languages...
+2026-02-01 01:57:34,332 - INFO - [DB] Creating indexes...
+2026-02-01 01:57:34,332 - INFO - [DB] Creating vocabulary tables...
+2026-02-01 01:57:34,334 - INFO - [OK] Essential tables created
+2026-02-01 01:57:34,391 - INFO - [OK] Parallel tables created
+2026-02-01 01:57:34,392 - INFO - [OK] Database initialization complete!
+2026-02-01 01:57:34,392 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 01:57:34,392 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 01:57:34,392 - INFO - [INIT] Registering admin routers...
+2026-02-01 01:57:34,392 - INFO - [INIT] Registering user routers...
+2026-02-01 01:57:34,392 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 01:57:34,392 - INFO - [INIT] Registering other routers...
+2026-02-01 01:57:34,392 - INFO - [OK] All routers registered successfully!
+2026-02-01 01:57:34,392 - INFO - [START] Starting polling...
+2026-02-01 01:57:34,392 - INFO - Start polling
+2026-02-01 01:57:34,929 - INFO - Run polling for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 01:57:45,140 - INFO - Update id=881442702 is handled. Duration 2343 ms by bot id=7260931021
+2026-02-01 01:57:45,753 - INFO - Polling stopped for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 01:57:45,759 - INFO - Polling stopped
+2026-02-01 02:00:10,482 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 02:00:10,482 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 02:00:10,482 - INFO - [DB] Initializing achievements...
+2026-02-01 02:00:10,520 - INFO - [DB] Creating legacy tables...
+2026-02-01 02:00:10,539 - INFO - [DB] Running legacy migrations...
+2026-02-01 02:00:10,578 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 02:00:10,581 - INFO - [DB] Initializing languages...
+2026-02-01 02:00:10,584 - INFO - [DB] Creating indexes...
+2026-02-01 02:00:10,584 - INFO - [DB] Creating vocabulary tables...
+2026-02-01 02:00:10,615 - INFO - [OK] Essential tables created
+2026-02-01 02:00:10,632 - INFO - [OK] Parallel tables created
+2026-02-01 02:00:10,639 - INFO - [OK] Database initialization complete!
+2026-02-01 02:00:10,639 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 02:00:10,639 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 02:00:10,639 - INFO - [INIT] Registering admin routers...
+2026-02-01 02:00:10,639 - INFO - [INIT] Registering user routers...
+2026-02-01 02:00:10,639 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 02:00:10,639 - INFO - [INIT] Registering other routers...
+2026-02-01 02:00:10,641 - INFO - [OK] All routers registered successfully!
+2026-02-01 02:00:10,641 - INFO - [START] Starting polling...
+2026-02-01 02:00:10,641 - INFO - Start polling
+2026-02-01 02:00:11,241 - INFO - Run polling for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 02:00:12,486 - INFO - Update id=881442703 is handled. Duration 1014 ms by bot id=7260931021
+2026-02-01 02:00:12,486 - INFO - Update id=881442704 is handled. Duration 905 ms by bot id=7260931021
+2026-02-01 02:00:12,488 - INFO - Update id=881442708 is handled. Duration 906 ms by bot id=7260931021
+2026-02-01 02:00:12,489 - INFO - Update id=881442706 is handled. Duration 906 ms by bot id=7260931021
+2026-02-01 02:00:13,568 - INFO - Update id=881442705 is handled. Duration 1984 ms by bot id=7260931021
+2026-02-01 02:00:13,568 - INFO - Update id=881442710 is handled. Duration 1984 ms by bot id=7260931021
+2026-02-01 02:00:13,568 - INFO - Update id=881442711 is handled. Duration 1969 ms by bot id=7260931021
+2026-02-01 02:00:13,568 - INFO - Update id=881442709 is handled. Duration 1984 ms by bot id=7260931021
+2026-02-01 02:00:19,748 - INFO - Update id=881442712 is handled. Duration 188 ms by bot id=7260931021
+2026-02-01 02:00:20,870 - INFO - Polling stopped for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 02:00:20,870 - INFO - Update id=881442707 is not handled. Duration 9281 ms by bot id=7260931021
+2026-02-01 02:00:20,872 - INFO - Polling stopped
+2026-02-01 02:00:40,812 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 02:00:40,812 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 02:00:40,812 - INFO - [DB] Initializing achievements...
+2026-02-01 02:00:40,812 - INFO - [DB] Creating legacy tables...
+2026-02-01 02:00:40,883 - INFO - [DB] Running legacy migrations...
+2026-02-01 02:00:40,929 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 02:00:40,929 - INFO - [DB] Initializing languages...
+2026-02-01 02:00:40,929 - INFO - [DB] Creating indexes...
+2026-02-01 02:00:40,929 - INFO - [DB] Creating vocabulary tables...
+2026-02-01 02:00:40,939 - INFO - [OK] Essential tables created
+2026-02-01 02:00:40,991 - INFO - [OK] Parallel tables created
+2026-02-01 02:00:40,997 - INFO - [OK] Database initialization complete!
+2026-02-01 02:00:40,997 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 02:00:40,997 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 02:00:40,997 - INFO - [INIT] Registering admin routers...
+2026-02-01 02:00:40,997 - INFO - [INIT] Registering user routers...
+2026-02-01 02:00:40,997 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 02:00:40,997 - INFO - [INIT] Registering other routers...
+2026-02-01 02:00:40,997 - INFO - [OK] All routers registered successfully!
+2026-02-01 02:00:40,997 - INFO - [START] Starting polling...
+2026-02-01 02:00:40,999 - INFO - Start polling
+2026-02-01 02:00:41,559 - INFO - Run polling for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 02:00:42,655 - INFO - Update id=881442713 is handled. Duration 780 ms by bot id=7260931021
+2026-02-01 02:00:45,141 - INFO - Update id=881442714 is handled. Duration 186 ms by bot id=7260931021
+2026-02-01 02:00:47,900 - INFO - Update id=881442715 is handled. Duration 500 ms by bot id=7260931021
+2026-02-01 02:00:49,650 - INFO - Update id=881442716 is handled. Duration 405 ms by bot id=7260931021
+2026-02-01 02:00:50,974 - INFO - Update id=881442717 is handled. Duration 405 ms by bot id=7260931021
+2026-02-01 02:00:53,030 - INFO - Update id=881442718 is handled. Duration 530 ms by bot id=7260931021
+2026-02-01 02:00:54,585 - INFO - User 1918760732 - translate_text - Text length: 5
+2026-02-01 02:00:55,549 - INFO - User 1918760732 - auto -> tr - Length: 5
+2026-02-01 02:00:55,550 - INFO - Translation saved for user 1918760732: auto->tr
+2026-02-01 02:00:55,802 - INFO - Update id=881442719 is handled. Duration 1281 ms by bot id=7260931021
+2026-02-01 02:00:58,556 - INFO - Update id=881442720 is handled. Duration 406 ms by bot id=7260931021
+2026-02-01 02:01:00,307 - INFO - Update id=881442721 is handled. Duration 422 ms by bot id=7260931021
+2026-02-01 02:01:02,484 - INFO - Update id=881442722 is handled. Duration 500 ms by bot id=7260931021
+2026-02-01 02:01:04,126 - INFO - User 7260931021 - view_history - Requested translation history
+2026-02-01 02:01:04,685 - INFO - Update id=881442723 is handled. Duration 609 ms by bot id=7260931021
+2026-02-01 02:01:07,148 - INFO - Update id=881442724 is handled. Duration 500 ms by bot id=7260931021
+2026-02-01 02:01:09,524 - INFO - Update id=881442725 is handled. Duration 780 ms by bot id=7260931021
+2026-02-01 02:01:12,350 - INFO - Update id=881442726 is handled. Duration 483 ms by bot id=7260931021
+2026-02-01 02:01:15,782 - INFO - Update id=881442727 is handled. Duration 625 ms by bot id=7260931021
+2026-02-01 02:01:19,239 - INFO - Update id=881442728 is handled. Duration 656 ms by bot id=7260931021
+2026-02-01 02:01:22,211 - INFO - Update id=881442729 is handled. Duration 1438 ms by bot id=7260931021
+2026-02-01 02:01:25,591 - INFO - Update id=881442730 is handled. Duration 406 ms by bot id=7260931021
+2026-02-01 02:01:27,446 - INFO - Update id=881442731 is handled. Duration 359 ms by bot id=7260931021
+2026-02-01 02:01:29,917 - INFO - Polling stopped for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 02:01:29,917 - INFO - Polling stopped
+2026-02-01 02:01:55,264 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 02:01:55,264 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 02:01:55,272 - INFO - [DB] Initializing achievements...
+2026-02-01 02:01:55,305 - INFO - [DB] Creating legacy tables...
+2026-02-01 02:01:55,322 - INFO - [DB] Running legacy migrations...
+2026-02-01 02:01:55,362 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 02:01:55,366 - INFO - [DB] Initializing languages...
+2026-02-01 02:01:55,369 - INFO - [DB] Creating indexes...
+2026-02-01 02:01:55,369 - INFO - [DB] Creating vocabulary tables...
+2026-02-01 02:01:55,374 - INFO - [OK] Essential tables created
+2026-02-01 02:01:55,424 - INFO - [OK] Parallel tables created
+2026-02-01 02:01:55,424 - INFO - [OK] Database initialization complete!
+2026-02-01 02:01:55,424 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 02:01:55,429 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 02:01:55,430 - INFO - [INIT] Registering admin routers...
+2026-02-01 02:01:55,430 - INFO - [INIT] Registering user routers...
+2026-02-01 02:01:55,430 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 02:01:55,430 - INFO - [INIT] Registering other routers...
+2026-02-01 02:01:55,430 - INFO - [OK] All routers registered successfully!
+2026-02-01 02:01:55,430 - INFO - [START] Starting polling...
+2026-02-01 02:01:55,430 - INFO - Start polling
+2026-02-01 02:01:56,311 - INFO - Run polling for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 02:01:57,548 - INFO - Update id=881442734 is handled. Duration 906 ms by bot id=7260931021
+2026-02-01 02:01:57,548 - INFO - Update id=881442732 is not handled. Duration 1015 ms by bot id=7260931021
+2026-02-01 02:01:57,548 - ERROR - Cause exception while process update id=881442732 by bot id=7260931021
+TelegramBadRequest: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+Traceback (most recent call last):
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "E:\projects\python\tarjimon4\src\middlewares\comprehensive_middleware.py", line 54, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "E:\projects\python\tarjimon4\src\handlers\users\callback_handlers.py", line 267, in settings_help
+    await callback.answer()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\methods\base.py", line 84, in emit
+    return await bot(self)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\bot.py", line 478, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\session\base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\session\aiohttp.py", line 185, in make_request
+    response = self.check_response(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\session\base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+2026-02-01 02:01:57,626 - INFO - Update id=881442733 is not handled. Duration 1000 ms by bot id=7260931021
+2026-02-01 02:01:57,626 - ERROR - Cause exception while process update id=881442733 by bot id=7260931021
+TelegramBadRequest: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+Traceback (most recent call last):
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "E:\projects\python\tarjimon4\src\middlewares\comprehensive_middleware.py", line 54, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "E:\projects\python\tarjimon4\src\handlers\users\callback_handlers.py", line 247, in settings_export
+    await callback.answer("Tez orada!", show_alert=True)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\methods\base.py", line 84, in emit
+    return await bot(self)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\bot.py", line 478, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\session\base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\session\aiohttp.py", line 185, in make_request
+    response = self.check_response(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\session\base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+2026-02-01 02:01:57,730 - INFO - Update id=881442735 is handled. Duration 796 ms by bot id=7260931021
+2026-02-01 02:02:02,223 - INFO - Update id=881442736 is handled. Duration 389 ms by bot id=7260931021
+2026-02-01 02:02:02,439 - INFO - Update id=881442737 is handled. Duration 390 ms by bot id=7260931021
+2026-02-01 02:02:04,598 - INFO - Update id=881442738 is handled. Duration 375 ms by bot id=7260931021
+2026-02-01 02:02:09,328 - INFO - Update id=881442739 is handled. Duration 313 ms by bot id=7260931021
+2026-02-01 02:02:11,124 - INFO - Update id=881442740 is handled. Duration 266 ms by bot id=7260931021
+2026-02-01 02:02:14,637 - INFO - Update id=881442741 is handled. Duration 296 ms by bot id=7260931021
+2026-02-01 02:02:16,091 - INFO - Update id=881442742 is handled. Duration 218 ms by bot id=7260931021
+2026-02-01 02:02:17,931 - INFO - Update id=881442743 is handled. Duration 515 ms by bot id=7260931021
+2026-02-01 02:02:18,678 - INFO - Update id=881442744 is not handled. Duration 47 ms by bot id=7260931021
+2026-02-01 02:02:21,628 - INFO - Update id=881442745 is handled. Duration 343 ms by bot id=7260931021
+2026-02-01 02:02:26,715 - INFO - Update id=881442746 is handled. Duration 485 ms by bot id=7260931021
+2026-02-01 02:02:27,847 - INFO - Update id=881442747 is handled. Duration 202 ms by bot id=7260931021
+2026-02-01 02:02:30,097 - INFO - Update id=881442748 is handled. Duration 202 ms by bot id=7260931021
+2026-02-01 02:02:32,044 - INFO - Update id=881442749 is handled. Duration 452 ms by bot id=7260931021
+2026-02-01 02:02:36,038 - INFO - Update id=881442750 is handled. Duration 202 ms by bot id=7260931021
+2026-02-01 02:02:38,797 - INFO - Update id=881442751 is handled. Duration 609 ms by bot id=7260931021
+2026-02-01 02:02:40,141 - INFO - Update id=881442752 is handled. Duration 202 ms by bot id=7260931021
+2026-02-01 02:02:44,027 - INFO - Update id=881442753 is handled. Duration 202 ms by bot id=7260931021
+2026-02-01 02:02:48,835 - INFO - Update id=881442754 is handled. Duration 500 ms by bot id=7260931021
+2026-02-01 02:02:50,477 - INFO - Update id=881442755 is handled. Duration 264 ms by bot id=7260931021
+2026-02-01 02:02:52,418 - INFO - Update id=881442756 is handled. Duration 406 ms by bot id=7260931021
+2026-02-01 02:03:01,225 - INFO - Update id=881442757 is handled. Duration 311 ms by bot id=7260931021
+2026-02-01 02:03:03,024 - INFO - Update id=881442758 is not handled. Duration 61 ms by bot id=7260931021
+2026-02-01 02:03:17,121 - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [WinError 1236] The network connection was aborted by the local system
+2026-02-01 02:03:17,123 - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7260931021)
+2026-02-01 02:03:17,171 - INFO - Update id=881442759 is not handled. Duration 531 ms by bot id=7260931021
+2026-02-01 02:03:18,886 - INFO - Connection established (tryings = 1, bot id = 7260931021)
+2026-02-01 02:03:18,997 - INFO - Update id=881442760 is not handled. Duration 110 ms by bot id=7260931021
+2026-02-01 02:03:18,997 - INFO - Update id=881442761 is not handled. Duration 78 ms by bot id=7260931021
+2026-02-01 02:03:18,997 - INFO - Update id=881442762 is not handled. Duration 47 ms by bot id=7260931021
+2026-02-01 02:03:18,997 - INFO - Update id=881442763 is not handled. Duration 47 ms by bot id=7260931021
+2026-02-01 02:03:25,456 - INFO - Update id=881442764 is not handled. Duration 78 ms by bot id=7260931021
+2026-02-01 02:03:25,664 - INFO - Polling stopped for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 02:03:25,664 - INFO - Polling stopped
+2026-02-01 02:04:41,812 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 02:04:41,812 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 02:04:41,819 - INFO - [DB] Initializing achievements...
+2026-02-01 02:04:41,855 - INFO - [DB] Creating legacy tables...
+2026-02-01 02:04:41,875 - INFO - [DB] Running legacy migrations...
+2026-02-01 02:04:41,910 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 02:04:41,913 - INFO - [DB] Initializing languages...
+2026-02-01 02:04:41,916 - INFO - [DB] Creating indexes...
+2026-02-01 02:04:41,916 - INFO - [DB] Creating vocabulary tables...
+2026-02-01 02:04:41,949 - INFO - [OK] Essential tables created
+2026-02-01 02:04:41,972 - INFO - [OK] Parallel tables created
+2026-02-01 02:04:41,972 - INFO - [OK] Database initialization complete!
+2026-02-01 02:04:41,972 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 02:04:41,972 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 02:04:41,972 - INFO - [INIT] Registering admin routers...
+2026-02-01 02:04:41,978 - INFO - [INIT] Registering user routers...
+2026-02-01 02:04:41,978 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 02:04:41,978 - INFO - [INIT] Registering other routers...
+2026-02-01 02:04:41,978 - INFO - [OK] All routers registered successfully!
+2026-02-01 02:04:41,978 - INFO - [START] Starting polling...
+2026-02-01 02:04:41,978 - INFO - Start polling
+2026-02-01 02:04:42,708 - INFO - Run polling for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 02:04:43,835 - INFO - Update id=881442765 is not handled. Duration 922 ms by bot id=7260931021
+2026-02-01 02:04:43,835 - ERROR - Cause exception while process update id=881442765 by bot id=7260931021
+TelegramBadRequest: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+Traceback (most recent call last):
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "E:\projects\python\tarjimon4\src\middlewares\comprehensive_middleware.py", line 54, in __call__
+    return await handler(event, data)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "E:\projects\python\tarjimon4\src\handlers\users\enhanced_user_panel.py", line 306, in detailed_stats
+    await callback.answer()
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\methods\base.py", line 84, in emit
+    return await bot(self)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\bot.py", line 478, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\session\base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\session\aiohttp.py", line 185, in make_request
+    response = self.check_response(
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\aiogram\client\session\base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+2026-02-01 02:04:46,825 - INFO - Update id=881442766 is handled. Duration 219 ms by bot id=7260931021
+2026-02-01 02:04:48,647 - INFO - Update id=881442767 is handled. Duration 422 ms by bot id=7260931021
+2026-02-01 02:04:50,284 - INFO - Update id=881442768 is handled. Duration 218 ms by bot id=7260931021
+2026-02-01 02:04:51,360 - INFO - Update id=881442769 is not handled. Duration 46 ms by bot id=7260931021
+2026-02-01 02:04:53,578 - INFO - Update id=881442770 is not handled. Duration 47 ms by bot id=7260931021
+2026-02-01 02:04:55,344 - INFO - Update id=881442771 is not handled. Duration 47 ms by bot id=7260931021
+2026-02-01 02:04:59,603 - INFO - Update id=881442772 is handled. Duration 718 ms by bot id=7260931021
+2026-02-01 02:05:01,136 - INFO - Update id=881442773 is handled. Duration 514 ms by bot id=7260931021
+2026-02-01 02:05:02,921 - INFO - Update id=881442774 is handled. Duration 343 ms by bot id=7260931021
+2026-02-01 02:05:05,025 - INFO - Update id=881442775 is handled. Duration 405 ms by bot id=7260931021
+2026-02-01 02:05:08,415 - INFO - Update id=881442776 is handled. Duration 313 ms by bot id=7260931021
+2026-02-01 02:05:10,310 - INFO - Update id=881442777 is handled. Duration 250 ms by bot id=7260931021
+2026-02-01 02:05:13,425 - INFO - Update id=881442778 is handled. Duration 531 ms by bot id=7260931021
+2026-02-01 02:05:16,589 - INFO - Update id=881442779 is handled. Duration 297 ms by bot id=7260931021
+2026-02-01 02:05:19,740 - INFO - Update id=881442780 is handled. Duration 641 ms by bot id=7260931021
+2026-02-01 02:05:21,823 - INFO - Update id=881442781 is handled. Duration 609 ms by bot id=7260931021
+2026-02-01 02:05:27,467 - INFO - Update id=881442782 is handled. Duration 203 ms by bot id=7260931021
+2026-02-01 02:05:29,601 - INFO - Update id=881442783 is handled. Duration 608 ms by bot id=7260931021
+2026-02-01 02:05:33,018 - INFO - Update id=881442784 is handled. Duration 1702 ms by bot id=7260931021
+2026-02-01 02:05:34,891 - INFO - Update id=881442785 is handled. Duration 375 ms by bot id=7260931021
+2026-02-01 02:05:54,385 - INFO - Update id=881442786 is handled. Duration 281 ms by bot id=7260931021
+2026-02-01 02:05:56,534 - INFO - Update id=881442787 is handled. Duration 421 ms by bot id=7260931021
+2026-02-01 02:05:58,526 - INFO - Update id=881442788 is not handled. Duration 30 ms by bot id=7260931021
+2026-02-01 02:06:02,746 - INFO - Update id=881442789 is handled. Duration 360 ms by bot id=7260931021
+2026-02-01 02:06:04,080 - INFO - Update id=881442790 is handled. Duration 390 ms by bot id=7260931021
+2026-02-01 14:15:06,529 - INFO - [START] Starting Tarjimon Bot...
+2026-02-01 14:15:06,529 - INFO - [DB] Creating comprehensive analytics schema...
+2026-02-01 14:15:06,537 - INFO - [DB] Initializing achievements...
+2026-02-01 14:15:06,568 - INFO - [DB] Creating legacy tables...
+2026-02-01 14:15:06,587 - INFO - [DB] Running legacy migrations...
+2026-02-01 14:15:06,625 - INFO - [DB] Creating enhanced schema (legacy)...
+2026-02-01 14:15:06,625 - INFO - [DB] Initializing languages...
+2026-02-01 14:15:06,630 - INFO - [DB] Creating indexes...
+2026-02-01 14:15:06,630 - INFO - [DB] Creating vocabulary tables...
+2026-02-01 14:15:06,633 - INFO - [OK] Essential tables created
+2026-02-01 14:15:06,641 - INFO - [OK] Parallel tables created
+2026-02-01 14:15:06,647 - INFO - [OK] Database initialization complete!
+2026-02-01 14:15:06,648 - INFO - [OK] Comprehensive analytics system ready!
+2026-02-01 14:15:06,648 - INFO - [INIT] Comprehensive analytics middleware registered
+2026-02-01 14:15:06,648 - INFO - [INIT] Registering admin routers...
+2026-02-01 14:15:06,648 - INFO - [INIT] Registering user routers...
+2026-02-01 14:15:06,648 - INFO - [INIT] Registering vocabulary routers...
+2026-02-01 14:15:06,648 - INFO - [INIT] Registering other routers...
+2026-02-01 14:15:06,648 - INFO - [OK] All routers registered successfully!
+2026-02-01 14:15:06,649 - INFO - [START] Starting polling...
+2026-02-01 14:15:06,650 - INFO - Start polling
+2026-02-01 14:15:08,617 - INFO - Run polling for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 15:06:47,825 - INFO - Polling stopped for bot @essential_english_words_robot id=7260931021 - '4000 Essential English Words Uz 1/2/3/4/5'
+2026-02-01 15:06:47,825 - INFO - Polling stopped

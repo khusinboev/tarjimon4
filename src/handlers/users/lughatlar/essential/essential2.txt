@@ -1,0 +1,630 @@
+Unit 1
+anxious - tashvishli  
+awful - dahshatli  
+consist - tashkil topmoq  
+desire - xohish  
+eager - ishtiyoqmand  
+household - uy-joy  
+intent - niyat  
+landscape - manzara  
+lift - ko'tarmoq  
+load - yuk  
+lung - o'pka  
+motion - harakat  
+pace - tezlik  
+polite - muloyim  
+possess - ega bo'lmoq  
+rapidly - tez  
+remark - eslatma  
+seek - izlash  
+shine - porlash  
+spill - to'kmoq  
+Unit 2
+bring - olib kelmoq  
+castle - qal'a  
+command - buyruq bermoq  
+counsel - maslahat bermoq  
+ensure - ishonch hosil qilmoq  
+explosion - portlash  
+jewelry - zargarlik buyumlari  
+land - yer  
+meteor - meteor  
+monster - mahluq  
+northern - shimoliy  
+remote - uzoq  
+southern - janubiy  
+statue - haykal  
+steam - bug'  
+submit - taqdim etmoq, amal qilmoq  
+temple - ibodatxona  
+upper - yuqori  
+weed - o't  
+wing - qanot  
+Unit 3
+arrow - o'q  
+battle - jang  
+bow - kamon  
+brave - jasur  
+chief - boshliq  
+disadvantage - zararli tomoni  
+enemy - dushman  
+entrance - kirish  
+hardly - kamdan-kam  
+intend - niyat qilmoq  
+laughter - kulgi  
+log - jurnal, yog'och  
+military - harbiy  
+obey - itoat qilmoq  
+secure - xavfsiz, qo'lga kiritmoq  
+steady - barqaror  
+trust - ishonch  
+twist - o'ramoq  
+unless - agar …masa  
+weapon - qurol  
+Unit 4
+chest - ko'krak  
+confidence - ishonch  
+consequence - oqibat, natija  
+disaster - falokat  
+disturb - bezovta qilmoq  
+estimate - baholamoq  
+honor - hurmat, sharaf  
+impress - taassurot qoldirmoq  
+marathon - marafon  
+narrow - tor  
+pale - rangsiz  
+rough - qo'pol  
+satisfy - qoniqtirmoq  
+scream - qichqirmoq  
+sensitive - tasirchan  
+shade - soya  
+supplement - qo'shimcha  
+terror - dahshat  
+threat - tahdid  
+victim - qurbon  
+Unit 5
+ancestor - ajdod  
+angle - burchak  
+boot - yuklash  
+border - chegara  
+congratulate - tabriklamoq  
+frame - ramka  
+heaven - jannat  
+incredible - ajoyib  
+legend - afsona  
+praise - maqtamoq  
+proceed - davom etmoq  
+pure - sof, toza  
+relative - nisbiy, qarindosh  
+senior - katta  
+silent - jim, tinch  
+sink - cho'kmoq  
+superior - ustun, katta  
+surround - o'rab olmoq  
+thick - qalin  
+wrap - o'ramoq  
+Unit 6
+abroad - chet el  
+anger - g'azab  
+bride - kelin  
+brief - qisqacha  
+chase - ketidan quvmoq  
+disappoint - ko'nglini qoldirmoq  
+dive - sho'ng'imoq  
+exchange - almashtirmoq  
+favor - yaxshilik  
+fee - haq  
+forever - abadiy  
+guy - yigit  
+lovely - ajoyib  
+mood - kayfiyat  
+palace - saroy  
+permit - ruxsat bermoq  
+protest - norozilik qilmoq  
+sculpture - haykal  
+tribe - qabila  
+youth - yoshlar  
+Unit 7
+basis - asos  
+biology - biologiya  
+cage - qafas  
+colleague - hamkasb  
+colony - koloniya  
+debate - munozara  
+depart - ketmoq  
+depress - tushkunlikka solmoq  
+factual - haqiqiy  
+fascinate - hayratda qoldirmoq  
+mission - missiya  
+nevertheless - shunga qaramay  
+occupation - istilo, kasb  
+overseas - dengiz orti  
+persuade - ishontirmoq  
+route - yo'nalish  
+ruins - xarobalar  
+scholar - olim  
+significant - muhim  
+volcano - vulqon  
+Unit 8
+broad - keng  
+bush - buta  
+capable - qobiliyatli  
+cheat - mug'ombirlik qilmoq  
+concentrate - fikrni jamlamoq  
+conclude - xulosa qilmoq  
+confident - o'ziga ishongan  
+considerable - sezilarli  
+convey - yetkazmoq  
+definite - aniq  
+delight - zavq  
+destination - manzil  
+dictate - aytib turmoq  
+edge - chet, qirra  
+path - yo'l  
+resort - suyanmoq  
+shadow - soya  
+succeed - muvaffaqiyatga erishmoq  
+suspect - gumon qilmoq  
+valley - vodiy  
+Unit 9
+admire - hurmat qilmoq  
+aid - yordam  
+attempt - urinish  
+authority - hokimiyat  
+capital - poytaxt  
+cooperate - hamkorlik qilmoq  
+defend - himoya qilmoq  
+destruction - vayron qilish  
+disorder - tartibsizlik  
+division - bo'linish  
+enable - imkon bermoq  
+frustrate - ko'nglini qoldirmoq  
+govern - boshqarmoq  
+plenty - mo'l  
+relieve - xalos qilmoq  
+reputation - obro'  
+royal - qirollik  
+slave - qul  
+struggle - kurash  
+stupid - ahmoqona  
+Unit 10
+citizen - fuqaro  
+council - kengash  
+declare - e'lon qilmoq  
+enormous - ulkan  
+extraordinary - noodatiy  
+fog - tuman  
+funeral - dafn marosimi  
+giant - ulkan  
+impression - taassurot  
+income - daromad  
+mad - telba  
+ought - kerak  
+resist - qarshilik ko'rsatmoq  
+reveal - oshkor qilmoq  
+rid - qutilmoq  
+sword - qilich  
+tale - hikoya  
+trap - tuzoq  
+trial - sud  
+violent - zo'ravon  
+Unit 11
+admission - ruxsat  
+astronomy - astronomiya  
+blame - ayblamoq  
+chemistry - kimyo  
+despite - qaramasdan  
+dinosaur - dinozavr  
+exhibit - ko'rgazma  
+fame - shuhrat  
+forecast - ob-havo ma'lumoti  
+genius - daho  
+gentle - muloyim  
+geography - geografiya  
+interfere - aralashmoq  
+lightly - engil  
+principal - asosiy, direktor  
+row - qator  
+shelf - tokcha  
+spite - ataylab  
+super - ajoyib  
+wet - nam  
+Unit 12
+abuse - ozor yetkazmoq  
+afford - qurbi yetmoq  
+bake - pishirmoq  
+bean - loviya  
+candle - sham  
+convert - o'zgartirmoq  
+debt - qarz  
+decrease - kamaymoq  
+fault - xato  
+fund - jamg'arma  
+generous - saxiy  
+ingredient - ingredient  
+insist - turib olmoq  
+mess - tartibsizlik  
+metal - metall  
+monitor - kuzatmoq  
+oppose - qarshilik ko'rsatmoq  
+passive - sust  
+quantity - miqdor  
+sue - sudga bermoq  
+Unit 13
+anxiety - tashvish  
+army - armiya  
+billion - milliard  
+carve - o'ymoq  
+consult - maslahatlashmoq  
+emergency - favqulodda holat  
+fortune - boylik, omad  
+guarantee - kafolat bermoq  
+hike - yurish  
+initial - boshlang'ich  
+intense - qizg'in, kuchli  
+lend - qarz berish  
+peak - cho'qqi  
+potential - ehtimoliy  
+pride - g'urur  
+proof - dalil  
+quit - chiqish  
+spin - aylantirmoq  
+tiny - kichik  
+tutor - o'qituvchi  
+Unit 14
+apparent - aniq  
+blind - ko'r  
+calculate - hisoblamoq  
+chat - suhbat  
+commit - ahd qilmoq  
+compose - tuzmoq  
+dormitory - yotoqxona  
+exhaust - holdan toymoq  
+greenhouse - issiqxona  
+ignore - e'tibor bermaslik  
+obvious - aniq  
+physics - fizika  
+portion - qism  
+remind - eslatmoq  
+secretary - kotib  
+severe - jiddiy  
+talent - iste'dod  
+thesis - maqola  
+uniform - forma  
+vision - ko'rish  
+Unit 15
+absorb - shimib olmoq  
+boss - xo'jayin  
+committee - qo'mita  
+contract - shartnoma  
+crew - jamoa  
+devote - bag'ishlamoq  
+dig - qazimoq  
+dine - ovqatlanmoq  
+donate - ehson qilmoq  
+double - ikki karra  
+elevate - ko'tarmoq  
+flavor - lazzat  
+foundation - asos  
+generation - avlod  
+handle - dastak  
+layer - qatlam  
+mud - loy  
+smooth - silliq  
+soil - tuproq  
+unique - noyob, o'zgacha  
+Unit 16
+chamber - xujra  
+deny - inkor qilmoq  
+document - hujjat  
+emphasize - urg'u bermoq  
+fever - isitma  
+flu - gripp  
+freeze - muzlatmoq  
+gesture - imo-ishora  
+interrupt - gapni bo'lmoq  
+last - oxirgi  
+likeness - o'xshashlik  
+moreover - bundan tashqari  
+perspective - nazar  
+rational - oqilona  
+recover - tiklanmoq  
+rely - tayanmoq  
+shock - zarba  
+shy - uyatchan  
+stare - tikilmoq  
+thus - shunday qilib  
+Unit 17
+aim - maqsad  
+attach - ulamoq  
+bet - garov bog'lamoq  
+carriage - arava  
+classic - mumtoz  
+commute - borib kelmoq  
+confirm - tasdiqlamoq  
+criticize - tanqid qilmoq  
+differ - farq qilmoq  
+expense - xarajatlar  
+formal - rasmiy  
+height - balandlik  
+invent - ixtiro qilmoq  
+junior - kichik  
+labor - mehnat  
+mechanic - mexanik  
+prime - asosiy  
+shift - o'zgarish  
+signal - belgi  
+sincere - samimiy  
+Unit 18
+ability - qobiliyat  
+agriculture - qishloq xo'jaligi  
+cartoon - multfilm  
+ceiling - shift  
+convince - ishontirmoq  
+curious - qiziquvchan  
+delay - kechiktirmoq  
+diary - kundalik  
+element - element  
+faith - e'tiqod  
+grain - don  
+greet - salomlashmoq  
+investigate - tekshirmoq  
+joy - quvonch  
+label - yorliq  
+monk - rohib  
+odd - g'alati  
+pause - to'xtatib turmoq  
+priest - ruhoniy  
+profession - kasb  
+Unit 19
+adopt - qabul qilmoq, boqib olmoq  
+beg - yalinmoq  
+beyond - ortida  
+costume - kostyum  
+exclaim - ta'kidlamoq  
+extend - uzaytirmoq  
+fool - ahmoq  
+forbid - ta'qiqlamoq  
+illustrate - tasvirlab bermoq  
+indeed - haqiqatdan ham  
+interpret - tushuntirmoq  
+kindly - muloyimlik bilan  
+motive - maqsad  
+nest - uya  
+origin - kelib chiqishi  
+reception - qabulxona  
+reject - rad etmoq  
+silence - sukunat  
+stream - soy  
+tone - ovoz  
+Unit 20
+accomplish - bajarmoq  
+approve - tasdiqlamoq  
+approximate - taxminiy  
+barrier - to'siq  
+detect - aniqlamoq  
+duty - vazifa  
+elementary - boshlang'ich  
+failure - muvaffaqiyatsizlik  
+gradual - bosqichma-bosqich  
+immigrant - ko'chib keluvchi  
+insert - kiritmoq  
+instant - tezda  
+poverty - qashshoqlik  
+pretend - mug'ombirlik qilmoq  
+rank - daraja  
+recognition - tanish  
+refrigerate - muzlatmoq  
+rent - ijaraga olmoq  
+retire - nafaqaga chiqmoq  
+statistic - statistika, raqamlar  
+Unit 21
+astronaut - astronavt  
+awake - uyg'oq  
+courage - jasorat  
+float - suzmoq  
+grant - taqdim etmoq  
+gravity - tortish kuchi  
+jewel - qimmatbaho tosh  
+miner - konchi  
+mineral - mineral  
+participate - ishtirok etmoq  
+permission - ruxsat  
+pour - quymoq  
+presence - mavjudlik  
+raw - xom  
+satellite - sun'iy yo'ldosh  
+scale - ko'lam  
+skip - o'tkazib yuborish  
+stretch - cho'zmoq  
+telescope - teleskop  
+underground - yer osti  
+Unit 22
+alarm - ogohlantiruvchi ovoz  
+apart - alohida, ayro  
+arrest - hibsga olmoq  
+award - mukofot  
+breed - zot  
+bucket - paqir  
+contest - tanlov  
+convict - aybdor deb topmoq  
+garage - garaj  
+journalist - jurnalist  
+pup - it bolasi  
+qualify - mos kelmoq  
+repair - ta'mirlamoq  
+resume - davom ettirmoq  
+rob - tunab ketmoq  
+slip - toyib ketmoq  
+somewhat - nimagadir  
+stable - barqaror  
+tissue - to'qima, salfetka  
+yard - hovli  
+Unit 23
+alike - o'xshash  
+annoy - jig'iga tegmoq  
+architecture - arxitektura  
+artificial - sun'iy  
+chain - zanjir  
+distinct - farqli  
+distinguish - ajratmoq  
+dust - chang  
+excitement - hayajon  
+heal - tuzalmoq  
+inherit - meros qilib olmoq  
+manner - ahloq, odob  
+mount - kuchaymoq  
+roof - tom  
+shortage - kamchilik  
+solid - qattiq  
+stock - g'aram  
+substance - modda  
+tomb - maqbara  
+wound - yara  
+Unit 24
+bath - vanna  
+bend - bukmoq  
+chew - chaynamoq  
+disabled - nogiron  
+fantastic - ajoyib  
+fiction - to'qima  
+flag - bayroq  
+inspect - tekshirmoq  
+journal - jurnal  
+liquid - suyuqlik  
+marvel - ajoyibot  
+nutrient - ozuqa moddalari  
+overcome - yengib o'tmoq  
+recall - eslatmoq  
+regret - afsuslanmoq  
+soul - ruh  
+sufficient - yetarli  
+surgery - jarrohlik  
+tough - qiyin  
+tube - quvur  
+Unit 25
+admit - tan olmoq  
+bin - quti  
+bowl - kosa  
+cabin - hujra  
+cash - naqd pul  
+criminal - jinoyatchi  
+dozen - o'nlab  
+elder - kattaroq  
+facial - yuzga oid  
+fence - to'siq  
+inspire - ilhomlantirmoq  
+mere - biroz  
+neat - pokiza  
+occasion - vaziyat  
+penalty - jazo  
+rude - qo'pol  
+settle - joylashmoq  
+vehicle - transport vositasi  
+wallet - hamyon  
+yell - baqirmoq  
+Unit 26
+accuse - ayblamoq  
+adjust - sozlamoq  
+amuse - qiziqtirmoq  
+coral - marjon  
+cotton - paxta  
+crash - to'qnashmoq  
+deck - paluba  
+engage - jalb qilish  
+firm - qattiq, firma  
+fuel - yoqilg'i  
+grand - katta  
+hurricane - bo'ron  
+loss - yo'qotish  
+plain - tekis  
+reef - qoya  
+shut - yopish  
+strict - qat'iy  
+surf - to'lqinda uchmoq  
+task - vazifa  
+zone - zona, hudud  
+Unit 27
+apology - kechirim so'rash  
+bold - botir  
+capture - tutmoq  
+cardinal - asosiy  
+duke - gersog  
+expose - ta'sir ostida bo'lmoq  
+guilty - aybdor  
+hire - ijaraga olmoq  
+innocent - begunoh  
+jail - qamoqxona  
+minister - vazir  
+ordinary - oddiy  
+permanent - doimiy  
+preserve - himoya qilmoq  
+pronounce - talaffuz qilmoq  
+resemble - aks etmoq  
+symptom - belgi  
+tobacco - tamaki  
+twin - egizak  
+witch - jodugar  
+Unit 28
+accompany - hamroh bo'lmoq  
+bare - yalang'och  
+branch - shox  
+breath - nafas olish  
+bridge - ko'prik  
+cast - uloqtirmoq  
+dare - jazm qilmoq  
+electronic - elektron  
+inn - kichik mehmonxona  
+net - to'r  
+philosophy - falsafa  
+pot - qozon  
+seed - urug'  
+sharp - o'tkir  
+sort - tur  
+subtract - ayirmoq  
+tight - qattiq  
+virtual - virtual  
+weigh - o'lchamoq  
+whisper - pichirlamoq  
+Unit 29
+abstract - mavhum  
+annual - yillik  
+clay - sopol  
+cloth - mato  
+curtain - parda  
+deserve - loyiq  
+feather - pat  
+fertile - unumdor  
+flood - suv toshqini  
+furniture - mebel  
+grave - qabr  
+ideal - ideal  
+intelligence - idrok  
+nowadays - shu kunlarda  
+obtain - olmoq  
+religious - diniy  
+romantic - ishqiy  
+shell - qobiq  
+shore - qirg'oq  
+wheel - g'ildirak  
+Unit 30
+appeal - o'ziga tortmoq  
+assume - faraz qilmoq  
+borrow - qarz olmoq  
+client - mijoz  
+downtown - shahar markazi  
+dull - zerikarli  
+embarrass - uyatga qildirmoq  
+fare - haq, to'lov  
+former - sobiq  
+formula - formula  
+found - tashkil qilmoq  
+invest - sarmoya tikmoq  
+loan - qarz  
+practical - amaliy  
+quarter - chorak  
+salary - ish haqi  
+scholarship - stipendiya  
+temporary - vaqtinchalik  
+treasure - xazina  
+urge - da'vat qilmoq  

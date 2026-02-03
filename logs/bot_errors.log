@@ -1,0 +1,5 @@
+2026-01-31 20:15:49 - bot - ERROR - log_error:113 - Error in handle_text: 'NoneType' object has no attribute 'startswith'
+Traceback (most recent call last):
+  File "E:\projects\python\tarjimon4\src\handlers\users\translate.py", line 313, in handle_text
+    if result.startswith("⚠️ Tarjima xatosi:"):
+AttributeError: 'NoneType' object has no attribute 'startswith'

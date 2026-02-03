@@ -1,0 +1,5503 @@
+{
+  "Greetings": [
+    {
+      "en": "Hello, how are you?",
+      "uz": "Salom, qalaysiz?",
+      "ru": "Привет, как дела?"
+    },
+    {
+      "en": "I am fine, thank you.",
+      "uz": "Men yaxshiman, rahmat.",
+      "ru": "Я в порядке, спасибо."
+    },
+    {
+      "en": "Good morning!",
+      "uz": "Xayrli tong!",
+      "ru": "Доброе утро!"
+    },
+    {
+      "en": "Good afternoon!",
+      "uz": "Xayrli kun!",
+      "ru": "Добрый день!"
+    },
+    {
+      "en": "Good evening!",
+      "uz": "Xayrli kech!",
+      "ru": "Добрый вечер!"
+    },
+    {
+      "en": "Goodbye!",
+      "uz": "Xayr!",
+      "ru": "До свидания!"
+    },
+    {
+      "en": "See you later!",
+      "uz": "Ko'rishguncha!",
+      "ru": "До встречи!"
+    },
+    {
+      "en": "Nice to meet you.",
+      "uz": "Tanishganimdan xursandman.",
+      "ru": "Рад(а) познакомиться."
+    },
+    {
+      "en": "What's your name?",
+      "uz": "Ismingiz nima?",
+      "ru": "Как вас зовут?"
+    },
+    {
+      "en": "My name is John.",
+      "uz": "Mening ismim Jon.",
+      "ru": "Меня зовут Джон."
+    },
+    {
+      "en": "How old are you?",
+      "uz": "Yoshingiz necha?",
+      "ru": "Сколько вам лет?"
+    },
+    {
+      "en": "I am 25 years old.",
+      "uz": "Men 25 yoshdaman.",
+      "ru": "Мне 25 лет."
+    },
+    {
+      "en": "Where are you from?",
+      "uz": "Qayerdansiz?",
+      "ru": "Откуда вы?"
+    },
+    {
+      "en": "I am from Uzbekistan.",
+      "uz": "Men O'zbekistondanman.",
+      "ru": "Я из Узбекистана."
+    },
+    {
+      "en": "Have a nice day!",
+      "uz": "Yaxshi kun o'tkazing!",
+      "ru": "Хорошего дня!"
+    },
+    {
+      "en": "Thank you very much.",
+      "uz": "Katta rahmat.",
+      "ru": "Большое спасибо."
+    },
+    {
+      "en": "You're welcome.",
+      "uz": "Arzimaydi.",
+      "ru": "Пожалуйста."
+    },
+    {
+      "en": "Excuse me.",
+      "uz": "Kechirasiz.",
+      "ru": "Извините."
+    },
+    {
+      "en": "Sorry.",
+      "uz": "Kechirasiz.",
+      "ru": "Простите."
+    },
+    {
+      "en": "Please.",
+      "uz": "Iltimos.",
+      "ru": "Пожалуйста."
+    }
+  ],
+  "Family": [
+    {
+      "en": "I have a big family.",
+      "uz": "Mening katta oilam bor.",
+      "ru": "У меня большая семья."
+    },
+    {
+      "en": "My father is a doctor.",
+      "uz": "Mening otam shifokor.",
+      "ru": "Мой отец врач."
+    },
+    {
+      "en": "My mother cooks well.",
+      "uz": "Mening onam yaxshi ovqat pishiradi.",
+      "ru": "Моя мама хорошо готовит."
+    },
+    {
+      "en": "I have two brothers.",
+      "uz": "Mening ikkita ukam bor.",
+      "ru": "У меня два брата."
+    },
+    {
+      "en": "My sister is a student.",
+      "uz": "Mening opam talaba.",
+      "ru": "Моя сестра студентка."
+    },
+    {
+      "en": "We live together.",
+      "uz": "Biz birga yashaymiz.",
+      "ru": "Мы живём вместе."
+    },
+    {
+      "en": "Grandparents are wise.",
+      "uz": "Bobolar va buvilar dono.",
+      "ru": "Бабушки и дедушки мудры."
+    },
+    {
+      "en": "I love my family.",
+      "uz": "Men oilamni sevaman.",
+      "ru": "Я люблю свою семью."
+    },
+    {
+      "en": "Family gatherings are fun.",
+      "uz": "Oilaviy yig'inlar qiziqarli.",
+      "ru": "Семейные встречи весёлые."
+    },
+    {
+      "en": "My uncle lives abroad.",
+      "uz": "Mening amakim chet elda yashaydi.",
+      "ru": "Мой дядя живёт за границей."
+    },
+    {
+      "en": "My aunt is kind.",
+      "uz": "Mening xolam mehribon.",
+      "ru": "Моя тётя добрая."
+    },
+    {
+      "en": "Cousins play together.",
+      "uz": "Amakivachchalar birga o'ynaydi.",
+      "ru": "Двоюродные братья и сёстры играют вместе."
+    },
+    {
+      "en": "Family supports each other.",
+      "uz": "Oila bir-birini qo'llab-quvvatlaydi.",
+      "ru": "Семья поддерживает друг друга."
+    },
+    {
+      "en": "Holidays with family are special.",
+      "uz": "Bayramlar oila bilan alohida.",
+      "ru": "Праздники с семьёй особенные."
+    },
+    {
+      "en": "My nephew is cute.",
+      "uz": "Mening jiyanim yoqimli.",
+      "ru": "Мой племянник милый."
+    },
+    {
+      "en": "My niece likes dolls.",
+      "uz": "Mening jiyonim qo'g'irchoqlarni yaxshi ko'radi.",
+      "ru": "Моя племянница любит куклы."
+    },
+    {
+      "en": "Family traditions are important.",
+      "uz": "Oilaviy an'analar muhim.",
+      "ru": "Семейные традиции важны."
+    },
+    {
+      "en": "We eat dinner together.",
+      "uz": "Biz kechki ovqatni birga yeymiz.",
+      "ru": "Мы ужинаем вместе."
+    },
+    {
+      "en": "Family photos are memories.",
+      "uz": "Oilaviy fotosuratlar xotiralar.",
+      "ru": "Семейные фотографии — воспоминания."
+    },
+    {
+      "en": "Love binds the family.",
+      "uz": "Muhabbat oilani bog'laydi.",
+      "ru": "Любовь объединяет семью."
+    },
+    {
+      "en": "We have a large family.",
+      "uz": "Bizning katta oilamiz bor.",
+      "ru": "У нас большая семья."
+    },
+    {
+      "en": "My mother is a teacher.",
+      "uz": "Mening onam o'qituvchi.",
+      "ru": "Моя мама учительница."
+    },
+    {
+      "en": "My father works in an office.",
+      "uz": "Mening otam ofisda ishlaydi.",
+      "ru": "Мой отец работает в офисе."
+    },
+    {
+      "en": "We visit our grandparents on weekends.",
+      "uz": "Biz dam olish kunlarida bobolarimizga boramiz.",
+      "ru": "Мы навещаем бабушку и дедушку по выходным."
+    },
+    {
+      "en": "Family is very important.",
+      "uz": "Oila juda muhim.",
+      "ru": "Семья очень важна."
+    },
+    {
+      "en": "I call my parents every day.",
+      "uz": "Men har kuni ota-onamga qo'ng'iroq qilaman.",
+      "ru": "Я звоню родителям каждый день."
+    },
+    {
+      "en": "We live in a small house.",
+      "uz": "Biz kichik uyda yashaymiz.",
+      "ru": "Мы живём в маленьком доме."
+    },
+    {
+      "en": "My uncle is a doctor.",
+      "uz": "Mening amakim shifokor.",
+      "ru": "Мой дядя врач."
+    },
+    {
+      "en": "We often have family gatherings.",
+      "uz": "Biz tez-tez oilaviy yig'inlar o'tkazamiz.",
+      "ru": "Мы часто устраиваем семейные встречи."
+    },
+    {
+      "en": "My cousin lives in another city.",
+      "uz": "Mening amakivachcham boshqa shaharda yashaydi.",
+      "ru": "Мой двоюродный брат живёт в другом городе."
+    },
+    {
+      "en": "I help my mother with cooking.",
+      "uz": "Men onamga ovqat pishirishda yordam beraman.",
+      "ru": "Я помогаю маме готовить."
+    },
+    {
+      "en": "We watch TV together in the evening.",
+      "uz": "Biz kechqurun televizorni birga tomosha qilamiz.",
+      "ru": "Мы вечером вместе смотрим телевизор."
+    },
+    {
+      "en": "My nephew is very cute.",
+      "uz": "Mening jiyanim juda yoqimli.",
+      "ru": "Мой племянник очень милый."
+    },
+    {
+      "en": "We support each other.",
+      "uz": "Biz bir-birimizni qo'llab-quvvatlaymiz.",
+      "ru": "Мы поддерживаем друг друга."
+    },
+    {
+      "en": "Family meals are the best.",
+      "uz": "Oila bilan ovqatlanish eng zo'ri.",
+      "ru": "Семейные обеды — самые лучшие."
+    }
+  ],
+  "Food": [
+    {
+      "en": "I like eating apples.",
+      "uz": "Men olma yeyishni yaxshi ko'raman.",
+      "ru": "Мне нравится есть яблоки."
+    },
+    {
+      "en": "This soup is delicious.",
+      "uz": "Bu sho'rva mazali.",
+      "ru": "Этот суп вкусный."
+    },
+    {
+      "en": "I drink coffee in the morning.",
+      "uz": "Men ertalab kofe ichaman.",
+      "ru": "Я пью кофе утром."
+    },
+    {
+      "en": "Vegetables are healthy.",
+      "uz": "Sabzavotlar foydali.",
+      "ru": "Овощи полезны."
+    },
+    {
+      "en": "I prefer tea over coffee.",
+      "uz": "Men choyni kofega afzal ko'raman.",
+      "ru": "Я предпочитаю чай кофе."
+    },
+    {
+      "en": "The cake is sweet.",
+      "uz": "Tort shirin.",
+      "ru": "Торт сладкий."
+    },
+    {
+      "en": "Spicy food is hot.",
+      "uz": "Achchiq ovqat issiq.",
+      "ru": "Острая еда горячая."
+    },
+    {
+      "en": "I eat breakfast every day.",
+      "uz": "Men har kuni nonushta qilaman.",
+      "ru": "Я завтракаю каждый день."
+    },
+    {
+      "en": "Fruits are fresh.",
+      "uz": "Mevalar yangi.",
+      "ru": "Фрукты свежие."
+    },
+    {
+      "en": "Pizza is my favorite.",
+      "uz": "Pizza mening sevimlim.",
+      "ru": "Пицца — моя любимая еда."
+    },
+    {
+      "en": "I cook dinner at home.",
+      "uz": "Men uyda kechki ovqat pishiraman.",
+      "ru": "Я готовлю ужин дома."
+    },
+    {
+      "en": "Milk is good for bones.",
+      "uz": "Sut suyaklar uchun yaxshi.",
+      "ru": "Молоко полезно для костей."
+    },
+    {
+      "en": "I don't like onions.",
+      "uz": "Men piyozni yoqtirmayman.",
+      "ru": "Я не люблю лук."
+    },
+    {
+      "en": "Salad is light.",
+      "uz": "Salat engil.",
+      "ru": "Салат лёгкий."
+    },
+    {
+      "en": "Bread is staple food.",
+      "uz": "Non asosiy ovqat.",
+      "ru": "Хлеб — основная еда."
+    },
+    {
+      "en": "Ice cream is cold.",
+      "uz": "Muzqaymoq sovuq.",
+      "ru": "Мороженое холодное."
+    },
+    {
+      "en": "Fish is nutritious.",
+      "uz": "Baliq ozuqaviy.",
+      "ru": "Рыба питательна."
+    },
+    {
+      "en": "I try new recipes.",
+      "uz": "Men yangi retseptlarni sinab ko'raman.",
+      "ru": "Я пробую новые рецепты."
+    },
+    {
+      "en": "Eating together is fun.",
+      "uz": "Birga ovqatlanish qiziqarli.",
+      "ru": "Весело есть вместе."
+    },
+    {
+      "en": "Water is essential.",
+      "uz": "Suv zarur.",
+      "ru": "Вода необходима."
+    },
+    {
+      "en": "This plov is delicious.",
+      "uz": "Bu osh juda mazali.",
+      "ru": "Этот плов очень вкусный."
+    },
+    {
+      "en": "She is cooking dinner.",
+      "uz": "U kechki ovqat pishirmoqda.",
+      "ru": "Она готовит ужин."
+    },
+    {
+      "en": "We eat fruits every day.",
+      "uz": "Biz har kuni meva yeymiz.",
+      "ru": "Мы едим фрукты каждый день."
+    },
+    {
+      "en": "He doesn't like vegetables.",
+      "uz": "U sabzavotlarni yoqtirmaydi.",
+      "ru": "Он не любит овощи."
+    },
+    {
+      "en": "The restaurant is famous for its kebabs.",
+      "uz": "Restoran o'z kaboblari bilan mashhur.",
+      "ru": "Ресторан знаменит своими кебабами."
+    },
+    {
+      "en": "I'm hungry.",
+      "uz": "Men ochman.",
+      "ru": "Я голоден."
+    },
+    {
+      "en": "Would you like some tea?",
+      "uz": "Choy istermidingiz?",
+      "ru": "Хочешь чаю?"
+    },
+    {
+      "en": "This bread is fresh.",
+      "uz": "Bu non yangi.",
+      "ru": "Этот хлеб свежий."
+    },
+    {
+      "en": "She baked a cake.",
+      "uz": "U tort pishirdi.",
+      "ru": "Она испекла торт."
+    },
+    {
+      "en": "We need to buy milk.",
+      "uz": "Bizga sut sotib olish kerak.",
+      "ru": "Нам нужно купить молоко."
+    },
+    {
+      "en": "He ordered pizza.",
+      "uz": "U pizza buyurtma qildi.",
+      "ru": "Он заказал пиццу."
+    },
+    {
+      "en": "The soup is too salty.",
+      "uz": "Bu sho'rva juda sho'r.",
+      "ru": "Суп слишком солёный."
+    },
+    {
+      "en": "I prefer green tea.",
+      "uz": "Men yashil choyni afzal ko'raman.",
+      "ru": "Я предпочитаю зелёный чай."
+    },
+    {
+      "en": "They are setting the table.",
+      "uz": "Ular stolni yozmoqdalar.",
+      "ru": "Они накрывают на стол."
+    },
+    {
+      "en": "This is a traditional dish.",
+      "uz": "Bu an'anaviy taom.",
+      "ru": "Это традиционное блюдо."
+    },
+    {
+      "en": "We have lunch at 1 PM.",
+      "uz": "Biz tushlikni soat 1 da yeymiz.",
+      "ru": "Мы обедаем в час дня."
+    },
+    {
+      "en": "He is a good cook.",
+      "uz": "U yaxshi oshpaz.",
+      "ru": "Он хороший повар."
+    },
+    {
+      "en": "The market has fresh fish.",
+      "uz": "Bozorda yangi baliq bor.",
+      "ru": "На рынке есть свежая рыба."
+    }
+  ],
+  "Weather": [
+    {
+      "en": "The weather is sunny today.",
+      "uz": "Bugun ob-havo quyoshli.",
+      "ru": "Сегодня солнечно."
+    },
+    {
+      "en": "It is raining outside.",
+      "uz": "Tashqarida yomg'ir yog'moqda.",
+      "ru": "На улице идёт дождь."
+    },
+    {
+      "en": "The sky is cloudy.",
+      "uz": "Osmon bulutli.",
+      "ru": "Небо облачное."
+    },
+    {
+      "en": "It's hot in summer.",
+      "uz": "Yozda issiq.",
+      "ru": "Летом жарко."
+    },
+    {
+      "en": "Winter is cold.",
+      "uz": "Qish sovuq.",
+      "ru": "Зима холодная."
+    },
+    {
+      "en": "Spring brings flowers.",
+      "uz": "Bahor gullarni olib keladi.",
+      "ru": "Весна приносит цветы."
+    },
+    {
+      "en": "Autumn leaves fall.",
+      "uz": "Kuzda barglar tushadi.",
+      "ru": "Осенью падают листья."
+    },
+    {
+      "en": "The wind is blowing.",
+      "uz": "Shamol esmoqda.",
+      "ru": "Дует ветер."
+    },
+    {
+      "en": "It's foggy in the morning.",
+      "uz": "Ertalab tumanli.",
+      "ru": "Утром туманно."
+    },
+    {
+      "en": "Snow is white.",
+      "uz": "Qor oq.",
+      "ru": "Снег белый."
+    },
+    {
+      "en": "I like rainy days.",
+      "uz": "Men yomg'irli kunlarni yaxshi ko'raman.",
+      "ru": "Мне нравятся дождливые дни."
+    },
+    {
+      "en": "The temperature is high.",
+      "uz": "Harorat yuqori.",
+      "ru": "Температура высокая."
+    },
+    {
+      "en": "It's windy today.",
+      "uz": "Bugun shamolli.",
+      "ru": "Сегодня ветрено."
+    },
+    {
+      "en": "Thunderstorms are scary.",
+      "uz": "Momagaldiroqlar qo'rqinchli.",
+      "ru": "Грозы страшные."
+    },
+    {
+      "en": "Rainbow after rain.",
+      "uz": "Yomg'irdan keyin kamalak.",
+      "ru": "Радуга после дождя."
+    },
+    {
+      "en": "The sun is shining.",
+      "uz": "Quyosh porlamoqda.",
+      "ru": "Солнце светит."
+    },
+    {
+      "en": "It's humid outside.",
+      "uz": "Tashqarida nam.",
+      "ru": "На улице влажно."
+    },
+    {
+      "en": "Frost in winter.",
+      "uz": "Qishda ayoz.",
+      "ru": "Мороз зимой."
+    },
+    {
+      "en": "Weather forecast is useful.",
+      "uz": "Ob-havo prognozi foydali.",
+      "ru": "Прогноз погоды полезен."
+    },
+    {
+      "en": "Climate change is real.",
+      "uz": "Iqlim o'zgarishi haqiqiy.",
+      "ru": "Изменение климата реально."
+    },
+    {
+      "en": "The weather is nice today.",
+      "uz": "Bugun ob-havo yaxshi.",
+      "ru": "Сегодня хорошая погода."
+    },
+    {
+      "en": "It's raining.",
+      "uz": "Yomg'ir yog'yapti.",
+      "ru": "Идёт дождь."
+    },
+    {
+      "en": "It will be sunny tomorrow.",
+      "uz": "Ertaga quyoshli bo'ladi.",
+      "ru": "Завтра будет солнечно."
+    },
+    {
+      "en": "The sky is clear.",
+      "uz": "Osmon ochiq.",
+      "ru": "Небо ясное."
+    },
+    {
+      "en": "It's very cold today.",
+      "uz": "Bugun juda sovuq.",
+      "ru": "Сегодня очень холодно."
+    },
+    {
+      "en": "What's the temperature?",
+      "uz": "Harorat qanday?",
+      "ru": "Какая температура?"
+    },
+    {
+      "en": "It's a windy day.",
+      "uz": "Bugun shamolli kun.",
+      "ru": "Сегодня ветреный день."
+    },
+    {
+      "en": "It might snow.",
+      "uz": "Qor yog'ishi mumkin.",
+      "ru": "Может пойти снег."
+    },
+    {
+      "en": "The summer is hot.",
+      "uz": "Yoz issiq.",
+      "ru": "Лето жаркое."
+    },
+    {
+      "en": "I like autumn.",
+      "uz": "Men kuzni yoqtiraman.",
+      "ru": "Мне нравится осень."
+    },
+    {
+      "en": "The weather is unpredictable.",
+      "uz": "Ob-havo beqaror.",
+      "ru": "Погода непредсказуема."
+    },
+    {
+      "en": "There is a storm coming.",
+      "uz": "Bo'ron kelayotgan.",
+      "ru": "Приближается буря."
+    },
+    {
+      "en": "It's foggy.",
+      "uz": "Tumanli.",
+      "ru": "Туманно."
+    },
+    {
+      "en": "It's humid.",
+      "uz": "Havo nam.",
+      "ru": "Влажно."
+    },
+    {
+      "en": "We had a lot of snow last winter.",
+      "uz": "O'tgan qish ko'p qor yog'gan edi.",
+      "ru": "Прошлой зимой было много снега."
+    },
+    {
+      "en": "It's a beautiful day.",
+      "uz": "Bugun ajoyib kun.",
+      "ru": "Сегодня прекрасный день."
+    },
+    {
+      "en": "The nights are getting colder.",
+      "uz": "Tunlar sovuqlashmoqda.",
+      "ru": "Ночи становятся холоднее."
+    },
+    {
+      "en": "It's warm outside.",
+      "uz": "Tashqarida iliq.",
+      "ru": "На улице тепло."
+    }
+  ],
+  "Travel": [
+    {
+      "en": "I love traveling.",
+      "uz": "Men sayohat qilishni yaxshi ko'raman.",
+      "ru": "Я люблю путешествовать."
+    },
+    {
+      "en": "The plane is fast.",
+      "uz": "Samolyot tez.",
+      "ru": "Самолёт быстрый."
+    },
+    {
+      "en": "I pack my suitcase.",
+      "uz": "Men chamadonimni yig'aman.",
+      "ru": "Я собираю чемодан."
+    },
+    {
+      "en": "Visiting new places is exciting.",
+      "uz": "Yangi joylarni ziyorat qilish hayajonli.",
+      "ru": "Посещать новые места захватывающе."
+    },
+    {
+      "en": "The train is comfortable.",
+      "uz": "Poyezd qulay.",
+      "ru": "Поезд удобный."
+    },
+    {
+      "en": "I need a passport.",
+      "uz": "Menga pasport kerak.",
+      "ru": "Мне нужен паспорт."
+    },
+    {
+      "en": "Hotels provide rooms.",
+      "uz": "Mehmonxonalar xonalar taqdim etadi.",
+      "ru": "Отели предоставляют номера."
+    },
+    {
+      "en": "Beaches are relaxing.",
+      "uz": "Plyajlar dam olish uchun.",
+      "ru": "Пляжи расслабляют."
+    },
+    {
+      "en": "Mountains are beautiful.",
+      "uz": "Tog'lar chiroyli.",
+      "ru": "Горы красивы."
+    },
+    {
+      "en": "I take photos on trips.",
+      "uz": "Sayohatlarda fotosurat olaman.",
+      "ru": "Я делаю фото в поездках."
+    },
+    {
+      "en": "Local food is tasty.",
+      "uz": "Mahalliy ovqat mazali.",
+      "ru": "Местная еда вкусная."
+    },
+    {
+      "en": "Travel broadens the mind.",
+      "uz": "Sayohat ongni kengaytiradi.",
+      "ru": "Путешествия расширяют кругозор."
+    },
+    {
+      "en": "I use maps for directions.",
+      "uz": "Yo'nalishlar uchun xaritalardan foydalanaman.",
+      "ru": "Я использую карты для ориентирования."
+    },
+    {
+      "en": "Airports are busy.",
+      "uz": "Aeroportlar band.",
+      "ru": "Аэропорты загружены."
+    },
+    {
+      "en": "Cruises are fun.",
+      "uz": "Kruizlar qiziqarli.",
+      "ru": "Круизы весёлые."
+    },
+    {
+      "en": "I prefer road trips.",
+      "uz": "Men yo'l sayohatlarini afzal ko'raman.",
+      "ru": "Я предпочитаю автомобильные путешествия."
+    },
+    {
+      "en": "Culture differs in countries.",
+      "uz": "Madaniyat mamlakatlarda farq qiladi.",
+      "ru": "Культура различается в странах."
+    },
+    {
+      "en": "Traveling alone is adventurous.",
+      "uz": "Yolg'iz sayohat qilish sarguzashtli.",
+      "ru": "Путешествовать в одиночку — приключение."
+    },
+    {
+      "en": "Souvenirs are memories.",
+      "uz": "Suvenirlar xotiralar.",
+      "ru": "Сувениры — воспоминания."
+    },
+    {
+      "en": "Jet lag is tiring.",
+      "uz": "Jet lag charchatadi.",
+      "ru": "Джетлаг утомляет."
+    },
+    {
+      "en": "We are planning a trip to Samarkand.",
+      "uz": "Biz Samarqandga sayohatni rejalashtirmoqdamiz.",
+      "ru": "Мы планируем поездку в Самарканд."
+    },
+    {
+      "en": "She visited many countries.",
+      "uz": "U ko'plab mamlakatlarni ziyarat qilgan.",
+      "ru": "Она посетила много стран."
+    },
+    {
+      "en": "He bought a plane ticket.",
+      "uz": "U samolyot chiptasini sotib oldi.",
+      "ru": "Он купил авиабилет."
+    },
+    {
+      "en": "The beach was beautiful.",
+      "uz": "Plyaj juda go'zal edi.",
+      "ru": "Пляж был очень красив."
+    },
+    {
+      "en": "We stayed in a hotel.",
+      "uz": "Biz mehmonxonada qoldik.",
+      "ru": "Мы остановились в отеле."
+    },
+    {
+      "en": "I want to see the world.",
+      "uz": "Men dunyoni ko'rmoqchiman.",
+      "ru": "Я хочу увидеть мир."
+    },
+    {
+      "en": "They took many photos.",
+      "uz": "Ular ko'p rasm oldilar.",
+      "ru": "Они сделали много фотографий."
+    },
+    {
+      "en": "He likes to try new food.",
+      "uz": "U yangi ovqatlarni tatib ko'rishni yoqtiradi.",
+      "ru": "Он любит пробовать новую еду."
+    },
+    {
+      "en": "The mountains are amazing.",
+      "uz": "Tog'lar ajoyib.",
+      "ru": "Горы потрясающие."
+    },
+    {
+      "en": "We need a tour guide.",
+      "uz": "Bizga ekskursiya yetakchisi kerak.",
+      "ru": "Нам нужен гид."
+    },
+    {
+      "en": "She packed her suitcase.",
+      "uz": "U chamadonini yig'di.",
+      "ru": "Она собрала чемодан."
+    },
+    {
+      "en": "I will send you a postcard.",
+      "uz": "Men sizga ochiq esdalik yuboraman.",
+      "ru": "Я отправлю тебе открытку."
+    },
+    {
+      "en": "They are going on vacation tomorrow.",
+      "uz": "Ular ertaga ta'tilga ketishadi.",
+      "ru": "Они завтра уезжают в отпуск."
+    },
+    {
+      "en": "He loves adventure.",
+      "uz": "U sarguzashtni yaxshi ko'radi.",
+      "ru": "Он любит приключения."
+    },
+    {
+      "en": "We traveled by train.",
+      "uz": "Biz poyezdda sayohat qildik.",
+      "ru": "Мы путешествовали поездом."
+    },
+    {
+      "en": "The city was very crowded.",
+      "uz": "Shahar juda gavjum edi.",
+      "ru": "Город был очень многолюдным."
+    },
+    {
+      "en": "I enjoy learning about new cultures.",
+      "uz": "Men yangi madaniyatlar haqida o'rganishni yoqtiraman.",
+      "ru": "Мне нравится узнавать о новых культурах."
+    }
+  ],
+  "Work": [
+    {
+      "en": "I go to work every day.",
+      "uz": "Men har kuni ishga boraman.",
+      "ru": "Я хожу на работу каждый день."
+    },
+    {
+      "en": "My job is interesting.",
+      "uz": "Mening ishim qiziqarli.",
+      "ru": "Моя работа интересная."
+    },
+    {
+      "en": "I have a meeting today.",
+      "uz": "Bugun uchrashuvim bor.",
+      "ru": "У меня сегодня встреча."
+    },
+    {
+      "en": "Colleagues are helpful.",
+      "uz": "Hamkasblar yordam beradi.",
+      "ru": "Коллеги помогают."
+    },
+    {
+      "en": "I use a computer at work.",
+      "uz": "Ishda kompyuterdan foydalanaman.",
+      "ru": "Я использую компьютер на работе."
+    },
+    {
+      "en": "The office is modern.",
+      "uz": "Ofis zamonaviy.",
+      "ru": "Офис современный."
+    },
+    {
+      "en": "I take a lunch break.",
+      "uz": "Tushlik tanaffus qilaman.",
+      "ru": "Я делаю перерыв на обед."
+    },
+    {
+      "en": "Deadlines are important.",
+      "uz": "Muddatlar muhim.",
+      "ru": "Сроки важны."
+    },
+    {
+      "en": "Promotion is rewarding.",
+      "uz": "Lavozim oshirish mukofotlidir.",
+      "ru": "Повышение — это награда."
+    },
+    {
+      "en": "I learn new skills.",
+      "uz": "Men yangi ko'nikmalarni o'rganaman.",
+      "ru": "Я учу новые навыки."
+    },
+    {
+      "en": "Teamwork is essential.",
+      "uz": "Jamoaviy ish zarur.",
+      "ru": "Командная работа необходима."
+    },
+    {
+      "en": "I commute by bus.",
+      "uz": "Men avtobusda ishga boraman.",
+      "ru": "Я езжу на работу на автобусе."
+    },
+    {
+      "en": "Salary is paid monthly.",
+      "uz": "Maosh oylik to'lanadi.",
+      "ru": "Зарплата выплачивается ежемесячно."
+    },
+    {
+      "en": "Overtime is sometimes needed.",
+      "uz": "Ba'zida qo'shimcha ish kerak.",
+      "ru": "Иногда требуется сверхурочная работа."
+    },
+    {
+      "en": "Vacation time is relaxing.",
+      "uz": "Ta'til vaqti dam olish uchun.",
+      "ru": "Время отпуска — для отдыха."
+    },
+    {
+      "en": "Boss is strict.",
+      "uz": "Rahbar qattiq.",
+      "ru": "Начальник строгий."
+    },
+    {
+      "en": "I enjoy my career.",
+      "uz": "Men kasbimdan zavqlanaman.",
+      "ru": "Мне нравится моя карьера."
+    },
+    {
+      "en": "Training improves performance.",
+      "uz": "O'qitish ish samaradorligini oshiradi.",
+      "ru": "Обучение повышает производительность."
+    },
+    {
+      "en": "Networking is useful.",
+      "uz": "Tarmoq qurish foydali.",
+      "ru": "Нетворкинг полезен."
+    },
+    {
+      "en": "Retirement is in the future.",
+      "uz": "Pensionga chiqish kelajakda.",
+      "ru": "Выход на пенсию — в будущем."
+    },
+    {
+      "en": "I go to work at 9 AM.",
+      "uz": "Men ishga soat 9da boraman.",
+      "ru": "Я иду на работу в 9 утра."
+    },
+    {
+      "en": "She is a great manager.",
+      "uz": "U ajoyib menejer.",
+      "ru": "Она отличный менеджер."
+    },
+    {
+      "en": "He works from home.",
+      "uz": "U uydan ishlaydi.",
+      "ru": "Он работает из дома."
+    },
+    {
+      "en": "We have a meeting today.",
+      "uz": "Bugun bizning majlisimiz bor.",
+      "ru": "У нас сегодня собрание."
+    },
+    {
+      "en": "I need to finish this report.",
+      "uz": "Men bu hisobotni tugatishim kerak.",
+      "ru": "Мне нужно закончить этот отчёт."
+    },
+    {
+      "en": "They work in a hospital.",
+      "uz": "Ular shifoxonada ishlashadi.",
+      "ru": "Они работают в больнице."
+    },
+    {
+      "en": "I'm looking for a new job.",
+      "uz": "Men yangi ish qidiryapman.",
+      "ru": "Я ищу новую работу."
+    },
+    {
+      "en": "We have a deadline tomorrow.",
+      "uz": "Ertaga bizning muddatimiz tugaydi.",
+      "ru": "У нас завтра дедлайн."
+    },
+    {
+      "en": "He got a promotion.",
+      "uz": "U lavozimi oshirildi.",
+      "ru": "Его повысили."
+    },
+    {
+      "en": "She is on vacation.",
+      "uz": "U ta'tilda.",
+      "ru": "Она в отпуске."
+    },
+    {
+      "en": "I work with a great team.",
+      "uz": "Men ajoyib jamoa bilan ishlayman.",
+      "ru": "Я работаю с отличной командой."
+    },
+    {
+      "en": "My office is in the city center.",
+      "uz": "Mening ofisim shahar markazida.",
+      "ru": "Мой офис в центре города."
+    },
+    {
+      "en": "We use computers every day.",
+      "uz": "Biz har kuni kompyuterlardan foydalanamiz.",
+      "ru": "Мы используем компьютеры каждый день."
+    },
+    {
+      "en": "I have a business trip next week.",
+      "uz": "Mening kelasi hafta ish safari bor.",
+      "ru": "У меня командировка на следующей неделе."
+    },
+    {
+      "en": "She answers emails all day.",
+      "uz": "U kun bo'yi elektron pochta xabarlariga javob beradi.",
+      "ru": "Она весь день отвечает на электронные письма."
+    },
+    {
+      "en": "He is a hard worker.",
+      "uz": "U mehnatsevar odam.",
+      "ru": "Он трудолюбивый человек."
+    },
+    {
+      "en": "We are hiring new people.",
+      "uz": "Biz yangi odamlarni ishga olmoqdamiz.",
+      "ru": "Мы нанимаем новых людей."
+    },
+    {
+      "en": "I'm tired after work.",
+      "uz": "Men ishdan keyin charchayman.",
+      "ru": "Я устаю после работы."
+    }
+  ],
+  "School": [
+    {
+      "en": "I go to school.",
+      "uz": "Men maktabga boraman.",
+      "ru": "Я хожу в школу."
+    },
+    {
+      "en": "Teachers teach subjects.",
+      "uz": "O'qituvchilar fanlarni o'rgatadi.",
+      "ru": "Учителя преподают предметы."
+    },
+    {
+      "en": "Students learn lessons.",
+      "uz": "Talabalar darslarni o'rganadi.",
+      "ru": "Ученики изучают уроки."
+    },
+    {
+      "en": "Homework is assigned.",
+      "uz": "Uy vazifasi beriladi.",
+      "ru": "Домашнее задание задают."
+    },
+    {
+      "en": "Exams test knowledge.",
+      "uz": "Imtihonlar bilimlarni sinaydi.",
+      "ru": "Экзамены проверяют знания."
+    },
+    {
+      "en": "Classrooms have desks.",
+      "uz": "Sinf xonalari partalarga ega.",
+      "ru": "В классах есть парты."
+    },
+    {
+      "en": "Books are for reading.",
+      "uz": "Kitoblar o'qish uchun.",
+      "ru": "Книги для чтения."
+    },
+    {
+      "en": "Recess is play time.",
+      "uz": "Tanaffus o'yin vaqti.",
+      "ru": "Перемена — время для игр."
+    },
+    {
+      "en": "School bus transports students.",
+      "uz": "Maktab avtobusi talabalarni tashiydi.",
+      "ru": "Школьный автобус перевозит учеников."
+    },
+    {
+      "en": "Grades show performance.",
+      "uz": "Baholar ish samarasini ko'rsatadi.",
+      "ru": "Оценки показывают успеваемость."
+    },
+    {
+      "en": "Library has books.",
+      "uz": "Kutubxona kitoblarga ega.",
+      "ru": "В библиотеке есть книги."
+    },
+    {
+      "en": "Sports are part of school.",
+      "uz": "Sport maktabning bir qismi.",
+      "ru": "Спорт — часть школы."
+    },
+    {
+      "en": "Friends are made at school.",
+      "uz": "Do'stlar maktabda topiladi.",
+      "ru": "Друзей заводят в школе."
+    },
+    {
+      "en": "Uniforms are worn.",
+      "uz": "Forma kiyiladi.",
+      "ru": "Носят форму."
+    },
+    {
+      "en": "Graduation is a milestone.",
+      "uz": "Bitiruv muhim bosqich.",
+      "ru": "Выпуск — важный этап."
+    },
+    {
+      "en": "Science lab experiments.",
+      "uz": "Fan laboratoriyasida tajribalar.",
+      "ru": "Эксперименты в научной лаборатории."
+    },
+    {
+      "en": "Art class is creative.",
+      "uz": "San'at darsi ijodiy.",
+      "ru": "Урок искусства творческий."
+    },
+    {
+      "en": "Math is challenging.",
+      "uz": "Matematika qiyin.",
+      "ru": "Математика сложная."
+    },
+    {
+      "en": "History teaches past.",
+      "uz": "Tarix o'tmishni o'rgatadi.",
+      "ru": "История учит прошлому."
+    },
+    {
+      "en": "Education is key.",
+      "uz": "Ta'lim kalit.",
+      "ru": "Образование — ключ."
+    }
+  ],
+  "Hobbies": [
+    {
+      "en": "I like reading books.",
+      "uz": "Men kitob o'qishni yaxshi ko'raman.",
+      "ru": "Мне нравится читать книги."
+    },
+    {
+      "en": "Painting is my hobby.",
+      "uz": "Rassomlik mening sevimli mashg'ulotim.",
+      "ru": "Рисование — моё хобби."
+    },
+    {
+      "en": "I play guitar.",
+      "uz": "Men gitara chalaman.",
+      "ru": "Я играю на гитаре."
+    },
+    {
+      "en": "Gardening relaxes me.",
+      "uz": "Bog'dorchilik meni dam oldiradi.",
+      "ru": "Садоводство меня расслабляет."
+    },
+    {
+      "en": "Cooking is fun.",
+      "uz": "Ovqat pishirish qiziqarli.",
+      "ru": "Готовка — весело."
+    },
+    {
+      "en": "I collect stamps.",
+      "uz": "Men markalarni yig'aman.",
+      "ru": "Я собираю марки."
+    },
+    {
+      "en": "Photography captures moments.",
+      "uz": "Fotografiya lahzalarni qamrab oladi.",
+      "ru": "Фотография запечатлевает моменты."
+    },
+    {
+      "en": "Dancing is energetic.",
+      "uz": "Raqs energiyali.",
+      "ru": "Танцы энергичны."
+    },
+    {
+      "en": "Writing stories is creative.",
+      "uz": "Hikoyalar yozish ijodiy.",
+      "ru": "Написание историй — творческое занятие."
+    },
+    {
+      "en": "Fishing is peaceful.",
+      "uz": "Baliq ovlash tinch.",
+      "ru": "Рыбалка спокойная."
+    },
+    {
+      "en": "Hiking in nature.",
+      "uz": "Tabiatda piyoda yurish.",
+      "ru": "Пешие прогулки на природе."
+    },
+    {
+      "en": "Playing chess sharpens mind.",
+      "uz": "Shaxmat o'ynash ongni o'tkirlashtiradi.",
+      "ru": "Игра в шахматы развивает ум."
+    },
+    {
+      "en": "Knitting makes scarves.",
+      "uz": "To'qish sharflar yasaydi.",
+      "ru": "Вязание создаёт шарфы."
+    },
+    {
+      "en": "Bird watching is interesting.",
+      "uz": "Qushlarni kuzatish qiziqarli.",
+      "ru": "Наблюдение за птицами интересно."
+    },
+    {
+      "en": "Yoga for health.",
+      "uz": "Yoga salomatlik uchun.",
+      "ru": "Йога для здоровья."
+    },
+    {
+      "en": "Traveling as hobby.",
+      "uz": "Sayohat sevimli mashg'ulot sifatida.",
+      "ru": "Путешествия как хобби."
+    },
+    {
+      "en": "Playing video games.",
+      "uz": "Video o'yinlar o'ynash.",
+      "ru": "Играть в видеоигры."
+    },
+    {
+      "en": "Learning languages.",
+      "uz": "Tillarni o'rganish.",
+      "ru": "Изучение языков."
+    },
+    {
+      "en": "Singing songs.",
+      "uz": "Qo'shiqlar aytish.",
+      "ru": "Пение песен."
+    },
+    {
+      "en": "Cycling for exercise.",
+      "uz": "Velosiped haydash mashq uchun.",
+      "ru": "Езда на велосипеде для упражнений."
+    },
+    {
+      "en": "My hobby is photography.",
+      "uz": "Mening hobbim fotosurat.",
+      "ru": "Моё хобби — фотография."
+    },
+    {
+      "en": "She likes to paint.",
+      "uz": "U rasim chizishni yoqtiradi.",
+      "ru": "Она любит рисовать."
+    },
+    {
+      "en": "He plays the guitar.",
+      "uz": "U gitara chaladi.",
+      "ru": "Он играет на гитаре."
+    },
+    {
+      "en": "We go hiking on weekends.",
+      "uz": "Biz dam olish kunlarida piyoda sayr qilamiz.",
+      "ru": "Мы ходим в походы по выходным."
+    },
+    {
+      "en": "I enjoy reading books.",
+      "uz": "Men kitob o'qishni yoqtiraman.",
+      "ru": "Мне нравится читать книги."
+    },
+    {
+      "en": "They collect stamps.",
+      "uz": "Ular markal yig'ishadi.",
+      "ru": "Они собирают марки."
+    },
+    {
+      "en": "Cooking is my passion.",
+      "uz": "Ovqat pishirish mening ishtiyoqim.",
+      "ru": "Готовка — моя страсть."
+    },
+    {
+      "en": "He is interested in gardening.",
+      "uz": "U bog'bonlik bilan qiziqadi.",
+      "ru": "Он увлекается садоводством."
+    },
+    {
+      "en": "She makes handmade crafts.",
+      "uz": "U qo'l san'ati asarlarini yasaydi.",
+      "ru": "Она делает handmade поделки."
+    },
+    {
+      "en": "I love listening to music.",
+      "uz": "Men musiqa tinglashni yaxshi ko'raman.",
+      "ru": "Я люблю слушать музыку."
+    },
+    {
+      "en": "We play chess in the evening.",
+      "uz": "Biz kechqurun shaxmat o'ynamiz.",
+      "ru": "Мы играем в шахматы вечером."
+    },
+    {
+      "en": "His hobby is fishing.",
+      "uz": "Uning hobbisi baliq ovlash.",
+      "ru": "Его хобби — рыбалка."
+    },
+    {
+      "en": "She goes swimming every week.",
+      "uz": "U har hafta suzishga boradi.",
+      "ru": "Она ходит плавать каждую неделю."
+    },
+    {
+      "en": "I am learning to dance.",
+      "uz": "Men raqsga o'rganyapman.",
+      "ru": "Я учусь танцевать."
+    },
+    {
+      "en": "They watch movies together.",
+      "uz": "Ular birga filmlar tomosha qilishadi.",
+      "ru": "Они вместе смотрят фильмы."
+    },
+    {
+      "en": "He writes poems in his free time.",
+      "uz": "U bo'sh vaqtida she'rlar yozadi.",
+      "ru": "Он пишет стихи в свободное время."
+    },
+    {
+      "en": "My hobby helps me relax.",
+      "uz": "Mening hobbim jimirlashimga yordam beradi.",
+      "ru": "Моё хобби помогает мне расслабиться."
+    },
+    {
+      "en": "We have a book club.",
+      "uz": "Bizning kitob klubimiz bor.",
+      "ru": "У нас есть книжный клуб."
+    }
+  ],
+  "Health": [
+    {
+      "en": "Eat healthy food.",
+      "uz": "Sog'lom ovqat yeying.",
+      "ru": "Ешьте здоровую пищу."
+    },
+    {
+      "en": "Exercise daily.",
+      "uz": "Har kuni mashq qiling.",
+      "ru": "Занимайтесь упражнениями ежедневно."
+    },
+    {
+      "en": "Drink plenty of water.",
+      "uz": "Ko'p suv iching.",
+      "ru": "Пейте много воды."
+    },
+    {
+      "en": "Sleep well at night.",
+      "uz": "Kechasi yaxshi uxlang.",
+      "ru": "Хорошо спите ночью."
+    },
+    {
+      "en": "Wash hands regularly.",
+      "uz": "Qo'llarni muntazam yuving.",
+      "ru": "Регулярно мойте руки."
+    },
+    {
+      "en": "Visit doctor when sick.",
+      "uz": "Kasal bo'lganda shifokorga boring.",
+      "ru": "Обращайтесь к врачу, когда больны."
+    },
+    {
+      "en": "Brush teeth twice a day.",
+      "uz": "Tishlarni kuniga ikki marta cho'tkalang.",
+      "ru": "Чистите зубы дважды в день."
+    },
+    {
+      "en": "Avoid junk food.",
+      "uz": "Zararli ovqatlardan saqlaning.",
+      "ru": "Избегайте вредной еды."
+    },
+    {
+      "en": "Stay active.",
+      "uz": "Faol bo'ling.",
+      "ru": "Оставайтесь активными."
+    },
+    {
+      "en": "Mental health is important.",
+      "uz": "Ruhiy salomatlik muhim.",
+      "ru": "Психическое здоровье важно."
+    },
+    {
+      "en": "Vaccines protect.",
+      "uz": "Em lashlar himoya qiladi.",
+      "ru": "Вакцины защищают."
+    },
+    {
+      "en": "Fruits boost immunity.",
+      "uz": "Mevalar immunitetni oshiradi.",
+      "ru": "Фрукты укрепляют иммунитет."
+    },
+    {
+      "en": "Stress management helps.",
+      "uz": "Stressni boshqarish yordam beradi.",
+      "ru": "Управление стрессом помогает."
+    },
+    {
+      "en": "Regular checkups.",
+      "uz": "Muntazam tekshiruvlar.",
+      "ru": "Регулярные осмотры."
+    },
+    {
+      "en": "Hygiene prevents diseases.",
+      "uz": "Gigiena kasalliklarni oldini oladi.",
+      "ru": "Гигиена предотвращает болезни."
+    },
+    {
+      "en": "Walk for fitness.",
+      "uz": "Fitnes uchun piyoda yuring.",
+      "ru": "Ходите пешком для фитнеса."
+    },
+    {
+      "en": "Balanced diet.",
+      "uz": "Muvozanatli ovqatlanish.",
+      "ru": "Сбалансированное питание."
+    },
+    {
+      "en": "No smoking.",
+      "uz": "Chekmang.",
+      "ru": "Не курите."
+    },
+    {
+      "en": "Limit screen time.",
+      "uz": "Ekranda o'tkaziladigan vaqtni cheklang.",
+      "ru": "Ограничьте время за экраном."
+    },
+    {
+      "en": "Positive mindset.",
+      "uz": "Ijobiy fikrlash.",
+      "ru": "Позитивное мышление."
+    },
+    {
+      "en": "Exercise is good for health.",
+      "uz": "Mashqlar sog'liq uchun yaxshi.",
+      "ru": "Упражнения полезны для здоровья."
+    },
+    {
+      "en": "She goes to the gym.",
+      "uz": "U sport zaliga boradi.",
+      "ru": "Она ходит в спортзал."
+    },
+    {
+      "en": "You should drink more water.",
+      "uz": "Siz ko'proq suv ichishingiz kerak.",
+      "ru": "Тебе следует пить больше воды."
+    },
+    {
+      "en": "He feels sick.",
+      "uz": "U o'zini kasal his qiladi.",
+      "ru": "Он чувствует себя больным."
+    },
+    {
+      "en": "I have a headache.",
+      "uz": "Mening boshim og'riyapti.",
+      "ru": "У меня болит голова."
+    },
+    {
+      "en": "We need to see a doctor.",
+      "uz": "Biz shifokorga ko'rinishimiz kerak.",
+      "ru": "Нам нужно обратиться к врачу."
+    },
+    {
+      "en": "She is taking medicine.",
+      "uz": "U dori ichyapti.",
+      "ru": "Она принимает лекарство."
+    },
+    {
+      "en": "Get well soon!",
+      "uz": "Tezda tuzuling!",
+      "ru": "Выздоравливай скорее!"
+    },
+    {
+      "en": "He is very healthy.",
+      "uz": "U juda sog'lom.",
+      "ru": "Он очень здоровый."
+    },
+    {
+      "en": "I try to eat healthy food.",
+      "uz": "Men sog'lom ovqat yeyishga harakat qilaman.",
+      "ru": "Я стараюсь есть здоровую пищу."
+    },
+    {
+      "en": "She has a toothache.",
+      "uz": "Uning tishi og'riyapti.",
+      "ru": "У неё болит зуб."
+    },
+    {
+      "en": "Wash your hands before eating.",
+      "uz": "Ovqatlanishdan oldin qo'llaringizni yuving.",
+      "ru": "Мой руки перед едой."
+    },
+    {
+      "en": "He broke his leg.",
+      "uz": "U oyog'ini sindirib oldi.",
+      "ru": "Он сломал ногу."
+    },
+    {
+      "en": "The doctor was very kind.",
+      "uz": "Shifokor juda mehribon edi.",
+      "ru": "Врач был очень добрым."
+    },
+    {
+      "en": "Smoking is bad for you.",
+      "uz": "Chekish sog'ligingiz uchun zararli.",
+      "ru": "Курить вредно для тебя."
+    },
+    {
+      "en": "She gets enough sleep.",
+      "uz": "U etarli uxlaydi.",
+      "ru": "Она высыпается."
+    },
+    {
+      "en": "I am on a diet.",
+      "uz": "Men parhez qilaman.",
+      "ru": "Я на диете."
+    },
+    {
+      "en": "They are very fit.",
+      "uz": "Ular juda sog'lom.",
+      "ru": "Они в очень хорошей форме."
+    }
+  ],
+  "Shopping": [
+    {
+      "en": "I go shopping on weekends.",
+      "uz": "Dam olish kunlarida xarid qilaman.",
+      "ru": "Я хожу за покупками по выходным."
+    },
+    {
+      "en": "The store is open.",
+      "uz": "Do'kon ochiq.",
+      "ru": "Магазин открыт."
+    },
+    {
+      "en": "I buy clothes.",
+      "uz": "Kiyimlar sotib olaman.",
+      "ru": "Я покупаю одежду."
+    },
+    {
+      "en": "Prices are high.",
+      "uz": "Narxlar yuqori.",
+      "ru": "Цены высокие."
+    },
+    {
+      "en": "Sales are attractive.",
+      "uz": "Sotuvlar jozibali.",
+      "ru": "Распродажи привлекательны."
+    },
+    {
+      "en": "I use a shopping list.",
+      "uz": "Xarid ro'yxatidan foydalanaman.",
+      "ru": "Я пользуюсь списком покупок."
+    },
+    {
+      "en": "Online shopping is convenient.",
+      "uz": "Onlayn xarid qulay.",
+      "ru": "Онлайн-покупки удобны."
+    },
+    {
+      "en": "Groceries are essential.",
+      "uz": "Oziq-ovqat zarur.",
+      "ru": "Продукты необходимы."
+    },
+    {
+      "en": "I pay with cash.",
+      "uz": "Naqd pul bilan to'layman.",
+      "ru": "Я плачу наличными."
+    },
+    {
+      "en": "Credit cards are useful.",
+      "uz": "Kredit kartalari foydali.",
+      "ru": "Кредитные карты полезны."
+    },
+    {
+      "en": "Window shopping is fun.",
+      "uz": "Vitrinaga qarash qiziqarli.",
+      "ru": "Смотреть витрины весело."
+    },
+    {
+      "en": "Bargains save money.",
+      "uz": "Arzon narxlar pulni tejaydi.",
+      "ru": "Выгодные покупки экономят деньги."
+    },
+    {
+      "en": "Malls have many stores.",
+      "uz": "Savdo markazlarida ko'p do'konlar bor.",
+      "ru": "В торговых центрах много магазинов."
+    },
+    {
+      "en": "I return items if needed.",
+      "uz": "Kerak bo'lsa narsalarni qaytaraman.",
+      "ru": "Я возвращаю товары, если нужно."
+    },
+    {
+      "en": "Brands are popular.",
+      "uz": "Brendlar mashhur.",
+      "ru": "Бренды популярны."
+    },
+    {
+      "en": "Shopping cart for items.",
+      "uz": "Xarid aravachasi narsalar uchun.",
+      "ru": "Корзина для покупок."
+    },
+    {
+      "en": "Receipts for records.",
+      "uz": "Cheklar yozuvlar uchun.",
+      "ru": "Чеки для учёта."
+    },
+    {
+      "en": "Fashion trends change.",
+      "uz": "Moda tendentsiyalari o'zgaradi.",
+      "ru": "Модные тенденции меняются."
+    },
+    {
+      "en": "Gifts for friends.",
+      "uz": "Do'stlar uchun sovg'alar.",
+      "ru": "Подарки для друзей."
+    },
+    {
+      "en": "Eco-friendly products.",
+      "uz": "Ekologik toza mahsulotlar.",
+      "ru": "Экологически чистые товары."
+    },
+    {
+      "en": "I go shopping every week.",
+      "uz": "Men har hafta xarid qilishga boraman.",
+      "ru": "Я хожу за покупками каждую неделю."
+    },
+    {
+      "en": "She bought a new dress.",
+      "uz": "U yangi ko'ylak sotib oldi.",
+      "ru": "Она купила новое платье."
+    },
+    {
+      "en": "We need to go to the supermarket.",
+      "uz": "Biz supermarkETga borishimiz kerak.",
+      "ru": "Нам нужно пойти в супермаркет."
+    },
+    {
+      "en": "He is looking for a gift.",
+      "uz": "U sovg'a qidirmoqda.",
+      "ru": "Он ищет подарок."
+    },
+    {
+      "en": "The market is crowded.",
+      "uz": "Bozor gavjum.",
+      "ru": "Рынок переполнен."
+    },
+    {
+      "en": "This shirt is too expensive.",
+      "uz": "Bu ko'ylak juda qimmat.",
+      "ru": "Эта рубашка слишком дорогая."
+    },
+    {
+      "en": "Can I help you?",
+      "uz": "Sizga yordam bera olamanmi?",
+      "ru": "Могу я вам помочь?"
+    },
+    {
+      "en": "I'll take this.",
+      "uz": "Men buni olaman.",
+      "ru": "Я возьму это."
+    },
+    {
+      "en": "She is paying at the cashier.",
+      "uz": "U kassada to'lov qilmoqda.",
+      "ru": "Она платит в кассе."
+    },
+    {
+      "en": "We bought groceries.",
+      "uz": "Biz oziq-ovqat mahsulotlarini sotib oldik.",
+      "ru": "Мы купили продукты."
+    },
+    {
+      "en": "He likes window shopping.",
+      "uz": "U vitrina xaridini yoqtiradi.",
+      "ru": "Он любит ходить по магазинам (смотреть витрины)."
+    },
+    {
+      "en": "The mall is very big.",
+      "uz": "Savdo markazi juda katta.",
+      "ru": "Торговый центр очень большой."
+    },
+    {
+      "en": "I found a good discount.",
+      "uz": "Men yaxshi chegirma topdim.",
+      "ru": "Я нашёл хорошую скидку."
+    },
+    {
+      "en": "She returned the product.",
+      "uz": "U mahsulotni qaytardi.",
+      "ru": "Она вернула товар."
+    },
+    {
+      "en": "We are looking for a toy for our son.",
+      "uz": "Biz o'g'limizga o'yinchoq qidirmoqdamiz.",
+      "ru": "Мы ищем игрушку для нашего сына."
+    },
+    {
+      "en": "This bag is cheap.",
+      "uz": "Bu sumka arzon.",
+      "ru": "Эта сумка дешёвая."
+    },
+    {
+      "en": "They are having a sale.",
+      "uz": "Ular chegirma o'tkazmoqdalar.",
+      "ru": "У них распродажа."
+    }
+  ],
+  "Directions": [
+    {
+      "en": "Turn left at the corner.",
+      "uz": "Burchakda chapga buriling.",
+      "ru": "Поверните налево на углу."
+    },
+    {
+      "en": "Go straight ahead.",
+      "uz": "To'g'ri oldinga boring.",
+      "ru": "Идите прямо."
+    },
+    {
+      "en": "The bank is on the right.",
+      "uz": "Bank o'ng tomonda.",
+      "ru": "Банк справа."
+    },
+    {
+      "en": "Cross the street.",
+      "uz": "Ko'chani kesib o'ting.",
+      "ru": "Перейдите улицу."
+    },
+    {
+      "en": "Follow the signs.",
+      "uz": "Belgilarga ergashing.",
+      "ru": "Следуйте указателям."
+    },
+    {
+      "en": "The map shows the way.",
+      "uz": "Xarita yo'lni ko'rsatadi.",
+      "ru": "Карта показывает путь."
+    },
+    {
+      "en": "Ask for directions if lost.",
+      "uz": "Yo'qolgan bo'lsangiz yo'nalish so'rang.",
+      "ru": "Спросите дорогу, если заблудитесь."
+    },
+    {
+      "en": "The hospital is nearby.",
+      "uz": "Kasalxona yaqin.",
+      "ru": "Больница рядом."
+    },
+    {
+      "en": "Take the first exit.",
+      "uz": "Birinchi chiqishni oling.",
+      "ru": "Съезжайте на первом съезде."
+    },
+    {
+      "en": "Traffic lights control flow.",
+      "uz": "Svetoforlar oqimni boshqaradi.",
+      "ru": "Светофоры регулируют поток."
+    },
+    {
+      "en": "The park is across the road.",
+      "uz": "Park yo'lning narigi tomonida.",
+      "ru": "Парк через дорогу."
+    },
+    {
+      "en": "Use GPS for navigation.",
+      "uz": "Navigatsiya uchun GPSdan foydalaning.",
+      "ru": "Используйте GPS для навигации."
+    },
+    {
+      "en": "The station is two blocks away.",
+      "uz": "Stantsiya ikki blok narida.",
+      "ru": "Станция в двух кварталах."
+    },
+    {
+      "en": "Avoid rush hour.",
+      "uz": "Shoshilinch soatni saqlaning.",
+      "ru": "Избегайте часа пик."
+    },
+    {
+      "en": "Pedestrians have right of way.",
+      "uz": "Piyodalar yo'l huquqiga ega.",
+      "ru": "Пешеходы имеют преимущество."
+    },
+    {
+      "en": "The museum is downtown.",
+      "uz": "Muzey shahar markazida.",
+      "ru": "Музей в центре города."
+    },
+    {
+      "en": "Follow the river.",
+      "uz": "Daryoga ergashing.",
+      "ru": "Следуйте вдоль реки."
+    },
+    {
+      "en": "The hotel is uphill.",
+      "uz": "Mehmonxona tepalikda.",
+      "ru": "Отель на холме."
+    },
+    {
+      "en": "Landmarks help navigation.",
+      "uz": "Belgilar navigatsiyaga yordam beradi.",
+      "ru": "Ориентиры помогают в навигации."
+    },
+    {
+      "en": "Arrive on time.",
+      "uz": "Vaqtida yetib boring.",
+      "ru": "Приходите вовремя."
+    }
+  ],
+  "Time": [
+    {
+      "en": "What time is it?",
+      "uz": "Soat necha?",
+      "ru": "Который час?"
+    },
+    {
+      "en": "It's nine o'clock.",
+      "uz": "Soat to'qqiz.",
+      "ru": "Девять часов."
+    },
+    {
+      "en": "Morning starts early.",
+      "uz": "Tong erta boshlanadi.",
+      "ru": "Утро начинается рано."
+    },
+    {
+      "en": "Afternoon is after noon.",
+      "uz": "Tushdan keyin tush.",
+      "ru": "После полудня — день."
+    },
+    {
+      "en": "Evening is before night.",
+      "uz": "Kech kechadan oldin.",
+      "ru": "Вечер перед ночью."
+    },
+    {
+      "en": "Midnight is twelve AM.",
+      "uz": "Yarim tun o'n ikki AM.",
+      "ru": "Полночь — двенадцать часов ночи."
+    },
+    {
+      "en": "The meeting is at 2 PM.",
+      "uz": "Uchrashuv 2 PM da.",
+      "ru": "Встреча в 2 часа дня."
+    },
+    {
+      "en": "Time flies quickly.",
+      "uz": "Vaqt tez uchadi.",
+      "ru": "Время летит быстро."
+    },
+    {
+      "en": "Set the alarm.",
+      "uz": "Budilnikni o'rnating.",
+      "ru": "Поставьте будильник."
+    },
+    {
+      "en": "The clock is ticking.",
+      "uz": "Soat tikillamoqda.",
+      "ru": "Часы тикают."
+    },
+    {
+      "en": "One hour has 60 minutes.",
+      "uz": "Bir soatda 60 daqiqa bor.",
+      "ru": "В одном часе 60 минут."
+    },
+    {
+      "en": "A day has 24 hours.",
+      "uz": "Kun 24 soatga ega.",
+      "ru": "В сутках 24 часа."
+    },
+    {
+      "en": "Weeks have seven days.",
+      "uz": "Haftalar yetti kunga ega.",
+      "ru": "В неделе семь дней."
+    },
+    {
+      "en": "Months vary in length.",
+      "uz": "Oylar uzunligi farq qiladi.",
+      "ru": "Месяцы различаются по длине."
+    },
+    {
+      "en": "Year has 365 days.",
+      "uz": "Yil 365 kunga ega.",
+      "ru": "В году 365 дней."
+    },
+    {
+      "en": "Leap year has 366.",
+      "uz": "Kabisa yili 366.",
+      "ru": "Високосный год — 366 дней."
+    },
+    {
+      "en": "Time zones differ.",
+      "uz": "Vaqt zonalari farq qiladi.",
+      "ru": "Часовые пояса различаются."
+    },
+    {
+      "en": "Punctuality is important.",
+      "uz": "Vaqtga rioya qilish muhim.",
+      "ru": "Пунктуальность важна."
+    },
+    {
+      "en": "Time management skills.",
+      "uz": "Vaqtni boshqarish ko'nikmalari.",
+      "ru": "Навыки управления временем."
+    },
+    {
+      "en": "Past, present, future.",
+      "uz": "O'tmish, hozirgi, kelajak.",
+      "ru": "Прошлое, настоящее, будущее."
+    }
+  ],
+  "Numbers": [
+    {
+      "en": "One plus one is two.",
+      "uz": "Bir plyus bir ikki.",
+      "ru": "Один плюс один — два."
+    },
+    {
+      "en": "I have three apples.",
+      "uz": "Menda uchta olma bor.",
+      "ru": "У меня три яблока."
+    },
+    {
+      "en": "Four seasons in a year.",
+      "uz": "Yilda to'rt fasl.",
+      "ru": "В году четыре сезона."
+    },
+    {
+      "en": "Five fingers on hand.",
+      "uz": "Qo'lda beshta barmoq.",
+      "ru": "На руке пять пальцев."
+    },
+    {
+      "en": "Six days a week.",
+      "uz": "Haftada olti kun.",
+      "ru": "Шесть дней в неделю."
+    },
+    {
+      "en": "Seven wonders of world.",
+      "uz": "Dunyo yetti mo'jizasi.",
+      "ru": "Семь чудес света."
+    },
+    {
+      "en": "Eight hours of sleep.",
+      "uz": "Sakkiz soat uyqu.",
+      "ru": "Восемь часов сна."
+    },
+    {
+      "en": "Nine lives of cat.",
+      "uz": "Mushukning to'qqiz umri.",
+      "ru": "У кошки девять жизней."
+    },
+    {
+      "en": "Ten commandments.",
+      "uz": "O'n amr.",
+      "ru": "Десять заповедей."
+    },
+    {
+      "en": "Count from one to ten.",
+      "uz": "Birdan o'ngacha sanang.",
+      "ru": "Считай от одного до десяти."
+    },
+    {
+      "en": "Numbers are infinite.",
+      "uz": "Raqamlar cheksiz.",
+      "ru": "Числа бесконечны."
+    },
+    {
+      "en": "Zero is nothing.",
+      "uz": "Nol hech narsa.",
+      "ru": "Ноль — это ничего."
+    },
+    {
+      "en": "Positive and negative.",
+      "uz": "Ijobiy va salbiy.",
+      "ru": "Положительные и отрицательные."
+    },
+    {
+      "en": "Fractions like half.",
+      "uz": "Yarim kabi kasrlar.",
+      "ru": "Дроби, например половина."
+    },
+    {
+      "en": "Decimals in math.",
+      "uz": "Matematikada o'nliklar.",
+      "ru": "Десятичные дроби в математике."
+    },
+    {
+      "en": "Addition and subtraction.",
+      "uz": "Qo'shish va ayirish.",
+      "ru": "Сложение и вычитание."
+    },
+    {
+      "en": "Multiplication table.",
+      "uz": "Ko'paytirish jadvali.",
+      "ru": "Таблица умножения."
+    },
+    {
+      "en": "Division shares.",
+      "uz": "Bo'lish ulashadi.",
+      "ru": "Деление — это разделение."
+    },
+    {
+      "en": "Even and odd numbers.",
+      "uz": "Juft va toq raqamlar.",
+      "ru": "Чётные и нечётные числа."
+    },
+    {
+      "en": "Prime numbers.",
+      "uz": "Tub raqamlar.",
+      "ru": "Простые числа."
+    }
+  ],
+  "Colors": [
+    {
+      "en": "The sky is blue.",
+      "uz": "Osmon ko'k.",
+      "ru": "Небо голубое."
+    },
+    {
+      "en": "Grass is green.",
+      "uz": "O't yashil.",
+      "ru": "Трава зелёная."
+    },
+    {
+      "en": "Apples are red.",
+      "uz": "Olmalar qizil.",
+      "ru": "Яблоки красные."
+    },
+    {
+      "en": "Sun is yellow.",
+      "uz": "Quyosh sariq.",
+      "ru": "Солнце жёлтое."
+    },
+    {
+      "en": "Oranges are orange.",
+      "uz": "Apelsinlar to'q sariq.",
+      "ru": "Апельсины оранжевые."
+    },
+    {
+      "en": "Night is black.",
+      "uz": "Kech qora.",
+      "ru": "Ночь чёрная."
+    },
+    {
+      "en": "Snow is white.",
+      "uz": "Qor oq.",
+      "ru": "Снег белый."
+    },
+    {
+      "en": "Roses can be pink.",
+      "uz": "Atirgullar pushti bo'lishi mumkin.",
+      "ru": "Розы могут быть розовыми."
+    },
+    {
+      "en": "Violets are purple.",
+      "uz": "Binafshalar binafsha.",
+      "ru": "Фиалки фиолетовые."
+    },
+    {
+      "en": "Brown earth.",
+      "uz": "Jigarrang yer.",
+      "ru": "Коричневая земля."
+    },
+    {
+      "en": "Gray clouds.",
+      "uz": "Kulrang bulutlar.",
+      "ru": "Серые облака."
+    },
+    {
+      "en": "Gold is shiny.",
+      "uz": "Oltin porloq.",
+      "ru": "Золото блестящее."
+    },
+    {
+      "en": "Silver jewelry.",
+      "uz": "Kumush zargarlik buyumlari.",
+      "ru": "Серебряные украшения."
+    },
+    {
+      "en": "Colors make art.",
+      "uz": "Ranglar san'at yasaydi.",
+      "ru": "Цвета создают искусство."
+    },
+    {
+      "en": "Rainbow has many colors.",
+      "uz": "Kamalak ko'p ranglarga ega.",
+      "ru": "Радуга имеет много цветов."
+    },
+    {
+      "en": "Paint with colors.",
+      "uz": "Ranglar bilan bo'yang.",
+      "ru": "Рисуйте красками."
+    },
+    {
+      "en": "Favorite color is blue.",
+      "uz": "Sevimli rang ko'k.",
+      "ru": "Любимый цвет — синий."
+    },
+    {
+      "en": "Dark and light shades.",
+      "uz": "Qorong'u va yorug' soyalar.",
+      "ru": "Тёмные и светлые оттенки."
+    },
+    {
+      "en": "Color blind people.",
+      "uz": "Rang ko'r odamlar.",
+      "ru": "Люди с дальтонизмом."
+    },
+    {
+      "en": "Mix colors for new ones.",
+      "uz": "Yangi ranglar uchun ranglarni aralashtiring.",
+      "ru": "Смешивайте цвета для новых."
+    }
+  ],
+  "Animals": [
+    {
+      "en": "Dogs are loyal.",
+      "uz": "Itlar sodiq.",
+      "ru": "Собаки верны."
+    },
+    {
+      "en": "Cats are independent.",
+      "uz": "Mushuklar mustaqil.",
+      "ru": "Кошки независимы."
+    },
+    {
+      "en": "Birds fly high.",
+      "uz": "Qushlar baland ucha.",
+      "ru": "Птицы летают высоко."
+    },
+    {
+      "en": "Fish swim in water.",
+      "uz": "Baliqlar suvda suzadi.",
+      "ru": "Рыбы плавают в воде."
+    },
+    {
+      "en": "Lions are kings.",
+      "uz": "Sherlar podshohlar.",
+      "ru": "Львы — короли."
+    },
+    {
+      "en": "Elephants are big.",
+      "uz": "Fillar katta.",
+      "ru": "Слоны большие."
+    },
+    {
+      "en": "Monkeys are playful.",
+      "uz": "Maymunlar o'ynoqi.",
+      "ru": "Обезьяны игривы."
+    },
+    {
+      "en": "Horses run fast.",
+      "uz": "Otlar tez yuguradi.",
+      "ru": "Лошади бегают быстро."
+    },
+    {
+      "en": "Snakes slither.",
+      "uz": "Ilonlar sudraladi.",
+      "ru": "Змеи ползают."
+    },
+    {
+      "en": "Butterflies are colorful.",
+      "uz": "Kapalaklar rang-barang.",
+      "ru": "Бабочки красочные."
+    },
+    {
+      "en": "Wolves howl.",
+      "uz": "Bo'rilar uvillaydi.",
+      "ru": "Волки воют."
+    },
+    {
+      "en": "Bears hibernate.",
+      "uz": "Ayiqlar qish uyqusida.",
+      "ru": "Медведи впадают в спячку."
+    },
+    {
+      "en": "Kangaroos jump.",
+      "uz": "Kangurular sakraydi.",
+      "ru": "Кенгуру прыгают."
+    },
+    {
+      "en": "Penguins waddle.",
+      "uz": "Pingvinlar yurgan.",
+      "ru": "Пингвины переваливаются."
+    },
+    {
+      "en": "Tigers have stripes.",
+      "uz": "Yo'lbarslar chiziqlarga ega.",
+      "ru": "Тигры имеют полосы."
+    },
+    {
+      "en": "Giraffes have long necks.",
+      "uz": "Jirafalar uzun bo'yinlarga ega.",
+      "ru": "Жирафы имеют длинные шеи."
+    },
+    {
+      "en": "Sharks are predators.",
+      "uz": "Akulalar yirtqichlar.",
+      "ru": "Акулы — хищники."
+    },
+    {
+      "en": "Rabbits hop.",
+      "uz": "Quyonlar sakraydi.",
+      "ru": "Кролики прыгают."
+    },
+    {
+      "en": "Frogs leap.",
+      "uz": "Qurbaqalar sakraydi.",
+      "ru": "Лягушки прыгают."
+    },
+    {
+      "en": "Animals need care.",
+      "uz": "Hayvonlar g'amxo'rlikka muhtoj.",
+      "ru": "Животные нуждаются в заботе."
+    },
+    {
+      "en": "I have a cat.",
+      "uz": "Mening mushugim bor.",
+      "ru": "У меня есть кот."
+    },
+    {
+      "en": "She loves dogs.",
+      "uz": "U itlarni sevadi.",
+      "ru": "Она любит собак."
+    },
+    {
+      "en": "He feeds the birds.",
+      "uz": "U qushlarni boqadi.",
+      "ru": "Он кормит птиц."
+    },
+    {
+      "en": "We saw a lion at the zoo.",
+      "uz": "Biz hayvonot bog'ida arslon ko'rdik.",
+      "ru": "Мы видели льва в зоопарке."
+    },
+    {
+      "en": "The horse is running.",
+      "uz": "Ot yugurayapti.",
+      "ru": "Лошадь бежит."
+    },
+    {
+      "en": "They have a pet rabbit.",
+      "uz": "Ularining uy hayvoni quyon.",
+      "ru": "У них есть домашний кролик."
+    },
+    {
+      "en": "I am afraid of snakes.",
+      "uz": "Men ilonlardan qo'rqaman.",
+      "ru": "Я боюсь змей."
+    },
+    {
+      "en": "She is training her dog.",
+      "uz": "U itini mashq qildirmoqda.",
+      "ru": "Она тренирует свою собаку."
+    },
+    {
+      "en": "He works with animals.",
+      "uz": "U hayvonlar bilan ishlaydi.",
+      "ru": "Он работает с животными."
+    },
+    {
+      "en": "We protect wild animals.",
+      "uz": "Biz yovvoyi hayvonlarni himoya qilamiz.",
+      "ru": "Мы защищаем диких животных."
+    },
+    {
+      "en": "The elephant is big.",
+      "uz": "Fil katta.",
+      "ru": "Слон большой."
+    },
+    {
+      "en": "They are watching a documentary about animals.",
+      "uz": "Ular hayvonlar haqidagi hujjatli filmini tomosha qilishyaptilar.",
+      "ru": "Они смотрят документальный фильм о животных."
+    },
+    {
+      "en": "I like to watch dolphins.",
+      "uz": "Men delfinlarni tomosha qilishni yoqtiraman.",
+      "ru": "Мне нравится смотреть на дельфинов."
+    },
+    {
+      "en": "She adopted a cat.",
+      "uz": "U mushuk asrab oldi.",
+      "ru": "Она взяла кота из приюта."
+    },
+    {
+      "en": "He is a veterinarian.",
+      "uz": "U veterinariya shifokori.",
+      "ru": "Он ветеринар."
+    },
+    {
+      "en": "The bird is singing.",
+      "uz": "Qush kuylayapti.",
+      "ru": "Птица поёт."
+    }
+  ],
+  "Nature": [
+    {
+      "en": "Trees provide oxygen.",
+      "uz": "Daraxtlar kislorod beradi.",
+      "ru": "Деревья дают кислород."
+    },
+    {
+      "en": "Rivers flow to seas.",
+      "uz": "Daryolar dengizlarga oqadi.",
+      "ru": "Реки впадают в моря."
+    },
+    {
+      "en": "Mountains are high.",
+      "uz": "Tog'lar baland.",
+      "ru": "Горы высокие."
+    },
+    {
+      "en": "Forests are green.",
+      "uz": "O'rmonlar yashil.",
+      "ru": "Леса зелёные."
+    },
+    {
+      "en": "Oceans are vast.",
+      "uz": "Okeanlar keng.",
+      "ru": "Океаны огромны."
+    },
+    {
+      "en": "Flowers bloom in spring.",
+      "uz": "Gullar bahorda gullaydi.",
+      "ru": "Цветы расцветают весной."
+    },
+    {
+      "en": "Animals live in nature.",
+      "uz": "Hayvonlar tabiatda yashaydi.",
+      "ru": "Животные живут в природе."
+    },
+    {
+      "en": "Sunrise is beautiful.",
+      "uz": "Quyosh chiqishi chiroyli.",
+      "ru": "Восход солнца красив."
+    },
+    {
+      "en": "Sunset colors the sky.",
+      "uz": "Quyosh botishi osmonni ranglaydi.",
+      "ru": "Закат окрашивает небо."
+    },
+    {
+      "en": "Stars shine at night.",
+      "uz": "Yulduzlar kechasi porlaydi.",
+      "ru": "Звёзды светят ночью."
+    },
+    {
+      "en": "Moon lights the night.",
+      "uz": "Oy kechani yoritadi.",
+      "ru": "Луна освещает ночь."
+    },
+    {
+      "en": "Rain nourishes earth.",
+      "uz": "Yomg'ir yerni oziqlantiradi.",
+      "ru": "Дождь питает землю."
+    },
+    {
+      "en": "Wind moves leaves.",
+      "uz": "Shamol barglarni harakatlantiradi.",
+      "ru": "Ветер двигает листья."
+    },
+    {
+      "en": "Earth is our home.",
+      "uz": "Yer bizning uyimiz.",
+      "ru": "Земля — наш дом."
+    },
+    {
+      "en": "Nature is diverse.",
+      "uz": "Tabiat xilma-xil.",
+      "ru": "Природа разнообразна."
+    },
+    {
+      "en": "Protect the environment.",
+      "uz": "Atrof-muhitni himoya qiling.",
+      "ru": "Защищайте окружающую среду."
+    },
+    {
+      "en": "Recycling helps nature.",
+      "uz": "Qayta ishlash tabiatga yordam beradi.",
+      "ru": "Переработка помогает природе."
+    },
+    {
+      "en": "Wildlife conservation.",
+      "uz": "Yovvoyi hayotni saqlash.",
+      "ru": "Сохранение дикой природы."
+    },
+    {
+      "en": "Ecosystems balance.",
+      "uz": "Ekotizimlar muvozanatda.",
+      "ru": "Экосистемы в равновесии."
+    },
+    {
+      "en": "Nature inspires art.",
+      "uz": "Tabiat san'atni ilhomlantiradi.",
+      "ru": "Природа вдохновляет искусство."
+    },
+    {
+      "en": "I love nature.",
+      "uz": "Men tabiatni sevaman.",
+      "ru": "Я люблю природу."
+    },
+    {
+      "en": "The forest is beautiful.",
+      "uz": "O'rmon go'zal.",
+      "ru": "Лес красив."
+    },
+    {
+      "en": "She enjoys walking in the park.",
+      "uz": "U bog'da sayr qilishni yoqtiradi.",
+      "ru": "Она любит гулять в парке."
+    },
+    {
+      "en": "He likes to watch the sunset.",
+      "uz": "U quyosh botishini tomosha qilishni yoqtiradi.",
+      "ru": "Он любит смотреть на закат."
+    },
+    {
+      "en": "We protect the environment.",
+      "uz": "Biz atrof-muhitni himoya qilamiz.",
+      "ru": "Мы защищаем окружающую среду."
+    },
+    {
+      "en": "The river is clean.",
+      "uz": "Daryo toza.",
+      "ru": "Река чистая."
+    },
+    {
+      "en": "They are planting trees.",
+      "uz": "Ular daraxtlar ekmoqdalar.",
+      "ru": "Они сажают деревья."
+    },
+    {
+      "en": "I saw a beautiful flower.",
+      "uz": "Men go'zal gul ko'rdim.",
+      "ru": "Я видел красивый цветок."
+    },
+    {
+      "en": "The mountains are high.",
+      "uz": "Tog'lar baland.",
+      "ru": "Горы высокие."
+    },
+    {
+      "en": "She loves the sea.",
+      "uz": "U dengizni sevadi.",
+      "ru": "Она любит море."
+    },
+    {
+      "en": "He took a photo of the landscape.",
+      "uz": "U manzaraning suratini oldi.",
+      "ru": "Он сфотографировал пейзаж."
+    },
+    {
+      "en": "We went camping in the valley.",
+      "uz": "Biz vodiyda lager qurdik.",
+      "ru": "Мы ходили в поход в долине."
+    },
+    {
+      "en": "The air is fresh here.",
+      "uz": "Bu yerda havo toza.",
+      "ru": "Здесь воздух свежий."
+    },
+    {
+      "en": "They are watching the stars.",
+      "uz": "Ular yulduzlarni tomosha qilishyaptilar.",
+      "ru": "Они смотрят на звёзды."
+    },
+    {
+      "en": "I listen to the sounds of nature.",
+      "uz": "Men tabiat tovushlarini tinglayman.",
+      "ru": "Я слушаю звуки природы."
+    },
+    {
+      "en": "She collects rocks.",
+      "uz": "U toshlar yig'adi.",
+      "ru": "Она собирает камни."
+    },
+    {
+      "en": "He is studying animals in the wild.",
+      "uz": "U vahshiy tabiatdagi hayvonlarni o'rganmoqda.",
+      "ru": "Он изучает животных в дикой природе."
+    }
+  ],
+  "Sports": [
+    {
+      "en": "I play soccer.",
+      "uz": "Men futbol o'ynayman.",
+      "ru": "Я играю в футбол."
+    },
+    {
+      "en": "Basketball is fast.",
+      "uz": "Basketbol tez.",
+      "ru": "Баскетбол быстрый."
+    },
+    {
+      "en": "Tennis requires racket.",
+      "uz": "Tennis raketka talab qiladi.",
+      "ru": "Для тенниса нужна ракетка."
+    },
+    {
+      "en": "Swimming is refreshing.",
+      "uz": "Suzish tetiklashtiradi.",
+      "ru": "Плавание освежает."
+    },
+    {
+      "en": "Running builds endurance.",
+      "uz": "Yugurish chidamlilikni oshiradi.",
+      "ru": "Бег развивает выносливость."
+    },
+    {
+      "en": "Gymnastics is flexible.",
+      "uz": "Gimnastika moslashuvchan.",
+      "ru": "Гимнастика гибкая."
+    },
+    {
+      "en": "Boxing is intense.",
+      "uz": "Boks shiddatli.",
+      "ru": "Бокс интенсивный."
+    },
+    {
+      "en": "Cycling is healthy.",
+      "uz": "Velosiped haydash sog'lom.",
+      "ru": "Езда на велосипеде полезна."
+    },
+    {
+      "en": "Golf is precise.",
+      "uz": "Golf aniq.",
+      "ru": "Гольф точный."
+    },
+    {
+      "en": "Volleyball on beach.",
+      "uz": "Plyajda voleybol.",
+      "ru": "Волейбол на пляже."
+    },
+    {
+      "en": "Cricket is popular.",
+      "uz": "Kriket mashhur.",
+      "ru": "Крикет популярен."
+    },
+    {
+      "en": "Skiing in winter.",
+      "uz": "Qishda chang'i sporti.",
+      "ru": "Катание на лыжах зимой."
+    },
+    {
+      "en": "Surfing on waves.",
+      "uz": "To'lqinlarda serfing.",
+      "ru": "Сёрфинг на волнах."
+    },
+    {
+      "en": "Martial arts for defense.",
+      "uz": "Jang san'ati himoya uchun.",
+      "ru": "Боевые искусства для защиты."
+    },
+    {
+      "en": "Team sports build unity.",
+      "uz": "Jamoaviy sportlar birlikni oshiradi.",
+      "ru": "Командные виды спорта укрепляют единство."
+    },
+    {
+      "en": "Olympics every four years.",
+      "uz": "Olimpiada har to'rt yilda.",
+      "ru": "Олимпиада раз в четыре года."
+    },
+    {
+      "en": "Fitness through sports.",
+      "uz": "Sport orqali fitnes.",
+      "ru": "Фитнес через спорт."
+    },
+    {
+      "en": "Cheer for your team.",
+      "uz": "Jamoangizni qo'llab-quvvatlang.",
+      "ru": "Болейте за свою команду."
+    },
+    {
+      "en": "Sportsmanship is key.",
+      "uz": "Sportchi ruhi kalit.",
+      "ru": "Спортивный дух — ключ."
+    },
+    {
+      "en": "Watch live games.",
+      "uz": "Jonli o'yinlarni tomosha qiling.",
+      "ru": "Смотрите живые игры."
+    },
+    {
+      "en": "He plays football.",
+      "uz": "U futbol o'ynaydi.",
+      "ru": "Он играет в футбол."
+    },
+    {
+      "en": "She is a great swimmer.",
+      "uz": "U ajoyib suzuvchi.",
+      "ru": "Она отличная пловчиха."
+    },
+    {
+      "en": "We watched the game yesterday.",
+      "uz": "Biz kecha o'yinni tomosha qildik.",
+      "ru": "Мы вчера смотрели игру."
+    },
+    {
+      "en": "I go jogging every morning.",
+      "uz": "Men har kuni ertalab yugurishga chiqaman.",
+      "ru": "Я бегаю каждое утро."
+    },
+    {
+      "en": "Their team won the match.",
+      "uz": "Ularning jamoasi o'yinda g'alaba qozondi.",
+      "ru": "Их команда выиграла матч."
+    },
+    {
+      "en": "He runs very fast.",
+      "uz": "U juda tez yuguradi.",
+      "ru": "Он бегает очень быстро."
+    },
+    {
+      "en": "She won a gold medal.",
+      "uz": "U oltin medalni qo'lga kiritdi.",
+      "ru": "Она выиграла золотую медаль."
+    },
+    {
+      "en": "We play volleyball on the beach.",
+      "uz": "Biz plyajda voleybol o'ynamiz.",
+      "ru": "Мы играем в волейбол на пляже."
+    },
+    {
+      "en": "I like to watch tennis.",
+      "uz": "Men tenni tomosha qilishni yoqtiraman.",
+      "ru": "Мне нравится смотреть теннис."
+    },
+    {
+      "en": "They go to the stadium.",
+      "uz": "Ular stadionga borishadi.",
+      "ru": "Они ходят на стадион."
+    },
+    {
+      "en": "Exercise keeps you healthy.",
+      "uz": "Mashqlar sizni sog'lom tutadi.",
+      "ru": "Упражнения поддерживают здоровье."
+    },
+    {
+      "en": "He is a professional athlete.",
+      "uz": "U professional sportchi.",
+      "ru": "Он профессиональный спортсмен."
+    },
+    {
+      "en": "She is training for the competition.",
+      "uz": "U musobaqaga tayyorgarlik ko'rmoqda.",
+      "ru": "Она тренируется для соревнования."
+    },
+    {
+      "en": "The match was exciting.",
+      "uz": "O'yin hayajonli edi.",
+      "ru": "Матч был захватывающим."
+    },
+    {
+      "en": "I bought new running shoes.",
+      "uz": "Men yangi yugurish poyabzallarini sotib oldim.",
+      "ru": "Я купил новые кроссовки."
+    },
+    {
+      "en": "They are fans of that team.",
+      "uz": "Ular o'sha jamoa muxbislari.",
+      "ru": "Они болеют за ту команду."
+    },
+    {
+      "en": "He injured his knee.",
+      "uz": "U tizzasini shikastlab oldi.",
+      "ru": "Он травмировал колено."
+    },
+    {
+      "en": "Sports are important for children.",
+      "uz": "Sport bolalar uchun muhim.",
+      "ru": "Спорт важен для детей."
+    }
+  ],
+  "Music": [
+    {
+      "en": "I listen to music.",
+      "uz": "Men musiqa tinglayman.",
+      "ru": "Я слушаю музыку."
+    },
+    {
+      "en": "The song is catchy.",
+      "uz": "Qo'shiq jozibali.",
+      "ru": "Песня запоминающаяся."
+    },
+    {
+      "en": "Play the piano.",
+      "uz": "Pianino chalish.",
+      "ru": "Играй на пианино."
+    },
+    {
+      "en": "Guitar strings vibrate.",
+      "uz": "Gitara torlari tebranadi.",
+      "ru": "Струны гитары вибрируют."
+    },
+    {
+      "en": "Drums beat rhythm.",
+      "uz": "Barabanlar ritm uradi.",
+      "ru": "Барабаны задают ритм."
+    },
+    {
+      "en": "Singing in chorus.",
+      "uz": "Xor da qo'shiq aytish.",
+      "ru": "Пение в хоре."
+    },
+    {
+      "en": "Classical music relaxes.",
+      "uz": "Klassik musiqa dam oldiradi.",
+      "ru": "Классическая музыка расслабляет."
+    },
+    {
+      "en": "Rock music is energetic.",
+      "uz": "Rok musiqa energiyali.",
+      "ru": "Рок-музыка энергична."
+    },
+    {
+      "en": "Jazz is improvisational.",
+      "uz": "Jazz improvizatsiyali.",
+      "ru": "Джаз импровизационный."
+    },
+    {
+      "en": "Pop music is popular.",
+      "uz": "Pop musiqa mashhur.",
+      "ru": "Поп-музыка популярна."
+    },
+    {
+      "en": "Lyrics tell stories.",
+      "uz": "Matnlar hikoyalar aytadi.",
+      "ru": "Тексты рассказывают истории."
+    },
+    {
+      "en": "Concerts are live.",
+      "uz": "Konsertlar jonli.",
+      "ru": "Концерты живые."
+    },
+    {
+      "en": "Dance to the beat.",
+      "uz": "Ritmga raqs qiling.",
+      "ru": "Танцуйте под ритм."
+    },
+    {
+      "en": "Music festivals fun.",
+      "uz": "Musiqa festivallari qiziqarli.",
+      "ru": "Музыкальные фестивали весёлые."
+    },
+    {
+      "en": "Compose your own tune.",
+      "uz": "O'z ohangingizni yozing.",
+      "ru": "Сочините свою мелодию."
+    },
+    {
+      "en": "Instruments vary.",
+      "uz": "Asboblar xilma-xil.",
+      "ru": "Инструменты разнообразны."
+    },
+    {
+      "en": "Music heals soul.",
+      "uz": "Musiqa ruhni davolaydi.",
+      "ru": "Музыка лечит душу."
+    },
+    {
+      "en": "Radio plays songs.",
+      "uz": "Radio qo'shiqlarni ijro etadi.",
+      "ru": "Радио играет песни."
+    },
+    {
+      "en": "Headphones for privacy.",
+      "uz": "Shaxsiy uchun quloqchinlar.",
+      "ru": "Наушники для уединения."
+    },
+    {
+      "en": "Music industry grows.",
+      "uz": "Musiqa sanoati o'smoqda.",
+      "ru": "Музыкальная индустрия растёт."
+    },
+    {
+      "en": "She plays the piano.",
+      "uz": "U pianino chaladi.",
+      "ru": "Она играет на пианино."
+    },
+    {
+      "en": "He has a good voice.",
+      "uz": "Uning yaxshi ovozi bor.",
+      "ru": "У него хороший голос."
+    },
+    {
+      "en": "We went to a concert last night.",
+      "uz": "Biz kecha kontsertga bordik.",
+      "ru": "Мы ходили на концерт прошлой ночью."
+    },
+    {
+      "en": "This song is popular.",
+      "uz": "Bu qo'shiq mashhur.",
+      "ru": "Эта песня популярна."
+    },
+    {
+      "en": "They are singing a song.",
+      "uz": "Ular qo'shiq aytishyaptilar.",
+      "ru": "Они поют песню."
+    },
+    {
+      "en": "I can play the guitar.",
+      "uz": "Men gitara chalolaman.",
+      "ru": "Я умею играть на гитаре."
+    },
+    {
+      "en": "She listens to pop music.",
+      "uz": "U pop musiqasini tinglaydi.",
+      "ru": "Она слушает поп-музыку."
+    },
+    {
+      "en": "He is a famous musician.",
+      "uz": "U mashhur musiqachi.",
+      "ru": "Он известный музыкант."
+    },
+    {
+      "en": "The concert was amazing.",
+      "uz": "Kontsert ajoyib edi.",
+      "ru": "Концерт был потрясающим."
+    },
+    {
+      "en": "I downloaded a new album.",
+      "uz": "Men yangi albomni yuklab oldim.",
+      "ru": "Я скачал новый альбом."
+    },
+    {
+      "en": "She is writing a song.",
+      "uz": "U qo'shiq yozmoqda.",
+      "ru": "Она пишет песню."
+    },
+    {
+      "en": "Music makes me happy.",
+      "uz": "Musiqa meni baxtli qiladi.",
+      "ru": "Музыка делает меня счастливым."
+    },
+    {
+      "en": "He turned on the radio.",
+      "uz": "U radioni yoqdi.",
+      "ru": "Он включил радио."
+    },
+    {
+      "en": "We dance to music.",
+      "uz": "Biz musiqaga raqs tushamiz.",
+      "ru": "Мы танцуем под музыку."
+    },
+    {
+      "en": "The lyrics are beautiful.",
+      "uz": "Qo'shiq matni go'zal.",
+      "ru": "Текст песни красивый."
+    },
+    {
+      "en": "This is my favorite band.",
+      "uz": "Bu mening sevimli guruhim.",
+      "ru": "Это моя любимая группа."
+    }
+  ],
+  "Movies": [
+    {
+      "en": "I watch movies.",
+      "uz": "Men filmlarni tomosha qilaman.",
+      "ru": "Я смотрю фильмы."
+    },
+    {
+      "en": "The actor is famous.",
+      "uz": "Aktyor mashhur.",
+      "ru": "Актёр известен."
+    },
+    {
+      "en": "Plot is interesting.",
+      "uz": "Syujet qiziqarli.",
+      "ru": "Сюжет интересный."
+    },
+    {
+      "en": "Special effects amaze.",
+      "uz": "Maxsus effektlar hayratlantiradi.",
+      "ru": "Спецэффекты поражают."
+    },
+    {
+      "en": "Comedy makes laugh.",
+      "uz": "Komediya kuldiradi.",
+      "ru": "Комедия заставляет смеяться."
+    },
+    {
+      "en": "Drama is emotional.",
+      "uz": "Drama hissiy.",
+      "ru": "Драма эмоциональна."
+    },
+    {
+      "en": "Action films thrill.",
+      "uz": "Harakat filmlari hayajonlantiradi.",
+      "ru": "Боевики захватывают."
+    },
+    {
+      "en": "Horror scares.",
+      "uz": "Qo'rqinchli filmlar qo'rqitadi.",
+      "ru": "Ужасы пугают."
+    },
+    {
+      "en": "Animation for kids.",
+      "uz": "Animatsiya bolalar uchun.",
+      "ru": "Мультфильмы для детей."
+    },
+    {
+      "en": "Documentaries inform.",
+      "uz": "Hujjatli filmlar ma'lumot beradi.",
+      "ru": "Документальные фильмы информируют."
+    },
+    {
+      "en": "Subtitles help.",
+      "uz": "Subtitrlar yordam beradi.",
+      "ru": "Субтитры помогают."
+    },
+    {
+      "en": "Popcorn at cinema.",
+      "uz": "Kinoda popkorn.",
+      "ru": "Попкорн в кино."
+    },
+    {
+      "en": "Directors create vision.",
+      "uz": "Rejissyorlar tasavvur yaratadi.",
+      "ru": "Режиссёры создают видение."
+    },
+    {
+      "en": "Oscars award excellence.",
+      "uz": "Oskarlar mukammallikni mukofotlaydi.",
+      "ru": "Оскары награждают за совершенство."
+    },
+    {
+      "en": "Sequels continue stories.",
+      "uz": "Davomlar hikoyalarni davom ettiradi.",
+      "ru": "Сиквелы продолжают истории."
+    },
+    {
+      "en": "Blockbusters earn big.",
+      "uz": "Blokbasterlar katta daromad oladi.",
+      "ru": "Блокбастеры приносят большие доходы."
+    },
+    {
+      "en": "Film festivals showcase.",
+      "uz": "Film festivallari namoyish etadi.",
+      "ru": "Кинофестивали демонстрируют."
+    },
+    {
+      "en": "Watch online streaming.",
+      "uz": "Onlayn striming tomosha qiling.",
+      "ru": "Смотрите онлайн-стриминг."
+    },
+    {
+      "en": "Movies inspire.",
+      "uz": "Filmlar ilhom beradi.",
+      "ru": "Фильмы вдохновляют."
+    },
+    {
+      "en": "Classic films timeless.",
+      "uz": "Klassik filmlar abadiy.",
+      "ru": "Классические фильмы вечны."
+    },
+    {
+      "en": "We watched a movie yesterday.",
+      "uz": "Biz kecha film tomosha qildik.",
+      "ru": "Мы вчера смотрели фильм."
+    },
+    {
+      "en": "This is an interesting film.",
+      "uz": "Bu qiziqarli film.",
+      "ru": "Это интересный фильм."
+    },
+    {
+      "en": "He is a famous actor.",
+      "uz": "U mashhur aktyor.",
+      "ru": "Он известный актёр."
+    },
+    {
+      "en": "She likes comedy movies.",
+      "uz": "U komediya filmlarini yoqtiradi.",
+      "ru": "Она любит комедийные фильмы."
+    },
+    {
+      "en": "The movie theater is crowded.",
+      "uz": "Kinoteatr gavjum.",
+      "ru": "Кинотеатр переполнен."
+    },
+    {
+      "en": "I prefer action movies.",
+      "uz": "Men jangari filmlarni afzal ko'raman.",
+      "ru": "Я предпочитаю боевики."
+    },
+    {
+      "en": "They made a new film.",
+      "uz": "Ular yangi film suratga olishdi.",
+      "ru": "Они сняли новый фильм."
+    },
+    {
+      "en": "The film was long.",
+      "uz": "Film uzun edi.",
+      "ru": "Фильм был длинным."
+    },
+    {
+      "en": "She bought popcorn.",
+      "uz": "U popcorn sotib oldi.",
+      "ru": "Она купила попкорн."
+    },
+    {
+      "en": "He is watching a documentary.",
+      "uz": "U hujjatli film tomosha qilmoqda.",
+      "ru": "Он смотрит документальный фильм."
+    },
+    {
+      "en": "We are going to the cinema tonight.",
+      "uz": "Biz bugun kecha kinoga boramiz.",
+      "ru": "Мы идём в кино сегодня вечером."
+    },
+    {
+      "en": "The special effects were great.",
+      "uz": "Maxsus effektlar ajoyib edi.",
+      "ru": "Спецэффекты были отличными."
+    },
+    {
+      "en": "This director is famous.",
+      "uz": "Bu rejissyor mashhur.",
+      "ru": "Этот режиссёр известен."
+    },
+    {
+      "en": "The story is sad.",
+      "uz": "Hikoya achinarli.",
+      "ru": "История грустная."
+    },
+    {
+      "en": "I cried during the movie.",
+      "uz": "Men film paytida yigladim.",
+      "ru": "Я плакал во время фильма."
+    },
+    {
+      "en": "It's a romantic movie.",
+      "uz": "Bu romantik film.",
+      "ru": "Это романтический фильм."
+    },
+    {
+      "en": "They are filming a movie here.",
+      "uz": "Ular bu yerda film suratga olmoqdalar.",
+      "ru": "Они снимают фильм здесь."
+    }
+  ],
+  "Books": [
+    {
+      "en": "I read books.",
+      "uz": "Men kitoblarni o'qiman.",
+      "ru": "Я читаю книги."
+    },
+    {
+      "en": "The novel is long.",
+      "uz": "Roman uzun.",
+      "ru": "Роман длинный."
+    },
+    {
+      "en": "Pages turn easily.",
+      "uz": "Sahifalar oson aylantiriladi.",
+      "ru": "Страницы легко перелистываются."
+    },
+    {
+      "en": "Authors write stories.",
+      "uz": "Mualliflar hikoyalar yozadi.",
+      "ru": "Авторы пишут истории."
+    },
+    {
+      "en": "Library lends books.",
+      "uz": "Kutubxona kitoblarni ijaraga beradi.",
+      "ru": "Библиотека выдаёт книги."
+    },
+    {
+      "en": "Fiction is imaginative.",
+      "uz": "Fantastika tasavvuriy.",
+      "ru": "Художественная литература воображаема."
+    },
+    {
+      "en": "Non-fiction is factual.",
+      "uz": "Ilmiy adabiyot haqiqiy.",
+      "ru": "Нехудожественная литература фактична."
+    },
+    {
+      "en": "Poetry rhymes.",
+      "uz": "She'riyat qofiyali.",
+      "ru": "Поэзия рифмованная."
+    },
+    {
+      "en": "Biographies tell lives.",
+      "uz": "Biografiyalar hayotlarni aytadi.",
+      "ru": "Биографии рассказывают о жизни."
+    },
+    {
+      "en": "Books educate.",
+      "uz": "Kitoblar ta'lim beradi.",
+      "ru": "Книги дают образование."
+    },
+    {
+      "en": "E-books are digital.",
+      "uz": "Elektron kitoblar raqamli.",
+      "ru": "Электронные книги цифровые."
+    },
+    {
+      "en": "Book clubs discuss.",
+      "uz": "Kitob klublari muhokama qiladi.",
+      "ru": "Книжные клубы обсуждают."
+    },
+    {
+      "en": "Bestsellers sell well.",
+      "uz": "Bestselerlar yaxshi sotiladi.",
+      "ru": "Бестселлеры хорошо продаются."
+    },
+    {
+      "en": "Cover attracts readers.",
+      "uz": "Muqova o'quvchilarni jalb qiladi.",
+      "ru": "Обложка привлекает читателей."
+    },
+    {
+      "en": "Chapters divide content.",
+      "uz": "Boblar mazmunni bo'ladi.",
+      "ru": "Главы делят содержание."
+    },
+    {
+      "en": "Reading improves vocabulary.",
+      "uz": "O'qish so'z boyligini oshiradi.",
+      "ru": "Чтение расширяет словарный запас."
+    },
+    {
+      "en": "Books transport to worlds.",
+      "uz": "Kitoblar olamlarga olib boradi.",
+      "ru": "Книги переносят в другие миры."
+    },
+    {
+      "en": "Literature is art.",
+      "uz": "Adabiyot san'at.",
+      "ru": "Литература — это искусство."
+    },
+    {
+      "en": "Bookmark saves place.",
+      "uz": "Belgi joyni saqlaydi.",
+      "ru": "Закладка сохраняет место."
+    },
+    {
+      "en": "Publishers print books.",
+      "uz": "Nashriyotlar kitoblarni chop etadi.",
+      "ru": "Издательства печатают книги."
+    },
+    {
+      "en": "She is reading a book.",
+      "uz": "U kitob o'qiyapti.",
+      "ru": "Она читает книгу."
+    },
+    {
+      "en": "I love reading novels.",
+      "uz": "Men roman o'qishni yaxshi ko'raman.",
+      "ru": "Я люблю читать романы."
+    },
+    {
+      "en": "He bought a new book.",
+      "uz": "U yangi kitob sotib oldi.",
+      "ru": "Он купил новую книгу."
+    },
+    {
+      "en": "This library is big.",
+      "uz": "Bu kutubxona katta.",
+      "ru": "Эта библиотека большая."
+    },
+    {
+      "en": "The author is well-known.",
+      "uz": "Muallif taniqli.",
+      "ru": "Автор известен."
+    },
+    {
+      "en": "We discussed the book in class.",
+      "uz": "Biz darsda kitobni muhokama qildik.",
+      "ru": "Мы обсуждали книгу в классе."
+    },
+    {
+      "en": "She writes books.",
+      "uz": "U kitoblar yozadi.",
+      "ru": "Она пишет книги."
+    },
+    {
+      "en": "This is a classic book.",
+      "uz": "Bu klassik kitob.",
+      "ru": "Это классическая книга."
+    },
+    {
+      "en": "He reads every night.",
+      "uz": "U har kecha o'qiydi.",
+      "ru": "Он читает каждую ночь."
+    },
+    {
+      "en": "My favorite book is \"Harry Potter\".",
+      "uz": "Mening sevimli kitobim \"Harry Potter\".",
+      "ru": "Моя любимая книга — «Гарри Поттер»."
+    },
+    {
+      "en": "The book was interesting.",
+      "uz": "Kitob qiziqarli edi.",
+      "ru": "Книга была интересной."
+    },
+    {
+      "en": "I borrowed a book from the library.",
+      "uz": "Men kutubxonadan kitob oldim.",
+      "ru": "Я взял книгу из библиотеки."
+    },
+    {
+      "en": "She gave me a book as a gift.",
+      "uz": "U menga sovg'a sifatida kitob berdi.",
+      "ru": "Она дала мне книгу в подарок."
+    },
+    {
+      "en": "He likes poetry.",
+      "uz": "U she'riyatni yoqtiradi.",
+      "ru": "Он любит поэзию."
+    },
+    {
+      "en": "We have a book club.",
+      "uz": "Bizning kitob klubimiz bor.",
+      "ru": "У нас есть книжный клуб."
+    },
+    {
+      "en": "The story is exciting.",
+      "uz": "Hikoya hayajonli.",
+      "ru": "История захватывающая."
+    },
+    {
+      "en": "This book is a bestseller.",
+      "uz": "Bu kitob bestseller.",
+      "ru": "Эта книга бестселлер."
+    }
+  ],
+  "Technology": [
+    {
+      "en": "Computers process data.",
+      "uz": "Kompyuterlar ma'lumotlarni qayta ishlaydi.",
+      "ru": "Компьютеры обрабатывают данные."
+    },
+    {
+      "en": "Internet connects world.",
+      "uz": "Internet dunyoni bog'laydi.",
+      "ru": "Интернет соединяет мир."
+    },
+    {
+      "en": "Smartphones are handy.",
+      "uz": "Aqlli telefonlar qulay.",
+      "ru": "Смартфоны удобны."
+    },
+    {
+      "en": "Apps solve problems.",
+      "uz": "Ilovalar muammolarni hal qiladi.",
+      "ru": "Приложения решают проблемы."
+    },
+    {
+      "en": "AI is advancing.",
+      "uz": "Sun'iy intellekt rivojlanmoqda.",
+      "ru": "Искусственный интеллект развивается."
+    },
+    {
+      "en": "Software runs programs.",
+      "uz": "Dasturiy ta'minot dasturlarni ishga tushiradi.",
+      "ru": "Программное обеспечение запускает программы."
+    },
+    {
+      "en": "Hardware is physical.",
+      "uz": "Uskuna jismoniy.",
+      "ru": "Аппаратное обеспечение физическое."
+    },
+    {
+      "en": "Cloud stores data.",
+      "uz": "Bulut ma'lumotlarni saqlaydi.",
+      "ru": "Облако хранит данные."
+    },
+    {
+      "en": "Virtual reality immerses.",
+      "uz": "Virtual haqiqatga botiradi.",
+      "ru": "Виртуальная реальность погружает."
+    },
+    {
+      "en": "Robots automate tasks.",
+      "uz": "Robotlar vazifalarni avtomatlashtiradi.",
+      "ru": "Роботы автоматизируют задачи."
+    },
+    {
+      "en": "Cybersecurity protects.",
+      "uz": "Kiberxavfsizlik himoya qiladi.",
+      "ru": "Кибербезопасность защищает."
+    },
+    {
+      "en": "Gadgets make life easy.",
+      "uz": "Gadjetlar hayotni osonlashtiradi.",
+      "ru": "Гаджеты облегчают жизнь."
+    },
+    {
+      "en": "Innovation drives progress.",
+      "uz": "Innovatsiya taraqqiyotni boshqaradi.",
+      "ru": "Инновации движут прогресс."
+    },
+    {
+      "en": "Tech evolves quickly.",
+      "uz": "Texnologiya tez evolyutsiya qiladi.",
+      "ru": "Технологии быстро развиваются."
+    },
+    {
+      "en": "Programming creates code.",
+      "uz": "Dasturlash kod yaratadi.",
+      "ru": "Программирование создаёт код."
+    },
+    {
+      "en": "Networks share info.",
+      "uz": "Tarmoqlar ma'lumot ulashadi.",
+      "ru": "Сети делятся информацией."
+    },
+    {
+      "en": "Drones fly high.",
+      "uz": "Dronlar baland ucha.",
+      "ru": "Дроны летают высоко."
+    },
+    {
+      "en": "Blockchain secures transactions.",
+      "uz": "Blokcheyn tranzaktsiyalarni himoya qiladi.",
+      "ru": "Блокчейн защищает транзакции."
+    },
+    {
+      "en": "5G is fast.",
+      "uz": "5G tez.",
+      "ru": "5G быстрый."
+    },
+    {
+      "en": "Tech impacts society.",
+      "uz": "Texnologiya jamiyatga ta'sir qiladi.",
+      "ru": "Технологии влияют на общество."
+    },
+    {
+      "en": "I bought a new phone.",
+      "uz": "Men yangi telefon sotib oldim.",
+      "ru": "Я купил новый телефон."
+    },
+    {
+      "en": "She uses a laptop for work.",
+      "uz": "U ish uchun noutbukdan foydalanadi.",
+      "ru": "Она использует ноутбук для работы."
+    },
+    {
+      "en": "He is good with computers.",
+      "uz": "U kompyuterlar bilan yaxshi ishlaydi.",
+      "ru": "Он хорошо разбирается в компьютерах."
+    },
+    {
+      "en": "We need a faster internet.",
+      "uz": "Bizga tezroq internet kerak.",
+      "ru": "Нам нужен более быстрый интернет."
+    },
+    {
+      "en": "The software was updated.",
+      "uz": "Dasturiy ta'minot yangilandi.",
+      "ru": "Программное обеспечение было обновлено."
+    },
+    {
+      "en": "My brother is a programmer.",
+      "uz": "Mening akam dasturchi.",
+      "ru": "Мой брат программист."
+    },
+    {
+      "en": "She is always on her phone.",
+      "uz": "U doim telefonida.",
+      "ru": "Она всегда в телефоне."
+    },
+    {
+      "en": "I don't understand this app.",
+      "uz": "Men ushbu ilovani tushunmayapman.",
+      "ru": "Я не понимаю это приложение."
+    },
+    {
+      "en": "He fixed my computer.",
+      "uz": "U mening kompyuterimni tuzatdi.",
+      "ru": "Он починил мой компьютер."
+    },
+    {
+      "en": "Technology is developing fast.",
+      "uz": "Texnologiya tez rivojlanmoqda.",
+      "ru": "Технологии быстро развиваются."
+    },
+    {
+      "en": "We live in a digital world.",
+      "uz": "Biz raqamli dunyoda yashaymiz.",
+      "ru": "Мы живём в цифровом мире."
+    },
+    {
+      "en": "She posted a picture on Instagram.",
+      "uz": "U Instagram'da rasm joyladi.",
+      "ru": "Она опубликовала фото в Instagram."
+    },
+    {
+      "en": "The battery is dead.",
+      "uz": "Batareya to'xtab qoldi.",
+      "ru": "Батарея разряжена."
+    },
+    {
+      "en": "I will send you an email.",
+      "uz": "Men sizga elektron xat yuboraman.",
+      "ru": "Я отправлю тебе email."
+    },
+    {
+      "en": "He designs websites.",
+      "uz": "U veb-saytlarni loyihalaydi.",
+      "ru": "Он проектирует веб-сайты."
+    },
+    {
+      "en": "Please turn off your phone.",
+      "uz": "Iltimos, telefoningizni o'chiring.",
+      "ru": "Пожалуйста, выключи телефон."
+    },
+    {
+      "en": "The video call was clear.",
+      "uz": "Video qo'ng'iroq aniq edi.",
+      "ru": "Видеозвонок был чётким."
+    },
+    {
+      "en": "This robot can clean the house.",
+      "uz": "Bu robot uyni tozalay oladi.",
+      "ru": "Этот робот может убирать дом."
+    }
+  ],
+  "Environment": [
+    {
+      "en": "Protect the planet.",
+      "uz": "Sayyorani himoya qiling.",
+      "ru": "Защищайте планету."
+    },
+    {
+      "en": "Reduce plastic use.",
+      "uz": "Plastmassadan foydalanishni kamaytiring.",
+      "ru": "Сократите использование пластика."
+    },
+    {
+      "en": "Plant trees.",
+      "uz": "Daraxtlar eking.",
+      "ru": "Сажайте деревья."
+    },
+    {
+      "en": "Recycle waste.",
+      "uz": "Chiqindilarni qayta ishlang.",
+      "ru": "Перерабатывайте отходы."
+    },
+    {
+      "en": "Save water.",
+      "uz": "Suvni tejang.",
+      "ru": "Экономьте воду."
+    },
+    {
+      "en": "Clean air is vital.",
+      "uz": "Toza havo hayotiy.",
+      "ru": "Чистый воздух жизненно важен."
+    },
+    {
+      "en": "Pollution harms health.",
+      "uz": "Ifloslanish salomatlikka zarar.",
+      "ru": "Загрязнение вредит здоровью."
+    },
+    {
+      "en": "Renewable energy.",
+      "uz": "Qayta tiklanadigan energiya.",
+      "ru": "Возобновляемая энергия."
+    },
+    {
+      "en": "Wildlife needs habitats.",
+      "uz": "Yovvoyi hayot yashash joylariga muhtoj.",
+      "ru": "Дикой природе нужны места обитания."
+    },
+    {
+      "en": "Climate action now.",
+      "uz": "Iqlim harakati hozir.",
+      "ru": "Климатические действия сейчас."
+    },
+    {
+      "en": "Eco-friendly choices.",
+      "uz": "Ekologik toza tanlovlar.",
+      "ru": "Экологичный выбор."
+    },
+    {
+      "en": "Green living.",
+      "uz": "Yashil hayot.",
+      "ru": "Экологичный образ жизни."
+    },
+    {
+      "en": "Conserve resources.",
+      "uz": "Resurslarni saqlang.",
+      "ru": "Сохраняйте ресурсы."
+    },
+    {
+      "en": "Sustainable development.",
+      "uz": "Barqaror rivojlanish.",
+      "ru": "Устойчивое развитие."
+    },
+    {
+      "en": "Ocean cleanup.",
+      "uz": "Okean tozalash.",
+      "ru": "Очистка океана."
+    },
+    {
+      "en": "Biodiversity matters.",
+      "uz": "Biologik xilma-xillik muhim.",
+      "ru": "Биоразнообразие важно."
+    },
+    {
+      "en": "Global warming threat.",
+      "uz": "Global isish tahdidi.",
+      "ru": "Угроза глобального потепления."
+    },
+    {
+      "en": "Earth Day awareness.",
+      "uz": "Yer kuni xabardorligi.",
+      "ru": "Осведомлённость в День Земли."
+    },
+    {
+      "en": "Anti-poaching efforts.",
+      "uz": "Ovga qarshi harakatlar.",
+      "ru": "Борьба с браконьерством."
+    },
+    {
+      "en": "Environmental laws.",
+      "uz": "Atrof-muhit qonunlari.",
+      "ru": "Экологические законы."
+    }
+  ],
+  "Politics": [
+    {
+      "en": "Government makes laws.",
+      "uz": "Hukumat qonunlar chiqaradi.",
+      "ru": "Правительство принимает законы."
+    },
+    {
+      "en": "Elections choose leaders.",
+      "uz": "Saylovlar rahbarlarni tanlaydi.",
+      "ru": "Выборы выбирают лидеров."
+    },
+    {
+      "en": "Democracy empowers people.",
+      "uz": "Demokratiya odamlarni kuchaytiradi.",
+      "ru": "Демократия укрепляет людей."
+    },
+    {
+      "en": "Politicians debate issues.",
+      "uz": "Siyosatchilar masalalarni muhokama qiladi.",
+      "ru": "Политики обсуждают вопросы."
+    },
+    {
+      "en": "Parties have platforms.",
+      "uz": "Partiyalar platformalarga ega.",
+      "ru": "Партии имеют платформы."
+    },
+    {
+      "en": "Voting is a right.",
+      "uz": "Ovoz berish huquq.",
+      "ru": "Голосование — право."
+    },
+    {
+      "en": "Policies affect lives.",
+      "uz": "Siyosatlar hayotlarga ta'sir qiladi.",
+      "ru": "Политика влияет на жизни."
+    },
+    {
+      "en": "International relations.",
+      "uz": "Xalqaro munosabatlar.",
+      "ru": "Международные отношения."
+    },
+    {
+      "en": "Diplomacy solves conflicts.",
+      "uz": "Diplomatiya mojarolarni hal qiladi.",
+      "ru": "Дипломатия решает конфликты."
+    },
+    {
+      "en": "Constitution guides nation.",
+      "uz": "Konstitutsiya millatni boshqaradi.",
+      "ru": "Конституция руководит нацией."
+    },
+    {
+      "en": "Parliament discusses bills.",
+      "uz": "Parlament loyihalarni muhokama qiladi.",
+      "ru": "Парламент обсуждает законопроекты."
+    },
+    {
+      "en": "President leads country.",
+      "uz": "Prezident mamlakatni boshqaradi.",
+      "ru": "Президент руководит страной."
+    },
+    {
+      "en": "Opposition checks power.",
+      "uz": "Muxolifat kuchni tekshiradi.",
+      "ru": "Оппозиция контролирует власть."
+    },
+    {
+      "en": "Political campaigns.",
+      "uz": "Siyosiy kampaniyalar.",
+      "ru": "Политические кампании."
+    },
+    {
+      "en": "Human rights important.",
+      "uz": "Inson huquqlari muhim.",
+      "ru": "Права человека важны."
+    },
+    {
+      "en": "Corruption harms society.",
+      "uz": "Korruptsiya jamiyatga zarar.",
+      "ru": "Коррупция вредит обществу."
+    },
+    {
+      "en": "Media reports politics.",
+      "uz": "OAV siyosatni xabar qiladi.",
+      "ru": "СМИ сообщают о политике."
+    },
+    {
+      "en": "Activists advocate change.",
+      "uz": "Faollar o'zgarishlarni himoya qiladi.",
+      "ru": "Активисты выступают за изменения."
+    },
+    {
+      "en": "Global politics complex.",
+      "uz": "Global siyosat murakkab.",
+      "ru": "Глобальная политика сложна."
+    },
+    {
+      "en": "Peace through dialogue.",
+      "uz": "Tinchlik muloqot orqali.",
+      "ru": "Мир через диалог."
+    }
+  ],
+  "Economy": [
+    {
+      "en": "Economy grows with trade.",
+      "uz": "Iqtisodiyot savdo bilan o'sadi.",
+      "ru": "Экономика растёт благодаря торговле."
+    },
+    {
+      "en": "Jobs create income.",
+      "uz": "Ish o'rinlari daromad yaratadi.",
+      "ru": "Рабочие места создают доход."
+    },
+    {
+      "en": "Inflation raises prices.",
+      "uz": "Inflyatsiya narxlarni oshiradi.",
+      "ru": "Инфляция повышает цены."
+    },
+    {
+      "en": "Budget plans spending.",
+      "uz": "Byudjet sarf-xarajatlarni rejalashtiradi.",
+      "ru": "Бюджет планирует расходы."
+    },
+    {
+      "en": "Investments yield returns.",
+      "uz": "Investitsiyalar daromad beradi.",
+      "ru": "Инвестиции приносят доход."
+    },
+    {
+      "en": "Markets fluctuate.",
+      "uz": "Bozorlar o'zgaradi.",
+      "ru": "Рынки колеблются."
+    },
+    {
+      "en": "GDP measures growth.",
+      "uz": "YaIM o'sishni o'lchaydi.",
+      "ru": "ВВП измеряет рост."
+    },
+    {
+      "en": "Taxes fund services.",
+      "uz": "Soliqlar xizmatlarni moliyalashtiradi.",
+      "ru": "Налоги финансируют услуги."
+    },
+    {
+      "en": "Entrepreneurs start businesses.",
+      "uz": "Tadbirkorlar biznes boshlaydi.",
+      "ru": "Предприниматели начинают бизнес."
+    },
+    {
+      "en": "Supply and demand.",
+      "uz": "Taklif va talab.",
+      "ru": "Предложение и спрос."
+    },
+    {
+      "en": "Recession slows economy.",
+      "uz": "Resessiya iqtisodiyotni sekinlashtiradi.",
+      "ru": "Рецессия замедляет экономику."
+    },
+    {
+      "en": "Global trade connects.",
+      "uz": "Global savdo bog'laydi.",
+      "ru": "Глобальная торговля связывает."
+    },
+    {
+      "en": "Currency exchanges.",
+      "uz": "Valyuta almashinuvi.",
+      "ru": "Обмен валют."
+    },
+    {
+      "en": "Stock market invests.",
+      "uz": "Birja bozori investitsiya qiladi.",
+      "ru": "Фондовый рынок инвестирует."
+    },
+    {
+      "en": "Economic policies.",
+      "uz": "Iqtisodiy siyosatlar.",
+      "ru": "Экономическая политика."
+    },
+    {
+      "en": "Unemployment affects people.",
+      "uz": "Ishsizlik odamlarga ta'sir qiladi.",
+      "ru": "Безработица влияет на людей."
+    },
+    {
+      "en": "Innovation boosts economy.",
+      "uz": "Innovatsiya iqtisodiyotni oshiradi.",
+      "ru": "Инновации стимулируют экономику."
+    },
+    {
+      "en": "Banking secures money.",
+      "uz": "Bankchilik pulni himoya qiladi.",
+      "ru": "Банковская система защищает деньги."
+    },
+    {
+      "en": "Economic equality.",
+      "uz": "Iqtisodiy tenglik.",
+      "ru": "Экономическое равенство."
+    },
+    {
+      "en": "Sustainable economy.",
+      "uz": "Barqaror iqtisodiyot.",
+      "ru": "Устойчивая экономика."
+    }
+  ],
+  "History": [
+    {
+      "en": "History teaches lessons.",
+      "uz": "Tarix saboq beradi.",
+      "ru": "История даёт уроки."
+    },
+    {
+      "en": "Ancient civilizations.",
+      "uz": "Qadimiy tsivilizatsiyalar.",
+      "ru": "Древние цивилизации."
+    },
+    {
+      "en": "Wars change maps.",
+      "uz": "Urushlar xaritalarni o'zgartiradi.",
+      "ru": "Войны меняют карты."
+    },
+    {
+      "en": "Leaders shape eras.",
+      "uz": "Rahbarlar davrlarni shakllantiradi.",
+      "ru": "Лидеры формируют эпохи."
+    },
+    {
+      "en": "Discoveries advance society.",
+      "uz": "Kashfiyotlar jamiyatni rivojlantiradi.",
+      "ru": "Открытия продвигают общество."
+    },
+    {
+      "en": "Revolutions bring change.",
+      "uz": "Inqiloblar o'zgarish olib keladi.",
+      "ru": "Революции приносят изменения."
+    },
+    {
+      "en": "Artifacts preserve past.",
+      "uz": "Artefaktlar o'tmishni saqlaydi.",
+      "ru": "Артефакты сохраняют прошлое."
+    },
+    {
+      "en": "Timelines show events.",
+      "uz": "Vaqt chiziqlari voqealarni ko'rsatadi.",
+      "ru": "Хронологии показывают события."
+    },
+    {
+      "en": "Historians study records.",
+      "uz": "Tarixchilar yozuvlarni o'rganadi.",
+      "ru": "Историки изучают записи."
+    },
+    {
+      "en": "Cultural heritage.",
+      "uz": "Madaniy meros.",
+      "ru": "Культурное наследие."
+    },
+    {
+      "en": "World history interconnected.",
+      "uz": "Jahon tarixi bog'liq.",
+      "ru": "Мировая история взаимосвязана."
+    },
+    {
+      "en": "Colonialism impacted nations.",
+      "uz": "Kolonializm millatlarga ta'sir qildi.",
+      "ru": "Колониализм повлиял на нации."
+    },
+    {
+      "en": "Industrial revolution.",
+      "uz": "Sanoat inqilobi.",
+      "ru": "Промышленная революция."
+    },
+    {
+      "en": "Civil rights movements.",
+      "uz": "Fuqarolik huquqlari harakatlari.",
+      "ru": "Движения за гражданские права."
+    },
+    {
+      "en": "Ancient Egypt pyramids.",
+      "uz": "Qadimiy Misr piramidalari.",
+      "ru": "Пирамиды Древнего Египта."
+    },
+    {
+      "en": "Renaissance art.",
+      "uz": "Renessans san'ati.",
+      "ru": "Искусство Возрождения."
+    },
+    {
+      "en": "World wars tragic.",
+      "uz": "Jahon urushlari fojiali.",
+      "ru": "Мировые войны трагичны."
+    },
+    {
+      "en": "Space race history.",
+      "uz": "Kosmos poygasi tarixi.",
+      "ru": "История космической гонки."
+    },
+    {
+      "en": "Historical figures inspire.",
+      "uz": "Tarixiy shaxslar ilhom beradi.",
+      "ru": "Исторические личности вдохновляют."
+    },
+    {
+      "en": "Learn from history.",
+      "uz": "Tarixdan o'rganing.",
+      "ru": "Учитесь на истории."
+    },
+    {
+      "en": "We study history at school.",
+      "uz": "Biz maktabda tarixni o'rganamiz.",
+      "ru": "Мы изучаем историю в школе."
+    },
+    {
+      "en": "She is reading a history book.",
+      "uz": "U tarix kitobini o'qiyapti.",
+      "ru": "Она читает книгу по истории."
+    },
+    {
+      "en": "He visited a historical place.",
+      "uz": "U tarixiy joyga tashrif buyurdi.",
+      "ru": "Он посетил историческое место."
+    },
+    {
+      "en": "They are learning about ancient civilizations.",
+      "uz": "Ular qadimiy tsivilizatsiyalar haqida o'rganmoqdalar.",
+      "ru": "Они изучают древние цивилизации."
+    },
+    {
+      "en": "I find history fascinating.",
+      "uz": "Men tarixni ajoyib topaman.",
+      "ru": "Я нахожу историю увлекательной."
+    },
+    {
+      "en": "She is a history teacher.",
+      "uz": "U tarix o'qituvchisi.",
+      "ru": "Она учитель истории."
+    },
+    {
+      "en": "He knows a lot about world history.",
+      "uz": "U jahon tarixi haqida ko'p biladi.",
+      "ru": "Он много знает о всемирной истории."
+    },
+    {
+      "en": "We watched a historical movie.",
+      "uz": "Biz tarixiy film tomosha qildik.",
+      "ru": "Мы смотрели исторический фильм."
+    },
+    {
+      "en": "The museum has historical artifacts.",
+      "uz": "Muzeyda tarixiy artefaktlar bor.",
+      "ru": "В музее есть исторические артефакты."
+    },
+    {
+      "en": "They are digging for archaeological finds.",
+      "uz": "Ular arxeologik topilmalar qidirmoqdalar.",
+      "ru": "Они копают в поисках археологических находок."
+    },
+    {
+      "en": "History helps us understand the present.",
+      "uz": "Tarix hozirgi zamonni tushunishga yordam beradi.",
+      "ru": "История помогает нам понять настоящее."
+    },
+    {
+      "en": "She wrote an essay about the Silk Road.",
+      "uz": "U Buyuk Ipak Yo'li haqida insho yozdi.",
+      "ru": "Она написала эссе о Шёлковом пути."
+    },
+    {
+      "en": "He is interested in military history.",
+      "uz": "U harbiy tarix bilan qiziqadi.",
+      "ru": "Он интересуется военной историей."
+    },
+    {
+      "en": "We discussed the events of the past.",
+      "uz": "Biz o'tmishdagi voqealarni muhokama qildik.",
+      "ru": "Мы обсудили события прошлого."
+    },
+    {
+      "en": "The castle is 500 years old.",
+      "uz": "Qal'a 500 yoshda.",
+      "ru": "Замку 500 лет."
+    }
+  ],
+  "Science": [
+    {
+      "en": "Science explains phenomena.",
+      "uz": "Fan hodisalarni tushuntiradi.",
+      "ru": "Наука объясняет явления."
+    },
+    {
+      "en": "Experiments test hypotheses.",
+      "uz": "Tajribalar gipotezalarni sinaydi.",
+      "ru": "Эксперименты проверяют гипотезы."
+    },
+    {
+      "en": "Physics studies motion.",
+      "uz": "Fizika harakatni o'rganadi.",
+      "ru": "Физика изучает движение."
+    },
+    {
+      "en": "Chemistry mixes elements.",
+      "uz": "Kimyo elementlarni aralashtiradi.",
+      "ru": "Химия смешивает элементы."
+    },
+    {
+      "en": "Biology explores life.",
+      "uz": "Biologiya hayotni o'rganadi.",
+      "ru": "Биология изучает жизнь."
+    },
+    {
+      "en": "Astronomy views stars.",
+      "uz": "Astronomiya yulduzlarni ko'radi.",
+      "ru": "Астрономия наблюдает за звёздами."
+    },
+    {
+      "en": "Technology from science.",
+      "uz": "Fan dan texnologiya.",
+      "ru": "Технологии из науки."
+    },
+    {
+      "en": "Scientific method systematic.",
+      "uz": "Ilmiy usul tizimli.",
+      "ru": "Научный метод систематичен."
+    },
+    {
+      "en": "Discoveries change world.",
+      "uz": "Kashfiyotlar dunyoni o'zgartiradi.",
+      "ru": "Открытия меняют мир."
+    },
+    {
+      "en": "Lab equipment essential.",
+      "uz": "Laboratoriya uskunalari zarur.",
+      "ru": "Лабораторное оборудование необходимо."
+    },
+    {
+      "en": "Theories evolve.",
+      "uz": "Nazariyalar evolyutsiya qiladi.",
+      "ru": "Теории эволюционируют."
+    },
+    {
+      "en": "Quantum mechanics complex.",
+      "uz": "Kvant mexanikasi murakkab.",
+      "ru": "Квантовая механика сложна."
+    },
+    {
+      "en": "Genetics studies DNA.",
+      "uz": "Genetika DNKni o'rganadi.",
+      "ru": "Генетика изучает ДНК."
+    },
+    {
+      "en": "Evolution explains diversity.",
+      "uz": "Evolyutsiya xilma-xillikni tushuntiradi.",
+      "ru": "Эволюция объясняет разнообразие."
+    },
+    {
+      "en": "Renewable energy science.",
+      "uz": "Qayta tiklanadigan energiya fani.",
+      "ru": "Наука о возобновляемой энергии."
+    },
+    {
+      "en": "Space exploration.",
+      "uz": "Kosmosni o'rganish.",
+      "ru": "Освоение космоса."
+    },
+    {
+      "en": "Medical science heals.",
+      "uz": "Tibbiy fan davolaydi.",
+      "ru": "Медицинская наука лечит."
+    },
+    {
+      "en": "Environmental science.",
+      "uz": "Atrof-muhit fani.",
+      "ru": "Экологическая наука."
+    },
+    {
+      "en": "Data analysis.",
+      "uz": "Ma'lumotlar tahlili.",
+      "ru": "Анализ данных."
+    },
+    {
+      "en": "Innovation through science.",
+      "uz": "Fan orqali innovatsiya.",
+      "ru": "Инновации через науку."
+    },
+    {
+      "en": "She is a scientist.",
+      "uz": "U olim.",
+      "ru": "Она учёный."
+    },
+    {
+      "en": "He studies physics.",
+      "uz": "U fizikani o'rganadi.",
+      "ru": "Он изучает физику."
+    },
+    {
+      "en": "We learned about gravity in science class.",
+      "uz": "Biz fan darsida gravitatsiya haqida o'rgandik.",
+      "ru": "Мы узнали о гравитации на уроке науки."
+    },
+    {
+      "en": "They are doing an experiment.",
+      "uz": "Ular tajriba o'tkazmoqdalar.",
+      "ru": "Они проводят эксперимент."
+    },
+    {
+      "en": "I am interested in astronomy.",
+      "uz": "Men astronomiya bilan qiziqaman.",
+      "ru": "Я интересуюсь астрономией."
+    },
+    {
+      "en": "She discovered a new element.",
+      "uz": "U yangi element kashf qildi.",
+      "ru": "Она открыла новый элемент."
+    },
+    {
+      "en": "He works in a laboratory.",
+      "uz": "U laboratoriyada ishlaydi.",
+      "ru": "Он работает в лаборатории."
+    },
+    {
+      "en": "We read a science magazine.",
+      "uz": "Biz fan jurnalini o'qiymiz.",
+      "ru": "Мы читаем научный журнал."
+    },
+    {
+      "en": "The invention changed the world.",
+      "uz": "Ixtiro dunyoni o'zgartirdi.",
+      "ru": "Изобретение изменило мир."
+    },
+    {
+      "en": "They are researching a new medicine.",
+      "uz": "Ular yangi dori tadqiq qilmoqdalar.",
+      "ru": "Они исследуют новое лекарство."
+    },
+    {
+      "en": "Science is important for progress.",
+      "uz": "Fan taraqqiyot uchun muhim.",
+      "ru": "Наука важна для прогресса."
+    },
+    {
+      "en": "She won a science competition.",
+      "uz": "U fan tanlovida g'olib chiqdi.",
+      "ru": "Она выиграла научный конкурс."
+    },
+    {
+      "en": "He is writing a research paper.",
+      "uz": "U tadqiqot maqolasi yozmoqda.",
+      "ru": "Он пишет научную статью."
+    },
+    {
+      "en": "We use technology every day.",
+      "uz": "Biz har kuni texnologiyadan foydalanamiz.",
+      "ru": "Мы используем технологии каждый день."
+    },
+    {
+      "en": "The theory is complicated.",
+      "uz": "Nazariya murakkab.",
+      "ru": "Теория сложная."
+    },
+    {
+      "en": "She is observing the stars.",
+      "uz": "U yulduzlarni kuzatmoqda.",
+      "ru": "Она наблюдает за звёздами."
+    }
+  ],
+  "Art": [
+    {
+      "en": "Art expresses emotions.",
+      "uz": "San'at his-tuyg'ularni ifodalaydi.",
+      "ru": "Искусство выражает эмоции."
+    },
+    {
+      "en": "Paintings on canvas.",
+      "uz": "Rasm tuvalda.",
+      "ru": "Картины на холсте."
+    },
+    {
+      "en": "Sculptures in stone.",
+      "uz": "Haykaltaroshlik toshda.",
+      "ru": "Скульптуры из камня."
+    },
+    {
+      "en": "Drawing with pencil.",
+      "uz": "Qalam bilan chizish.",
+      "ru": "Рисование карандашом."
+    },
+    {
+      "en": "Music is art.",
+      "uz": "Musiqa san'at.",
+      "ru": "Музыка — это искусство."
+    },
+    {
+      "en": "Dance performs art.",
+      "uz": "Raqs san'atni ijro etadi.",
+      "ru": "Танец исполняет искусство."
+    },
+    {
+      "en": "Theater tells stories.",
+      "uz": "Teatr hikoyalar aytadi.",
+      "ru": "Театр рассказывает истории."
+    },
+    {
+      "en": "Photography captures art.",
+      "uz": "Fotografiya san'atni qamrab oladi.",
+      "ru": "Фотография запечатлевает искусство."
+    },
+    {
+      "en": "Artists create beauty.",
+      "uz": "San'atkorlar go'zallik yaratadi.",
+      "ru": "Художники создают красоту."
+    },
+    {
+      "en": "Galleries display art.",
+      "uz": "Galleriyalar san'atni namoyish etadi.",
+      "ru": "Галереи демонстрируют искусство."
+    },
+    {
+      "en": "Abstract art interpretive.",
+      "uz": "Abstrakt san'at talqinli.",
+      "ru": "Абстрактное искусство интерпретируемо."
+    },
+    {
+      "en": "Realism depicts life.",
+      "uz": "Realizm hayotni tasvirlaydi.",
+      "ru": "Реализм изображает жизнь."
+    },
+    {
+      "en": "Colors in art.",
+      "uz": "San'atda ranglar.",
+      "ru": "Цвета в искусстве."
+    },
+    {
+      "en": "Inspiration for art.",
+      "uz": "San'at uchun ilhom.",
+      "ru": "Вдохновение для искусства."
+    },
+    {
+      "en": "Art history.",
+      "uz": "San'at tarixi.",
+      "ru": "История искусства."
+    },
+    {
+      "en": "Cultural art.",
+      "uz": "Madaniy san'at.",
+      "ru": "Культурное искусство."
+    },
+    {
+      "en": "Digital art modern.",
+      "uz": "Raqamli san'at zamonaviy.",
+      "ru": "Цифровое искусство современное."
+    },
+    {
+      "en": "Art therapy heals.",
+      "uz": "San'at terapiyasi davolaydi.",
+      "ru": "Арт-терапия лечит."
+    },
+    {
+      "en": "Public art inspires.",
+      "uz": "Ommaviy san'at ilhom beradi.",
+      "ru": "Публичное искусство вдохновляет."
+    },
+    {
+      "en": "Art festivals celebrate.",
+      "uz": "San'at festivallari nishonlaydi.",
+      "ru": "Художественные фестивали празднуют."
+    },
+    {
+      "en": "She is an artist.",
+      "uz": "U rassom.",
+      "ru": "Она художница."
+    },
+    {
+      "en": "He painted a picture.",
+      "uz": "U rasm chizdi.",
+      "ru": "Он нарисовал картину."
+    },
+    {
+      "en": "We visited an art gallery.",
+      "uz": "Biz san'at galereyasiga bordik.",
+      "ru": "Мы посетили художественную галерею."
+    },
+    {
+      "en": "I like modern art.",
+      "uz": "Men zamonaviy san'atni yoqtiraman.",
+      "ru": "Мне нравится современное искусство."
+    },
+    {
+      "en": "They are making a sculpture.",
+      "uz": "Ular haykal yasamoqdalar.",
+      "ru": "Они делают скульптуру."
+    },
+    {
+      "en": "She is good at drawing.",
+      "uz": "U chizishda yaxshi.",
+      "ru": "Она хорошо рисует."
+    },
+    {
+      "en": "He appreciates art.",
+      "uz": "U san'atni qadrlaydi.",
+      "ru": "Он ценит искусство."
+    },
+    {
+      "en": "We have art class on Friday.",
+      "uz": "Juma kuni bizning san'at darsimiz bor.",
+      "ru": "У нас урок искусства в пятницу."
+    },
+    {
+      "en": "The painting is expensive.",
+      "uz": "Rasm qimmat.",
+      "ru": "Картина дорогая."
+    },
+    {
+      "en": "She is taking a photography course.",
+      "uz": "U fotosurat kursiga boradi.",
+      "ru": "Она ходит на курсы фотографии."
+    },
+    {
+      "en": "He is a talented musician.",
+      "uz": "U iqtidorli musiqachi.",
+      "ru": "Он талантливый музыкант."
+    },
+    {
+      "en": "We are going to the theater.",
+      "uz": "Biz teatrga boramiz.",
+      "ru": "Мы идём в театр."
+    },
+    {
+      "en": "The performance was amazing.",
+      "uz": "Ijro ajoyib edi.",
+      "ru": "Выступление было потрясающим."
+    },
+    {
+      "en": "She writes poems.",
+      "uz": "U she'rlar yozadi.",
+      "ru": "Она пишет стихи."
+    },
+    {
+      "en": "He is learning calligraphy.",
+      "uz": "U xattotlikni o'rganmoqda.",
+      "ru": "Он изучает каллиграфию."
+    },
+    {
+      "en": "We enjoy street art.",
+      "uz": "Biz ko'cha san'atidan zavqlanamiz.",
+      "ru": "Мы наслаждаемся уличным искусством."
+    }
+  ],
+  "Holidays": [
+    {
+      "en": "Happy New Year!",
+      "uz": "Yangi yil bilan!",
+      "ru": "С Новым годом!"
+    },
+    {
+      "en": "Christmas is festive.",
+      "uz": "Rojdestvo bayramona.",
+      "ru": "Рождество праздничное."
+    },
+    {
+      "en": "Easter eggs colorful.",
+      "uz": "Pasxa tuxumlari rang-barang.",
+      "ru": "Пасхальные яйца красочные."
+    },
+    {
+      "en": "Halloween costumes scary.",
+      "uz": "Xellouin kostyumlari qo'rqinchli.",
+      "ru": "Костюмы на Хэллоуин страшные."
+    },
+    {
+      "en": "Thanksgiving dinner.",
+      "uz": "Shukrona kuni kechki ovqati.",
+      "ru": "Ужин в День Благодарения."
+    },
+    {
+      "en": "Valentine's Day love.",
+      "uz": "Sevgililar kuni muhabbat.",
+      "ru": "День святого Валентина — день любви."
+    },
+    {
+      "en": "Independence Day fireworks.",
+      "uz": "Mustaqillik kuni otashinlar.",
+      "ru": "Фейерверки в День независимости."
+    },
+    {
+      "en": "Birthday celebrations.",
+      "uz": "Tug'ilgan kun bayramlari.",
+      "ru": "Празднование дня рождения."
+    },
+    {
+      "en": "Mother's Day gifts.",
+      "uz": "Onlar kuni sovg'alari.",
+      "ru": "Подарки на День матери."
+    },
+    {
+      "en": "Father's Day appreciation.",
+      "uz": "Otalar kuni minnatdorchilik.",
+      "ru": "Благодарность в День отца."
+    },
+    {
+      "en": "Holidays bring joy.",
+      "uz": "Bayramlar quvonch olib keladi.",
+      "ru": "Праздники приносят радость."
+    },
+    {
+      "en": "Decorations for holidays.",
+      "uz": "Bayramlar uchun bezaklar.",
+      "ru": "Украшения к праздникам."
+    },
+    {
+      "en": "Family on holidays.",
+      "uz": "Bayramlarda oila.",
+      "ru": "Семья на праздниках."
+    },
+    {
+      "en": "Travel during holidays.",
+      "uz": "Bayramlarda sayohat.",
+      "ru": "Путешествия во время праздников."
+    },
+    {
+      "en": "Holiday traditions.",
+      "uz": "Bayram an'analari.",
+      "ru": "Праздничные традиции."
+    },
+    {
+      "en": "Festivals are holidays.",
+      "uz": "Festivallar bayramlar.",
+      "ru": "Фестивали — это праздники."
+    },
+    {
+      "en": "Religious holidays.",
+      "uz": "Diniy bayramlar.",
+      "ru": "Религиозные праздники."
+    },
+    {
+      "en": "National holidays.",
+      "uz": "Milliy bayramlar.",
+      "ru": "Национальные праздники."
+    },
+    {
+      "en": "Holiday cards.",
+      "uz": "Bayram kartalari.",
+      "ru": "Праздничные открытки."
+    },
+    {
+      "en": "Relax on holidays.",
+      "uz": "Bayramlarda dam oling.",
+      "ru": "Отдыхайте на праздниках."
+    },
+    {
+      "en": "We celebrate Navruz in spring.",
+      "uz": "Biz bahorda Navruzni nishollaymiz.",
+      "ru": "Мы празднуем Навруз весной."
+    },
+    {
+      "en": "She likes New Year holidays.",
+      "uz": "U Yangi Yil bayramlarini yoqtiradi.",
+      "ru": "Она любит новогодние праздники."
+    },
+    {
+      "en": "He visits his family during holidays.",
+      "uz": "U bayramlarda oilasini ziyorat qiladi.",
+      "ru": "Он навещает свою семью во время праздников."
+    },
+    {
+      "en": "We decorate the Christmas tree.",
+      "uz": "Biz yangi yil archasini bezatamiz.",
+      "ru": "Мы украшаем новогоднюю ёлку."
+    },
+    {
+      "en": "I received many gifts.",
+      "uz": "Men ko'p sovg'alar oldim.",
+      "ru": "Я получил много подарков."
+    },
+    {
+      "en": "They are going on vacation.",
+      "uz": "Ular ta'tilga ketishyaptilar.",
+      "ru": "Они уезжают в отпуск."
+    },
+    {
+      "en": "The holiday was fun.",
+      "uz": "Bayram qiziqarli edi.",
+      "ru": "Праздник был весёлым."
+    },
+    {
+      "en": "She cooks special food for holidays.",
+      "uz": "U bayramlar uchun maxsus ovqat pishiradi.",
+      "ru": "Она готовит специальную еду на праздники."
+    },
+    {
+      "en": "We have a holiday tomorrow.",
+      "uz": "Ertaga bizda bayram.",
+      "ru": "Завтра у нас праздник."
+    },
+    {
+      "en": "He is excited for the holiday.",
+      "uz": "U bayramdan xursand.",
+      "ru": "Он в восторге от праздника."
+    },
+    {
+      "en": "They are preparing for the celebration.",
+      "uz": "Ular bayramni nishonlashga tayyorlanmoqdalar.",
+      "ru": "Они готовятся к празднованию."
+    },
+    {
+      "en": "We wish you happy holidays!",
+      "uz": "Biz sizga baxtli bayramlar tilaymiz!",
+      "ru": "Мы желаем вам счастливых праздников!"
+    },
+    {
+      "en": "The streets are decorated during holidays.",
+      "uz": "Bayramlarda ko'chalar bezatilgan.",
+      "ru": "Улицы украшены во время праздников."
+    },
+    {
+      "en": "She sends holiday cards to friends.",
+      "uz": "U do'stlariga bayramlik ochiq esdalik yuboradi.",
+      "ru": "Она отправляет праздничные открытки друзьям."
+    },
+    {
+      "en": "We remember our traditions during holidays.",
+      "uz": "Biz bayramlarda o'z an'analarimizni eslaymiz.",
+      "ru": "Мы помним наши традиции во время праздников."
+    },
+    {
+      "en": "He loves the holiday atmosphere.",
+      "uz": "U bayram atmosferasini yaxshi ko'radi.",
+      "ru": "Он любит праздничную атмосферу."
+    },
+    {
+      "en": "They are watching a holiday movie.",
+      "uz": "Ular bayram filmini tomosha qilishyaptilar.",
+      "ru": "Они смотрят праздничный фильм."
+    }
+  ],
+  "Emotions": [
+    {
+      "en": "I feel happy today.",
+      "uz": "Bugun xursandman.",
+      "ru": "Сегодня я счастлив."
+    },
+    {
+      "en": "Sadness passes.",
+      "uz": "Qayg'u o'tadi.",
+      "ru": "Печаль проходит."
+    },
+    {
+      "en": "Anger needs control.",
+      "uz": "G'azabni boshqarish kerak.",
+      "ru": "Гнев нужно контролировать."
+    },
+    {
+      "en": "Love is powerful.",
+      "uz": "Muhabbat kuchli.",
+      "ru": "Любовь сильна."
+    },
+    {
+      "en": "Fear is natural.",
+      "uz": "Qo'rquv tabiiy.",
+      "ru": "Страх естественен."
+    },
+    {
+      "en": "Joy brings smiles.",
+      "uz": "Quvonch tabassum olib keladi.",
+      "ru": "Радость приносит улыбки."
+    },
+    {
+      "en": "Surprise is unexpected.",
+      "uz": "Hayrat kutilmagan.",
+      "ru": "Сюрприз неожиданный."
+    },
+    {
+      "en": "Calmness relaxes.",
+      "uz": "Tinchlik dam oldiradi.",
+      "ru": "Спокойствие расслабляет."
+    },
+    {
+      "en": "Excitement energizes.",
+      "uz": "Hayajon energiya beradi.",
+      "ru": "Волнение заряжает энергией."
+    },
+    {
+      "en": "Gratitude thanks.",
+      "uz": "Minnatdorchilik rahmat aytadi.",
+      "ru": "Благодарность выражает признательность."
+    },
+    {
+      "en": "Jealousy harms.",
+      "uz": "Hasad zarar beradi.",
+      "ru": "Ревность вредит."
+    },
+    {
+      "en": "Pride in achievements.",
+      "uz": "Muvaffaqiyatlarda faxr.",
+      "ru": "Гордость за достижения."
+    },
+    {
+      "en": "Empathy understands.",
+      "uz": "Hamdardlik tushunadi.",
+      "ru": "Эмпатия понимает."
+    },
+    {
+      "en": "Emotions vary.",
+      "uz": "His-tuyg'ular farq qiladi.",
+      "ru": "Эмоции различаются."
+    },
+    {
+      "en": "Express feelings.",
+      "uz": "Tuyg'ularni ifodalang.",
+      "ru": "Выражайте чувства."
+    },
+    {
+      "en": "Emotional intelligence.",
+      "uz": "Hissiy intellekt.",
+      "ru": "Эмоциональный интеллект."
+    },
+    {
+      "en": "Laughter heals.",
+      "uz": "Kulgi davolaydi.",
+      "ru": "Смех лечит."
+    },
+    {
+      "en": "Tears release.",
+      "uz": "Ko'z yoshlari ozod qiladi.",
+      "ru": "Слёзы освобождают."
+    },
+    {
+      "en": "Positive emotions.",
+      "uz": "Ijobiy his-tuyg'ular.",
+      "ru": "Положительные эмоции."
+    },
+    {
+      "en": "Manage emotions.",
+      "uz": "His-tuyg'ularni boshqaring.",
+      "ru": "Управляйте эмоциями."
+    },
+    {
+      "en": "I am happy.",
+      "uz": "Men baxtliman.",
+      "ru": "Я счастлив."
+    },
+    {
+      "en": "She is sad.",
+      "uz": "U xafa.",
+      "ru": "Она грустная."
+    },
+    {
+      "en": "He was angry.",
+      "uz": "U g'azablangan edi.",
+      "ru": "Он был злым."
+    },
+    {
+      "en": "We are excited.",
+      "uz": "Biz hayajonlanganmiz.",
+      "ru": "Мы взволнованы."
+    },
+    {
+      "en": "They are surprised.",
+      "uz": "Ular hayratda.",
+      "ru": "Они удивлены."
+    },
+    {
+      "en": "I feel nervous.",
+      "uz": "Men asabiylashyapman.",
+      "ru": "Я нервничаю."
+    },
+    {
+      "en": "She is in love.",
+      "uz": "U sevgiyda.",
+      "ru": "Она влюблена."
+    },
+    {
+      "en": "He looks tired.",
+      "uz": "U charchagan ko'rinadi.",
+      "ru": "Он выглядит уставшим."
+    },
+    {
+      "en": "We were scared.",
+      "uz": "Biz qo'rqqan edik.",
+      "ru": "Мы испугались."
+    },
+    {
+      "en": "They are proud of their son.",
+      "uz": "Ular o'g'illaridan faxrlanadilar.",
+      "ru": "Они гордятся своим сыном."
+    },
+    {
+      "en": "I am curious.",
+      "uz": "Men qiziquvchanman.",
+      "ru": "Мне любопытно."
+    },
+    {
+      "en": "She seems worried.",
+      "uz": "U tashvishlangan ko'rinadi.",
+      "ru": "Она выглядит обеспокоенной."
+    },
+    {
+      "en": "He felt relieved.",
+      "uz": "U yengillik his qildi.",
+      "ru": "Он почувствовал облегчение."
+    },
+    {
+      "en": "We are grateful.",
+      "uz": "Biz minnatdormiz.",
+      "ru": "Мы благодарны."
+    },
+    {
+      "en": "They are disappointed.",
+      "uz": "Ular umidsizlikka tushgan.",
+      "ru": "Они разочарованы."
+    },
+    {
+      "en": "I am bored.",
+      "uz": "Men zerikkanman.",
+      "ru": "Мне скучно."
+    }
+  ],
+  "Daily Routine": [
+    {
+      "en": "I wake up early.",
+      "uz": "Men erta uyg'onaman.",
+      "ru": "Я просыпаюсь рано."
+    },
+    {
+      "en": "Brush my teeth.",
+      "uz": "Tishlarimni cho'tkalayman.",
+      "ru": "Чищу зубы."
+    },
+    {
+      "en": "Eat breakfast.",
+      "uz": "Nonushta qilaman.",
+      "ru": "Завтракаю."
+    },
+    {
+      "en": "Go to work.",
+      "uz": "Ishga boraman.",
+      "ru": "Иду на работу."
+    },
+    {
+      "en": "Have lunch.",
+      "uz": "Tushlik qilaman.",
+      "ru": "Обедаю."
+    },
+    {
+      "en": "Exercise in evening.",
+      "uz": "Kechqurun mashq qilaman.",
+      "ru": "Делаю упражнения вечером."
+    },
+    {
+      "en": "Cook dinner.",
+      "uz": "Kechki ovqatni pishiraman.",
+      "ru": "Готовлю ужин."
+    },
+    {
+      "en": "Watch TV.",
+      "uz": "Televizor tomosha qilaman.",
+      "ru": "Смотрю телевизор."
+    },
+    {
+      "en": "Read a book.",
+      "uz": "Kitob o'qiman.",
+      "ru": "Читаю книгу."
+    },
+    {
+      "en": "Go to bed.",
+      "uz": "Uxlayman.",
+      "ru": "Ложусь спать."
+    },
+    {
+      "en": "Set alarm.",
+      "uz": "Budilnik o'rnataman.",
+      "ru": "Ставлю будильник."
+    },
+    {
+      "en": "Shower daily.",
+      "uz": "Har kuni dush qabul qilaman.",
+      "ru": "Принимаю душ ежедневно."
+    },
+    {
+      "en": "Check emails.",
+      "uz": "Elektron pochtalarni tekshiraman.",
+      "ru": "Проверяю электронную почту."
+    },
+    {
+      "en": "Call family.",
+      "uz": "Oilaga qo'ng'iroq qilaman.",
+      "ru": "Звоню семье."
+    },
+    {
+      "en": "Plan the day.",
+      "uz": "Kunni rejalashtiraman.",
+      "ru": "Планирую день."
+    },
+    {
+      "en": "Relax after work.",
+      "uz": "Ishdan keyin dam olaman.",
+      "ru": "Отдыхаю после работы."
+    },
+    {
+      "en": "Drink water.",
+      "uz": "Suv ichaman.",
+      "ru": "Пью воду."
+    },
+    {
+      "en": "Walk the dog.",
+      "uz": "Itni sayr qildiraman.",
+      "ru": "Выгуливаю собаку."
+    },
+    {
+      "en": "Clean the house.",
+      "uz": "Uyni tozalayman.",
+      "ru": "Убираю дом."
+    },
+    {
+      "en": "Sleep eight hours.",
+      "uz": "Sakkiz soat uxlayman.",
+      "ru": "Сплю восемь часов."
+    },
+    {
+      "en": "She brushes her teeth.",
+      "uz": "U tishlarini tozalaydi.",
+      "ru": "Она чистит зубы."
+    },
+    {
+      "en": "He takes a shower.",
+      "uz": "U dush qabul qiladi.",
+      "ru": "Он принимает душ."
+    },
+    {
+      "en": "We have breakfast together.",
+      "uz": "Biz nonushtani birga qilamiz.",
+      "ru": "Мы завтракаем вместе."
+    },
+    {
+      "en": "I go to work at 8 AM.",
+      "uz": "Men ishga soat 8da boraman.",
+      "ru": "Я иду на работу в 8 утра."
+    },
+    {
+      "en": "She checks her email in the morning.",
+      "uz": "U ertalab elektron pochtasini tekshiradi.",
+      "ru": "Она проверяет email утром."
+    },
+    {
+      "en": "He comes home at 6 PM.",
+      "uz": "U uyga soat 6da keladi.",
+      "ru": "Он приходит домой в 6 вечера."
+    },
+    {
+      "en": "We watch TV in the evening.",
+      "uz": "Biz kechqurun televizor tomosha qilamiz.",
+      "ru": "Мы смотрим телевизор вечером."
+    },
+    {
+      "en": "I read a book before sleep.",
+      "uz": "Men uxlashdan oldin kitob o'qiyman.",
+      "ru": "Я читаю книгу перед сном."
+    },
+    {
+      "en": "She goes to bed at 11 PM.",
+      "uz": "U soat 11da uxlaydi.",
+      "ru": "Она ложится спать в 11 вечера."
+    },
+    {
+      "en": "He exercises every morning.",
+      "uz": "U har kuni ertalab mashq qiladi.",
+      "ru": "Он делает упражнения каждое утро."
+    },
+    {
+      "en": "We clean the house on Saturdays.",
+      "uz": "Biz shanba kunlari uyni tozalaymiz.",
+      "ru": "Мы убираем дом по субботам."
+    },
+    {
+      "en": "I often take a nap in the afternoon.",
+      "uz": "Men ko'pincha tushdan keyin bir oz uxlayman.",
+      "ru": "Я часто сплю днём."
+    },
+    {
+      "en": "She cooks dinner for the family.",
+      "uz": "U oila uchun kechki ovqat pishiradi.",
+      "ru": "Она готовит ужин для семьи."
+    },
+    {
+      "en": "He walks the dog every day.",
+      "uz": "U har kuni itni olib chiqib yuradi.",
+      "ru": "Он гуляет с собакой каждый день."
+    },
+    {
+      "en": "My routine is busy.",
+      "uz": "Mening kun tartibim band.",
+      "ru": "Мой распорядок дня занятой."
+    },
+    {
+      "en": "They have a fixed schedule.",
+      "uz": "Ular aniq jadvalga ega.",
+      "ru": "У них фиксированный график."
+    }
+  ],
+  "Friends": [
+    {
+      "en": "She has many friends.",
+      "uz": "Uning ko'p do'stlari bor.",
+      "ru": "У неё много друзей."
+    },
+    {
+      "en": "We are good friends.",
+      "uz": "Biz yaxshi do'stmiz.",
+      "ru": "Мы хорошие друзья."
+    },
+    {
+      "en": "He met his friend yesterday.",
+      "uz": "U kecha do'sti bilan uchrashdi.",
+      "ru": "Он встретил своего друга вчера."
+    },
+    {
+      "en": "They have been friends since childhood.",
+      "uz": "Ular bolalikdan do'st.",
+      "ru": "Они дружат с детства."
+    },
+    {
+      "en": "I trust my friends.",
+      "uz": "Men do'stlarimga ishonaman.",
+      "ru": "Я доверяю своим друзьям."
+    },
+    {
+      "en": "She helps her friends.",
+      "uz": "U do'stlariga yordam beradi.",
+      "ru": "Она помогает своим друзьям."
+    },
+    {
+      "en": "We go out with friends on weekends.",
+      "uz": "Biz dam olish kunlarida do'stlar bilan chiqamiz.",
+      "ru": "Мы гуляем с друзьями по выходным."
+    },
+    {
+      "en": "He is a loyal friend.",
+      "uz": "U sadoqatli do'st.",
+      "ru": "Он верный друг."
+    },
+    {
+      "en": "They are like family.",
+      "uz": "Ular oila kabi.",
+      "ru": "Они как семья."
+    },
+    {
+      "en": "I made a new friend at school.",
+      "uz": "Men maktabda yangi do'st orttirdim.",
+      "ru": "Я завёл нового друга в школе."
+    },
+    {
+      "en": "She is my best friend.",
+      "uz": "U mening eng yaqin do'stim.",
+      "ru": "Она мой лучший друг."
+    },
+    {
+      "en": "We share everything.",
+      "uz": "Biz hamma narsani bo'lishamiz.",
+      "ru": "Мы делимся всем."
+    },
+    {
+      "en": "He called his friend.",
+      "uz": "U do'stiga qo'ng'iroq qildi.",
+      "ru": "Он позвонил своему другу."
+    },
+    {
+      "en": "They are planning a trip together.",
+      "uz": "Ular birga sayohat rejalashtirmoqdalar.",
+      "ru": "Они планируют поездку вместе."
+    },
+    {
+      "en": "I miss my friends.",
+      "uz": "Men do'stlarimni sog'inaman.",
+      "ru": "Я скучаю по своим друзьям."
+    },
+    {
+      "en": "She invited her friends to the party.",
+      "uz": "U do'stlarini ziyofatga taklif qildi.",
+      "ru": "Она пригласила друзей на вечеринку."
+    },
+    {
+      "en": "We support each other.",
+      "uz": "Biz bir-birimizni qo'llab-quvvatlaymiz.",
+      "ru": "Мы поддерживаем друг друга."
+    }
+  ],
+  "Home": [
+    {
+      "en": "We live in an apartment.",
+      "uz": "Biz kvartirada yashaymiz.",
+      "ru": "Мы живём в квартире."
+    },
+    {
+      "en": "She is cleaning the house.",
+      "uz": "U uyni tozalayapti.",
+      "ru": "Она убирает дом."
+    },
+    {
+      "en": "He is repairing the roof.",
+      "uz": "U tomni ta'mirlayapti.",
+      "ru": "Он ремонтирует крышу."
+    },
+    {
+      "en": "Our home is comfortable.",
+      "uz": "Bizning uyimiz qulay.",
+      "ru": "Наш дом удобный."
+    },
+    {
+      "en": "I love my home.",
+      "uz": "Men uyimni sevaman.",
+      "ru": "Я люблю свой дом."
+    },
+    {
+      "en": "They bought a new house.",
+      "uz": "Ular yangi uy sotib olishdi.",
+      "ru": "Они купили новый дом."
+    },
+    {
+      "en": "We have a garden.",
+      "uz": "Bizning bog'imiz bor.",
+      "ru": "У нас есть сад."
+    },
+    {
+      "en": "She is decorating her room.",
+      "uz": "U o'z xonasini bezatyapti.",
+      "ru": "Она украшает свою комнату."
+    },
+    {
+      "en": "He is sitting in the living room.",
+      "uz": "U mehmonxonada o'tiryapti.",
+      "ru": "Он сидит в гостиной."
+    },
+    {
+      "en": "We are moving to a new home.",
+      "uz": "Biz yangi uyga ko'chmoqdamiz.",
+      "ru": "Мы переезжаем в новый дом."
+    },
+    {
+      "en": "The kitchen is modern.",
+      "uz": "Oshxona zamonaviy.",
+      "ru": "Кухня современная."
+    },
+    {
+      "en": "They are building a house.",
+      "uz": "Ular uy qurayotgan.",
+      "ru": "Они строят дом."
+    },
+    {
+      "en": "I feel safe at home.",
+      "uz": "Men uyda o'zimni xavfsiz his qilaman.",
+      "ru": "Я чувствую себя в безопасности дома."
+    },
+    {
+      "en": "She is watering the plants.",
+      "uz": "U o'simliklarni sug'orayapti.",
+      "ru": "Она поливает растения."
+    },
+    {
+      "en": "We have a big family photo in the hall.",
+      "uz": "Bizning zalda katta oilaviy fotosurat bor.",
+      "ru": "У нас в зале большая семейная фотография."
+    },
+    {
+      "en": "He is sleeping in his bedroom.",
+      "uz": "U o'z yotoqxonasida uxlayapti.",
+      "ru": "Он спит в своей спальне."
+    },
+    {
+      "en": "Our neighbors are friendly.",
+      "uz": "Bizning qo'shnilarimiz do'stona.",
+      "ru": "Наши соседи дружелюбные."
+    }
+  ],
+  "Culture": [
+    {
+      "en": "We respect our culture.",
+      "uz": "Biz o'z madaniyatimizni hurmat qilamiz.",
+      "ru": "Мы уважаем нашу культуру."
+    },
+    {
+      "en": "She learns about different cultures.",
+      "uz": "U turli madaniyatlar haqida o'rganadi.",
+      "ru": "Она изучает разные культуры."
+    },
+    {
+      "en": "He participates in cultural events.",
+      "uz": "U madaniy tadbirlarda ishtirok etadi.",
+      "ru": "Он участвует в культурных мероприятиях."
+    },
+    {
+      "en": "They celebrate traditional holidays.",
+      "uz": "Ular an'anaviy bayramlarni nishonlaydilar.",
+      "ru": "Они празднуют традиционные праздники."
+    },
+    {
+      "en": "This dance is part of our culture.",
+      "uz": "Bu raqs bizning madaniyatimizning bir qismi.",
+      "ru": "Этот танец — часть нашей культуры."
+    },
+    {
+      "en": "She wears traditional clothes.",
+      "uz": "U an'anaviy kiyimlarni kiyadi.",
+      "ru": "Она носит традиционную одежду."
+    },
+    {
+      "en": "He plays traditional instruments.",
+      "uz": "U an'anaviy asboblarni chaladi.",
+      "ru": "Он играет на традиционных инструментах."
+    },
+    {
+      "en": "We have a rich history.",
+      "uz": "Bizning boy tariximiz bor.",
+      "ru": "У нас богатая история."
+    },
+    {
+      "en": "They are preserving their culture.",
+      "uz": "Ular o'z madaniyatlarini saqlab qolmoqdalar.",
+      "ru": "Они сохраняют свою культуру."
+    },
+    {
+      "en": "I enjoy learning about Uzbek culture.",
+      "uz": "Men o'zbek madaniyati haqida o'rganishni yoqtiraman.",
+      "ru": "Мне нравится изучать узбекскую культуру."
+    },
+    {
+      "en": "She visited a museum.",
+      "uz": "U muzeyga tashrif buyurdi.",
+      "ru": "Она посетила музей."
+    },
+    {
+      "en": "He is interested in folklore.",
+      "uz": "U folklor bilan qiziqadi.",
+      "ru": "Он интересуется фольклором."
+    },
+    {
+      "en": "We have many cultural traditions.",
+      "uz": "Bizning ko'plab madaniy an'analarimiz bor.",
+      "ru": "У нас много культурных традиций."
+    },
+    {
+      "en": "They performed a traditional play.",
+      "uz": "Ular an'anaviy spektakl namoyish etishdi.",
+      "ru": "Они исполнили традиционную пьесу."
+    },
+    {
+      "en": "The food is part of the culture.",
+      "uz": "Ovqat madaniyatning bir qismidir.",
+      "ru": "Еда — часть культуры."
+    },
+    {
+      "en": "She studies cultural anthropology.",
+      "uz": "U madaniy antropologiyani o'rganadi.",
+      "ru": "Она изучает культурную антропологию."
+    },
+    {
+      "en": "He wrote a book about culture.",
+      "uz": "U madaniyat haqida kitob yozdi.",
+      "ru": "Он написал книгу о культуре."
+    }
+  ],
+  "Geography": [
+    {
+      "en": "She is good at geography.",
+      "uz": "U geografiyadan yaxshi.",
+      "ru": "Она хорошо разбирается в географии."
+    },
+    {
+      "en": "He knows all the capitals.",
+      "uz": "U barcha poytaxtlarni biladi.",
+      "ru": "Он знает все столицы."
+    },
+    {
+      "en": "We are learning about continents.",
+      "uz": "Biz qit'alar haqida o'rganmoqdamiz.",
+      "ru": "Мы изучаем континенты."
+    },
+    {
+      "en": "They are studying a map.",
+      "uz": "Ular xaritani o'rganishyaptilar.",
+      "ru": "Они изучают карту."
+    },
+    {
+      "en": "I want to travel around the world.",
+      "uz": "Men butun dunyo bo'ylab sayohat qilmoqchiman.",
+      "ru": "Я хочу путешествовать по всему миру."
+    },
+    {
+      "en": "She can name many rivers.",
+      "uz": "U ko'plab daryolarni nomlashi mumkin.",
+      "ru": "Она может назвать много рек."
+    },
+    {
+      "en": "He is looking at the globe.",
+      "uz": "U globusga qarayapti.",
+      "ru": "Он смотрит на глобус."
+    },
+    {
+      "en": "We live in Central Asia.",
+      "uz": "Biz Markaziy Osiyoda yashaymiz.",
+      "ru": "Мы живём в Центральной Азии."
+    },
+    {
+      "en": "The desert is very hot.",
+      "uz": "Sahro juda issiq.",
+      "ru": "Пустыня очень жаркая."
+    },
+    {
+      "en": "They are climbing the mountain.",
+      "uz": "Ular tog'ga chiqishmoqda.",
+      "ru": "Они поднимаются на гору."
+    },
+    {
+      "en": "Geography is an interesting subject.",
+      "uz": "Geografiya qiziqarli fan.",
+      "ru": "География — интересный предмет."
+    },
+    {
+      "en": "She loves the ocean.",
+      "uz": "U okeanni sevadi.",
+      "ru": "Она любит океан."
+    },
+    {
+      "en": "He is drawing a map.",
+      "uz": "U xarita chizmoqda.",
+      "ru": "Он рисует карту."
+    },
+    {
+      "en": "We learned about different climates.",
+      "uz": "Biz turli iqlimlar haqida o'rgandik.",
+      "ru": "Мы узнали о разных климатах."
+    },
+    {
+      "en": "The country has a diverse landscape.",
+      "uz": "Mamlakatning landshafti xilma-xil.",
+      "ru": "У страны разнообразный ландшафт."
+    }
+  ],
+  "Languages": [
+    {
+      "en": "She speaks three languages.",
+      "uz": "U uch tilida so'zlashadi.",
+      "ru": "Она говорит на трёх языках."
+    },
+    {
+      "en": "He is learning English.",
+      "uz": "U ingliz tilini o'rganmoqda.",
+      "ru": "Он учит английский язык."
+    },
+    {
+      "en": "We practice speaking.",
+      "uz": "Biz gapirishni mashq qilamiz.",
+      "ru": "Мы практикуем разговорную речь."
+    },
+    {
+      "en": "They are bilingual.",
+      "uz": "Ular ikki tilli.",
+      "ru": "Они двуязычные."
+    },
+    {
+      "en": "I want to improve my pronunciation.",
+      "uz": "Men talaffuzimni yaxshilamoqchiman.",
+      "ru": "Я хочу улучшить своё произношение."
+    },
+    {
+      "en": "She knows many words.",
+      "uz": "U ko'p so'zlarni biladi.",
+      "ru": "Она знает много слов."
+    },
+    {
+      "en": "He uses a dictionary.",
+      "uz": "U lug'atdan foydalanadi.",
+      "ru": "Он использует словарь."
+    },
+    {
+      "en": "We have a language exchange.",
+      "uz": "Biz til almashamiz.",
+      "ru": "У нас языковой обмен."
+    },
+    {
+      "en": "The language is difficult.",
+      "uz": "Til qiyin.",
+      "ru": "Язык сложный."
+    },
+    {
+      "en": "They are watching a movie in English.",
+      "uz": "Ular ingliz tilidagi filmni tomosha qilishyaptilar.",
+      "ru": "Они смотрят фильм на английском."
+    },
+    {
+      "en": "Language connects people.",
+      "uz": "Til odamlarni bog'laydi.",
+      "ru": "Язык соединяет людей."
+    },
+    {
+      "en": "She is a translator.",
+      "uz": "U tarjimon.",
+      "ru": "Она переводчик."
+    },
+    {
+      "en": "He is fluent in Russian.",
+      "uz": "U rus tilida erkin so'zlashadi.",
+      "ru": "Он свободно говорит по-русски."
+    },
+    {
+      "en": "We learn grammar in class.",
+      "uz": "Biz darsda grammatikani o'rganamiz.",
+      "ru": "Мы изучаем грамматику в классе."
+    },
+    {
+      "en": "It's important to practice.",
+      "uz": "Mashq qilish muhim.",
+      "ru": "Важно практиковаться."
+    }
+  ],
+  "Dreams": [
+    {
+      "en": "I had a strange dream.",
+      "uz": "Men g'alati tush ko'rdim.",
+      "ru": "Мне приснился странный сон."
+    },
+    {
+      "en": "She dreams of traveling the world.",
+      "uz": "U butun dunyoni kezishni orzu qiladi.",
+      "ru": "Она мечтает путешествовать по миру."
+    },
+    {
+      "en": "He wants to be a doctor.",
+      "uz": "U shifokor bo'lishni xohlaydi.",
+      "ru": "Он хочет быть врачом."
+    },
+    {
+      "en": "We have big dreams.",
+      "uz": "Bizning katta orzularimiz bor.",
+      "ru": "У нас большие мечты."
+    },
+    {
+      "en": "They are following their dreams.",
+      "uz": "Ular o'z orzulariga ergashmoqdalar.",
+      "ru": "Они следуют своим мечтам."
+    },
+    {
+      "en": "I hope my dream comes true.",
+      "uz": "Men orzum amalga oshishiga umid qilaman.",
+      "ru": "Я надеюсь, моя мечта сбудется."
+    },
+    {
+      "en": "She remembers her dreams.",
+      "uz": "U tushlarini eslaydi.",
+      "ru": "Она помнит свои сны."
+    },
+    {
+      "en": "He is a dreamer.",
+      "uz": "U orzupechak.",
+      "ru": "Он мечтатель."
+    },
+    {
+      "en": "We talked about our dreams.",
+      "uz": "Biz o'z orzularimiz haqida gaplashdik.",
+      "ru": "Мы говорили о наших мечтах."
+    },
+    {
+      "en": "The dream felt real.",
+      "uz": "Tush haqiqat his qilindi.",
+      "ru": "Сон казался реальным."
+    },
+    {
+      "en": "She achieved her dream.",
+      "uz": "U o'z orzulariga erishdi.",
+      "ru": "Она достигла своей мечты."
+    },
+    {
+      "en": "He has a recurring dream.",
+      "uz": "U takrorlanuvchi tush ko'radi.",
+      "ru": "Ему снится повторяющийся сон."
+    },
+    {
+      "en": "We support each other's dreams.",
+      "uz": "Biz bir-birimizning orzularini qo'llab-quvvatlaymiz.",
+      "ru": "Мы поддерживаем мечты друг друга."
+    },
+    {
+      "en": "I often daydream.",
+      "uz": "Men ko'pincha xayol surman.",
+      "ru": "Я часто мечтаю наяву."
+    },
+    {
+      "en": "She described her dream.",
+      "uz": "U o'z tushini tasvirlab berdi.",
+      "ru": "Она описала свой сон."
+    },
+    {
+      "en": "He is working towards his dream.",
+      "uz": "U o'z orzusi sari ishlamoqda.",
+      "ru": "Он работает над своей мечтой."
+    }
+  ],
+  "Future Plans": [
+    {
+      "en": "I will study abroad.",
+      "uz": "Men chet elda o'qiyman.",
+      "ru": "Я буду учиться за границей."
+    },
+    {
+      "en": "She wants to get married.",
+      "uz": "U turmush qurmoqchi.",
+      "ru": "Она хочет выйти замуж."
+    },
+    {
+      "en": "He is going to start a business.",
+      "uz": "U biznes boshlash niyatida.",
+      "ru": "Он собирается начать бизнес."
+    },
+    {
+      "en": "We plan to buy a house.",
+      "uz": "Biz uy sotib olishni rejalashtiramiz.",
+      "ru": "Мы планируем купить дом."
+    },
+    {
+      "en": "They are saving money for the future.",
+      "uz": "Ular kelajak uchun pul yig'moqdalar.",
+      "ru": "Они копят деньги на будущее."
+    },
+    {
+      "en": "I hope to visit Japan.",
+      "uz": "Men Yaponiyaga tashrif buyurishga umid qilaman.",
+      "ru": "Я надеюсь посетить Японию."
+    },
+    {
+      "en": "She will become a teacher.",
+      "uz": "U o'qituvchi bo'ladi.",
+      "ru": "Она станет учительницей."
+    },
+    {
+      "en": "He is thinking about his career.",
+      "uz": "U o'z karerasi haqida o'ylayapti.",
+      "ru": "Он думает о своей карьере."
+    },
+    {
+      "en": "We are planning a trip for next year.",
+      "uz": "Biz kelasi yil sayohatni rejalashtirmoqdamiz.",
+      "ru": "Мы планируем поездку на следующий год."
+    },
+    {
+      "en": "They want to have children.",
+      "uz": "Ular farzand ko'rishni xohlaydilar.",
+      "ru": "Они хотят иметь детей."
+    },
+    {
+      "en": "I am learning new skills for my future.",
+      "uz": "Men kelajagim uchun yangi ko'nikmalarni o'rganyapman.",
+      "ru": "Я учу новые навыки для своего будущего."
+    },
+    {
+      "en": "She is preparing for her future job.",
+      "uz": "U kelajakdagi ishiga tayyorlanmoqda.",
+      "ru": "Она готовится к своей будущей работе."
+    },
+    {
+      "en": "He has a clear plan for the future.",
+      "uz": "Uning kelajak uchun aniq rejasi bor.",
+      "ru": "У него есть чёткий план на будущее."
+    },
+    {
+      "en": "We dream about our future together.",
+      "uz": "Biz kelajagimiz haqida birga orzu qilamiz.",
+      "ru": "Мы мечтаем о нашем будущем вместе."
+    },
+    {
+      "en": "They are investing in their future.",
+      "uz": "Ular o'z kelajagiga sarmoya kiritmoqdalar.",
+      "ru": "Они инвестируют в своё будущее."
+    },
+    {
+      "en": "I am optimistic about the future.",
+      "uz": "Men kelajak haqida optimistman.",
+      "ru": "Я оптимистично настроен насчёт будущего."
+    }
+  ],
+  "Education": [
+    {
+      "en": "She is a smart student.",
+      "uz": "U aqlli talaba.",
+      "ru": "Она умная студентка."
+    },
+    {
+      "en": "I study English every day.",
+      "uz": "Men har kuni ingliz tilini o'rganaman.",
+      "ru": "Я учу английский каждый день."
+    },
+    {
+      "en": "The teacher explained the lesson well.",
+      "uz": "O'qituvchi darsni yaxshi tushuntirdi.",
+      "ru": "Учитель хорошо объяснил урок."
+    },
+    {
+      "en": "We have an exam on Monday.",
+      "uz": "Dushanba kuni imtihonimiz bor.",
+      "ru": "У нас экзамен в понедельник."
+    },
+    {
+      "en": "He goes to university.",
+      "uz": "U universitetga boradi.",
+      "ru": "Он ходит в университет."
+    },
+    {
+      "en": "Learning new things is fun.",
+      "uz": "Yangi narsalarni o'rganish qiziqarli.",
+      "ru": "Изучать новое — это весело."
+    },
+    {
+      "en": "The school has a big library.",
+      "uz": "Maktabda katta kutubxona bor.",
+      "ru": "В школе большая библиотека."
+    },
+    {
+      "en": "I need to buy textbooks.",
+      "uz": "Men darsliklar sotib olishim kerak.",
+      "ru": "Мне нужно купить учебники."
+    },
+    {
+      "en": "She got a good grade.",
+      "uz": "U yaxshi baho oldi.",
+      "ru": "Она получила хорошую оценку."
+    },
+    {
+      "en": "Education is the key to success.",
+      "uz": "Ta'lim muvaffaqiyatning kaliti.",
+      "ru": "Образование — ключ к успеху."
+    },
+    {
+      "en": "We are doing a science project.",
+      "uz": "Biz loyiha ustida ishlaymiz.",
+      "ru": "Мы работаем над научным проектом."
+    },
+    {
+      "en": "He is good at mathematics.",
+      "uz": "U matematikadan yaxshi.",
+      "ru": "Он хорошо разбирается в математике."
+    },
+    {
+      "en": "I want to learn how to code.",
+      "uz": "Men dasturlashni o'rganmoqchiman.",
+      "ru": "Я хочу научиться программировать."
+    },
+    {
+      "en": "The class was very interesting.",
+      "uz": "Dars juda qiziqarli edi.",
+      "ru": "Урок был очень интересным."
+    },
+    {
+      "en": "She is reading a book for her course.",
+      "uz": "U o'z kursi uchun kitob o'qiyapti.",
+      "ru": "Она читает книгу для своего курса."
+    },
+    {
+      "en": "We practice speaking in class.",
+      "uz": "Biz darsda gapirishni mashq qilamiz.",
+      "ru": "Мы практикуем разговорную речь на уроке."
+    },
+    {
+      "en": "He asked a question to the professor.",
+      "uz": "U professorga savol berdi.",
+      "ru": "Он задал вопрос профессору."
+    },
+    {
+      "en": "Knowledge is power.",
+      "uz": "Bilim kuchdir.",
+      "ru": "Знание — сила."
+    }
+  ]
+}
