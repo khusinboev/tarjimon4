@@ -221,7 +221,7 @@ class GamificationEngine:
 
 
 class AchievementManager:
-    """🏆 Achievement management system"""
+    """Achievement management system"""
     
     @staticmethod
     def check_achievements(user_id: int) -> List[Dict[str, Any]]:
