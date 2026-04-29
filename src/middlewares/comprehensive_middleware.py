@@ -121,34 +121,46 @@ class ComprehensiveUserMiddleware(BaseMiddleware):
         ))
         
         # Create default preferences
-        sql.execute("""
-            INSERT INTO user_preferences (user_id)
-            VALUES (%s)
-            ON CONFLICT (user_id) DO NOTHING
-        """, (user_id,))
+        try:
+            sql.execute("""
+                INSERT INTO user_preferences (user_id)
+                VALUES (%s)
+                ON CONFLICT (user_id) DO NOTHING
+            """, (user_id,))
+        except Exception:
+            pass  # user_preferences table may not exist yet
         
         # Initialize daily activity record
-        sql.execute("""
-            INSERT INTO user_activity_daily (user_id, activity_date)
-            VALUES (%s, %s)
-            ON CONFLICT (user_id, activity_date) DO NOTHING
-        """, (user_id, now.date()))
+        try:
+            sql.execute("""
+                INSERT INTO user_activity_daily (user_id, activity_date)
+                VALUES (%s, %s)
+                ON CONFLICT (user_id, activity_date) DO NOTHING
+            """, (user_id, now.date()))
+        except Exception:
+            pass  # user_activity_daily table may not exist yet
         
         # Initialize exercise type stats
-        exercise_types = ['flashcard', 'quiz', 'match', 'write']
-        for ex_type in exercise_types:
-            sql.execute("""
-                INSERT INTO exercise_type_stats (user_id, exercise_type)
-                VALUES (%s, %s)
-                ON CONFLICT (user_id, exercise_type) DO NOTHING
-            """, (user_id, ex_type))
+        try:
+            exercise_types = ['flashcard', 'quiz', 'match', 'write']
+            for ex_type in exercise_types:
+                sql.execute("""
+                    INSERT INTO exercise_type_stats (user_id, exercise_type)
+                    VALUES (%s, %s)
+                    ON CONFLICT (user_id, exercise_type) DO NOTHING
+                """, (user_id, ex_type))
+        except Exception:
+            pass  # exercise_type_stats table may not exist yet
         
         # Initialize user achievements
-        sql.execute("""
-            INSERT INTO user_achievements (user_id, achievement_id)
-            SELECT %s, id FROM achievements WHERE is_active = TRUE
-            ON CONFLICT DO NOTHING
-        """, (user_id,))
+        try:
+            sql.execute("""
+                INSERT INTO user_achievements (user_id, achievement_id)
+                SELECT %s, id FROM achievements WHERE is_active = TRUE
+                ON CONFLICT DO NOTHING
+            """, (user_id,))
+        except Exception:
+            pass  # achievements table may not exist yet
         
         print(f"[NEW USER] Created comprehensive profile for user {user_id}")
     
@@ -172,48 +184,44 @@ class ComprehensiveUserMiddleware(BaseMiddleware):
     
     async def _update_daily_activity(self, user_id, event, event_type, now):
         """Update daily activity statistics"""
-        today = now.date()
-        
-        # Check if daily record exists
-        sql.execute("""
-            SELECT id FROM user_activity_daily 
-            WHERE user_id = %s AND activity_date = %s
-        """, (user_id, today))
-        
-        if not sql.fetchone():
-            # Create new daily record
+        try:
+            today = now.date()
             sql.execute("""
-                INSERT INTO user_activity_daily (user_id, activity_date)
-                VALUES (%s, %s)
-            """, (user_id, today))
-        
-        # Update message count
-        if event_type == 'message':
-            sql.execute("""
-                UPDATE user_activity_daily 
-                SET session_count = session_count + 1
+                SELECT id FROM user_activity_daily 
                 WHERE user_id = %s AND activity_date = %s
             """, (user_id, today))
+            if not sql.fetchone():
+                sql.execute("""
+                    INSERT INTO user_activity_daily (user_id, activity_date)
+                    VALUES (%s, %s)
+                """, (user_id, today))
+            if event_type == 'message':
+                sql.execute("""
+                    UPDATE user_activity_daily 
+                    SET session_count = session_count + 1
+                    WHERE user_id = %s AND activity_date = %s
+                """, (user_id, today))
+        except Exception:
+            pass  # user_activity_daily table may not exist yet
     
     async def _manage_session(self, user_id, event_type, now):
         """Manage user session tracking"""
-        # Check for active session (within last 30 minutes)
-        thirty_mins_ago = now - timedelta(minutes=30)
-        
-        sql.execute("""
-            SELECT id, started_at FROM user_sessions 
-            WHERE user_id = %s AND started_at > %s AND ended_at IS NULL
-            ORDER BY started_at DESC LIMIT 1
-        """, (user_id, thirty_mins_ago))
-        
-        session = sql.fetchone()
-        
-        if not session:
-            # Create new session
+        try:
+            # Check for active session (within last 30 minutes)
+            thirty_mins_ago = now - timedelta(minutes=30)
             sql.execute("""
-                INSERT INTO user_sessions (user_id, started_at)
-                VALUES (%s, %s)
-            """, (user_id, now))
+                SELECT id, started_at FROM user_sessions 
+                WHERE user_id = %s AND started_at > %s AND ended_at IS NULL
+                ORDER BY started_at DESC LIMIT 1
+            """, (user_id, thirty_mins_ago))
+            session = sql.fetchone()
+            if not session:
+                sql.execute("""
+                    INSERT INTO user_sessions (user_id, started_at)
+                    VALUES (%s, %s)
+                """, (user_id, now))
+        except Exception:
+            pass  # user_sessions table may not exist yet
 
 
 class TranslationTrackingMiddleware(BaseMiddleware):

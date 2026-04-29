@@ -113,7 +113,9 @@ async def on_startup() -> None:
         
     except Exception as e:
         logger.error(f"[ERROR] Startup error: {e}")
-        raise
+        import traceback
+        traceback.print_exc()
+        # Don't raise — continue bot startup even if some DB schemas fail
 
 
 async def on_shutdown() -> None:
@@ -150,25 +152,25 @@ async def main():
     
     # # User routers
     # logger.info("[INIT] Registering user routers...")
-    # dp.include_router(enhanced_user_router)   # New enhanced user panel
-    # dp.include_router(callback_router)        # Callback handlers for inline keyboards
-    # dp.include_router(user_router)            # Original user handlers
-    # dp.include_router(inline_router)          # Inline mode
-    #
-    # # Vocabulary routers (combined router includes all vocabulary sub-routers)
-    # logger.info("[INIT] Registering vocabulary routers...")
-    # dp.include_router(lughatlar_router)       # Includes: vocabs, lughatlarim, mashqlar, ommaviylar, essential, parallel
-    #
-    #
-    # dp.include_router(translate_router)       # Translation handlers
-    #
-    # # Other routers
-    # logger.info("[INIT] Registering other routers...")
-    # dp.include_router(channel_router)         # Channel management
-    # dp.include_router(group_router)           # Group handlers
-    # dp.include_router(other_router)           # Miscellaneous
-    #
-    # logger.info("[OK] All routers registered successfully!")
+    logger.info("[INIT] Registering user routers...")
+    dp.include_router(enhanced_user_router)   # New enhanced user panel
+    dp.include_router(callback_router)        # Callback handlers for inline keyboards
+    dp.include_router(user_router)            # Original user handlers
+    dp.include_router(inline_router)          # Inline mode
+
+    # Vocabulary routers (combined router includes all vocabulary sub-routers)
+    logger.info("[INIT] Registering vocabulary routers...")
+    dp.include_router(lughatlar_router)       # Includes: vocabs, lughatlarim, mashqlar, ommaviylar, essential, parallel
+
+    dp.include_router(translate_router)       # Translation handlers
+
+    # Other routers
+    logger.info("[INIT] Registering other routers...")
+    dp.include_router(channel_router)         # Channel management
+    dp.include_router(group_router)           # Group handlers
+    dp.include_router(other_router)           # Miscellaneous
+
+    logger.info("[OK] All routers registered successfully!")
     
     # Start polling
     logger.info("[START] Starting polling...")
