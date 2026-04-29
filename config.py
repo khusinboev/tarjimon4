@@ -73,6 +73,9 @@ else:
             q = _re.sub(r'\bDATE\b', 'TEXT', q, flags=_re.IGNORECASE)
             # BOOLEAN -> INTEGER
             q = _re.sub(r'\bBOOLEAN\b', 'INTEGER', q, flags=_re.IGNORECASE)
+            # TRUE / FALSE literals -> 1 / 0
+            q = _re.sub(r'\bTRUE\b', '1', q, flags=_re.IGNORECASE)
+            q = _re.sub(r'\bFALSE\b', '0', q, flags=_re.IGNORECASE)
             # JSONB / JSON -> TEXT
             q = _re.sub(r'\bJSONB\b', 'TEXT', q, flags=_re.IGNORECASE)
             q = _re.sub(r'\bJSON\b', 'TEXT', q, flags=_re.IGNORECASE)
@@ -91,15 +94,16 @@ else:
             # CURRENT_DATE -> keep as-is (SQLite supports CURRENT_DATE natively)
             # ::type casts (e.g., '{}'::jsonb, '09:00'::time) -> remove cast
             q = _re.sub(r"::\w+", '', q)
+            # CONSTRAINT ... FOREIGN KEY ... REFERENCES ... (table-level FK) -> remove entirely
+            # Must run BEFORE inline REFERENCES removal
+            q = _re.sub(
+                r',?\s*CONSTRAINT\s+\w+\s+FOREIGN\s+KEY\s*\([^)]*\)(\s+REFERENCES\s+\w+\s*\([^)]*\)(\s+ON\s+(DELETE|UPDATE)\s+\w+(\s+\w+)?)*)?',
+                '', q, flags=_re.IGNORECASE
+            )
             # Inline REFERENCES ... ON DELETE/UPDATE (column-level FK) -> remove
             # e.g. "user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE"
             q = _re.sub(
                 r'\bREFERENCES\s+\w+\s*\([^)]*\)(\s+ON\s+(DELETE|UPDATE)\s+\w+(\s+\w+)?)*',
-                '', q, flags=_re.IGNORECASE
-            )
-            # CONSTRAINT ... FOREIGN KEY ... REFERENCES ... (table-level FK) -> remove
-            q = _re.sub(
-                r',?\s*CONSTRAINT\s+\w+\s+FOREIGN\s+KEY\s*\([^)]*\)\s*REFERENCES\s+\w+\s*\([^)]*\)(\s+ON\s+\w+\s+\w+)*',
                 '', q, flags=_re.IGNORECASE
             )
             # ON CONFLICT (...) DO UPDATE SET ... -> ON CONFLICT DO NOTHING
