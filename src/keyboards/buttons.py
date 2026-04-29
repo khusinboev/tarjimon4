@@ -95,7 +95,6 @@ class UserPanels:
             keyboard=[
                 [KeyboardButton(text="🌐 Tilni tanlash"), KeyboardButton(text="ℹ️ Yordam")],
                 [KeyboardButton(text="📚 Lug'atlar va Mashqlar")],
-                [KeyboardButton(text="👤 Profil")],
             ],
             resize_keyboard=True,
         )

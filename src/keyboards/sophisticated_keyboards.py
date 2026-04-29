@@ -235,23 +235,18 @@ class UserPanelKeyboards:
     async def main_menu(theme: str = 'default') -> ReplyKeyboardMarkup:
         """Beautiful main menu with organized layout"""
         builder = ReplyKeyboardBuilder()
-        
+
         # First row - Language and Help
         builder.row(
             KeyboardButton(text=FancyButtons.LANGUAGES),
             KeyboardButton(text=FancyButtons.HELP)
         )
-        
-        # Second row - Vocabulary (single button like original)
+
+        # Second row - Vocabulary
         builder.row(
             KeyboardButton(text=FancyButtons.VOCABULARY)
         )
-        
-        # Third row - Profile
-        builder.row(
-            KeyboardButton(text=FancyButtons.PROFILE)
-        )
-        
+
         return builder.as_markup(resize_keyboard=True)
     
     @staticmethod

@@ -1,7 +1,16 @@
 
 from aiogram import Router, F
-from aiogram.enums import ChatType
-from aiogram.filters import CommandStart, Command
+from aiogram.enums import Cha        print(f"[ERROR] menu_cabinet: {e}")
+
+# Blocked user handler
+@user_router.message(F.from_user.id == 7638932125)
+async def blocked_user_handler(message: Message):
+    await message.answer(
+        "Siz adminimiz @adkhambek_4 ni bloklaganingiz sababli bot tomonidan bloklangansiz.\n"
+        "Agar blokdan chiqishni istasangiz, admin bilan bog'laning."
+    )
+
+@user_router.message(CommandStart()) aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 from config import bot, ADMIN_ID
 from src.keyboards.buttons import UserPanels
@@ -60,22 +69,7 @@ async def menu_cabinet(msg: Message):
         )
         print(f"[ERROR] menu_cabinet: {e}")
 
-@user_router.message(F.text == "👤 Profil")
-async def menu_profile(msg: Message):
-    """Show user profile from main menu"""
-    try:
-        from src.handlers.users.enhanced_user_panel import profile_menu
-        await profile_menu(msg)
-    except Exception as e:
-        await msg.answer(
-            "👤 <b>Profil</b>\n\n"
-            "Profil ma'lumotlarini ko'rish uchun /profile buyrug'idan foydalaning.",
-            parse_mode="HTML"
-        )
-        print(f"[ERROR] menu_profile: {e}")
-
-# Blocked user handler
-@user_router.message(F.from_user.id == 7638932125)
+@user_router.message(F.text == "📚 Lug'atlar va Mashqlar")
 async def blocked_user_handler(message: Message):
     await message.answer(
         "Siz adminimiz @adkhambek_4 ni bloklaganingiz sababli bot tomonidan bloklangansiz.\n"
@@ -102,8 +96,7 @@ async def start_cmd1(message: Message):
             "👋 <b>Botimizga xush kelibsiz!</b>\n\n"
             "🌐 Tilni tanlash - Tarjima tillari\n"
             "ℹ️ Yordam - Bot haqida ma'lumot\n"
-            "📚 Lug'atlar va Mashqlar - So'z va mashqlar\n"
-            "👤 Profil - Shaxsiy kabinet\n\n"
+            "📚 Lug'atlar va Mashqlar - So'z va mashqlar\n\n"
             "Quyidagi menyudan kerakli bo'limni tanlang:",
             reply_markup=await UserPanels.user_main_menu(),
             parse_mode="HTML"

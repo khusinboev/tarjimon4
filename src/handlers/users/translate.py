@@ -250,7 +250,6 @@ MAIN_MENU_BUTTONS = {
     "🌐 Tilni tanlash",
     "ℹ️ Yordam",
     "📚 Lug'atlar va Mashqlar",
-    "👤 Profil",
 }
 
 @translate_router.message(F.text)
