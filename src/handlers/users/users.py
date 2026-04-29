@@ -10,7 +10,7 @@ async def blocked_user_handler(message: Message):
         "Agar blokdan chiqishni istasangiz, admin bilan bog'laning."
     )
 
-@user_router.message(CommandStart()) aiogram.filters import CommandStart, Command
+aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 from config import bot, ADMIN_ID
 from src.keyboards.buttons import UserPanels
