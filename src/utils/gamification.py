@@ -73,26 +73,26 @@ class GamificationEngine:
         """Add XP to user and handle level ups"""
         try:
             # Check if user exists in enhanced table
-            sql.execute("SELECT user_id FROM users_enhanced WHERE user_id = %s", (user_id,))
+            sql.execute("SELECT user_id FROM users_enhanced WHERE user_id = ?", (user_id,))
             if not sql.fetchone():
                 # Create user if not exists
                 sql.execute("""
                     INSERT INTO users_enhanced 
                     (user_id, username, first_name, language_code, created_at, last_active_at, experience_points, user_level)
-                    VALUES (%s, %s, %s, %s, NOW(), NOW(), 0, 1)
+                    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 1)
                 """, (user_id, None, None, 'uz'))
             
             # Ensure leaderboard entry exists
-            sql.execute("SELECT user_id FROM leaderboard WHERE user_id = %s", (user_id,))
+            sql.execute("SELECT user_id FROM leaderboard WHERE user_id = ?", (user_id,))
             if not sql.fetchone():
-                sql.execute("INSERT INTO leaderboard (user_id, total_xp) VALUES (%s, 0)", (user_id,))
+                sql.execute("INSERT INTO leaderboard (user_id, total_xp) VALUES (?, 0)", (user_id,))
             
             db.commit()
             
             # Get current stats
             sql.execute("""
                 SELECT experience_points, user_level, streak_days
-                FROM users_enhanced WHERE user_id = %s
+                FROM users_enhanced WHERE user_id = ?
             """, (user_id,))
             
             result = sql.fetchone()
@@ -109,15 +109,15 @@ class GamificationEngine:
             # Update database
             sql.execute("""
                 UPDATE users_enhanced 
-                SET experience_points = %s, user_level = %s, updated_at = NOW()
-                WHERE user_id = %s
+                SET experience_points = ?, user_level = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE user_id = ?
             """, (new_xp, new_level, user_id))
             
             # Update leaderboard
             sql.execute("""
                 UPDATE leaderboard 
-                SET total_xp = %s, last_updated = NOW()
-                WHERE user_id = %s
+                SET total_xp = ?, last_updated = CURRENT_TIMESTAMP
+                WHERE user_id = ?
             """, (new_xp, user_id))
             
             db.commit()
@@ -140,12 +140,12 @@ class GamificationEngine:
         """Check and update user's daily streak"""
         try:
             # Get or create user
-            sql.execute("SELECT user_id FROM users_enhanced WHERE user_id = %s", (user_id,))
+            sql.execute("SELECT user_id FROM users_enhanced WHERE user_id = ?", (user_id,))
             if not sql.fetchone():
                 sql.execute("""
                     INSERT INTO users_enhanced 
                     (user_id, username, first_name, language_code, created_at, last_active_at, streak_days, last_streak_date)
-                    VALUES (%s, %s, %s, %s, NOW(), NOW(), 1, CURRENT_DATE)
+                    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, date('now'))
                 """, (user_id, None, None, 'uz'))
                 db.commit()
                 return {
@@ -157,7 +157,7 @@ class GamificationEngine:
             
             sql.execute("""
                 SELECT streak_days, last_streak_date, longest_streak
-                FROM users_enhanced WHERE user_id = %s
+                FROM users_enhanced WHERE user_id = ?
             """, (user_id,))
             
             result = sql.fetchone()
@@ -197,8 +197,9 @@ class GamificationEngine:
             # Update database
             sql.execute("""
                 UPDATE users_enhanced 
-                SET streak_days = %s, longest_streak = %s, last_streak_date = CURRENT_DATE
-                WHERE user_id = %s
+                SET streak_days = ?, longest_streak = ?, last_streak_date = date('now')
+                WHERE user_id = ?
+            """, (streak, longest, user_id))
             """, (streak, longest, user_id))
             
             db.commit()
@@ -231,13 +232,13 @@ class AchievementManager:
             # Get user stats
             sql.execute("""
                 SELECT 
-                    (SELECT COUNT(*) FROM translations_enhanced WHERE user_id = %s) as translations_count,
-                    (SELECT COUNT(*) FROM vocab_books_enhanced WHERE user_id = %s) as vocab_books_count,
+                    (SELECT COUNT(*) FROM translations_enhanced WHERE user_id = ?) as translations_count,
+                    (SELECT COUNT(*) FROM vocab_books_enhanced WHERE user_id = ?) as vocab_books_count,
                     (SELECT COUNT(*) FROM vocab_entries_enhanced ve 
                      JOIN vocab_books_enhanced vb ON ve.book_id = vb.id 
-                     WHERE vb.user_id = %s) as words_count,
-                    (SELECT streak_days FROM users_enhanced WHERE user_id = %s) as streak_days,
-                    (SELECT COUNT(*) FROM practice_sessions WHERE user_id = %s) as practice_sessions
+                     WHERE vb.user_id = ?) as words_count,
+                    (SELECT streak_days FROM users_enhanced WHERE user_id = ?) as streak_days,
+                    (SELECT COUNT(*) FROM practice_sessions WHERE user_id = ?) as practice_sessions
             """, (user_id, user_id, user_id, user_id, user_id))
             
             stats = sql.fetchone()
@@ -256,7 +257,7 @@ class AchievementManager:
             
             # Get already unlocked
             sql.execute("""
-                SELECT achievement_id FROM user_achievements WHERE user_id = %s
+                SELECT achievement_id FROM user_achievements WHERE user_id = ?
             """, (user_id,))
             
             unlocked_ids = {row[0] for row in sql.fetchall()}
@@ -289,7 +290,7 @@ class AchievementManager:
                     # Award achievement
                     sql.execute("""
                         INSERT INTO user_achievements (user_id, achievement_id, unlocked_at, progress)
-                        VALUES (%s, %s, NOW(), %s)
+                        VALUES (?, ?, CURRENT_TIMESTAMP, ?)
                     """, (user_id, ach_id, progress))
                     
                     db.commit()
@@ -344,7 +345,7 @@ class DailyChallengeManager:
             sql.execute("""
                 INSERT INTO daily_challenges 
                 (challenge_date, title, description, challenge_type, target_value, xp_reward)
-                VALUES (CURRENT_DATE, %s, %s, %s, %s, %s)
+                VALUES (date('now'), ?, ?, ?, ?, ?)
             """, (
                 template["title"],
                 descriptions[template["type"]],
@@ -370,8 +371,8 @@ class DailyChallengeManager:
                        COALESCE(udc.is_completed, FALSE) as completed
                 FROM daily_challenges dc
                 LEFT JOIN user_daily_challenges udc 
-                    ON dc.id = udc.challenge_id AND udc.user_id = %s
-                WHERE dc.challenge_date = CURRENT_DATE
+                    ON dc.id = udc.challenge_id AND udc.user_id = ?
+                WHERE dc.challenge_date = date('now')
             """, (user_id,))
             
             result = sql.fetchone()
@@ -401,7 +402,7 @@ class DailyChallengeManager:
             sql.execute("""
                 SELECT dc.id, dc.target_value, dc.xp_reward
                 FROM daily_challenges dc
-                WHERE dc.challenge_date = CURRENT_DATE AND dc.challenge_type = %s
+                WHERE dc.challenge_date = date('now') AND dc.challenge_type = ?
             """, (challenge_type,))
             
             result = sql.fetchone()
@@ -413,7 +414,7 @@ class DailyChallengeManager:
             # Get current progress
             sql.execute("""
                 SELECT current_value FROM user_daily_challenges
-                WHERE user_id = %s AND challenge_id = %s
+                WHERE user_id = ? AND challenge_id = ?
             """, (user_id, challenge_id))
             
             progress_result = sql.fetchone()
@@ -421,22 +422,22 @@ class DailyChallengeManager:
                 current = min(progress_result[0] + amount, target)
                 sql.execute("""
                     UPDATE user_daily_challenges
-                    SET current_value = %s
-                    WHERE user_id = %s AND challenge_id = %s
+                    SET current_value = ?
+                    WHERE user_id = ? AND challenge_id = ?
                 """, (current, user_id, challenge_id))
             else:
                 current = amount
                 sql.execute("""
                     INSERT INTO user_daily_challenges (user_id, challenge_id, current_value)
-                    VALUES (%s, %s, %s)
+                    VALUES (?, ?, ?)
                 """, (user_id, challenge_id, current))
             
             # Check completion
             if current >= target:
                 sql.execute("""
                     UPDATE user_daily_challenges
-                    SET is_completed = TRUE, completed_at = NOW()
-                    WHERE user_id = %s AND challenge_id = %s AND is_completed = FALSE
+                    SET is_completed = 1, completed_at = CURRENT_TIMESTAMP
+                    WHERE user_id = ? AND challenge_id = ? AND is_completed = 0
                 """, (user_id, challenge_id))
                 
                 if sql.rowcount > 0:
@@ -465,10 +466,10 @@ class LeaderboardManager:
             for rank, (user_id, _) in enumerate(users, 1):
                 sql.execute("""
                     UPDATE leaderboard
-                    SET current_rank = %s,
-                        highest_rank = LEAST(COALESCE(highest_rank, %s), %s),
-                        last_updated = NOW()
-                    WHERE user_id = %s
+                    SET current_rank = ?,
+                        highest_rank = MIN(COALESCE(highest_rank, ?), ?),
+                        last_updated = CURRENT_TIMESTAMP
+                    WHERE user_id = ?
                 """, (rank, rank, rank, user_id))
             
             db.commit()
@@ -487,7 +488,7 @@ class LeaderboardManager:
                 FROM leaderboard l
                 JOIN users_enhanced ue ON l.user_id = ue.user_id
                 ORDER BY l.total_xp DESC
-                LIMIT %s OFFSET %s
+                LIMIT ? OFFSET ?
             """, (limit, offset))
             
             results = []
@@ -513,7 +514,7 @@ class LeaderboardManager:
         try:
             sql.execute("""
                 SELECT current_rank, total_xp
-                FROM leaderboard WHERE user_id = %s
+                FROM leaderboard WHERE user_id = ?
             """, (user_id,))
             
             result = sql.fetchone()

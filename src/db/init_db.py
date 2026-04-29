@@ -179,7 +179,7 @@ def init_languages_table():
         print("[DB] Tillar bazaga qo'shilmoqda...")
         for code, data in LANGUAGES.items():
             sql.execute(
-                "INSERT INTO languages (code, name, flag) VALUES (%s, %s, %s) ON CONFLICT (code) DO NOTHING;",
+                "INSERT OR IGNORE INTO languages (code, name, flag) VALUES (?, ?, ?);",
                 (code, data["name"], data["flag"])
             )
         db.commit()

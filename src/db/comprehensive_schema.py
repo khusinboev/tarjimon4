@@ -1,198 +1,166 @@
 """
 🔧 Comprehensive Database Schema for Tarjimon Bot Analytics
-PostgreSQL version
+SQLite compatible version
 """
 from config import db, sql
 
 
 async def create_comprehensive_schema():
-    """
-    Create comprehensive analytics-focused database schema
-    """
+    """Create comprehensive analytics-focused database schema"""
     print("[DB SCHEMA] Creating comprehensive analytics schema...", flush=True)
-    
+
     try:
-        # 1. CORE USERS TABLE
         sql.execute("""
             CREATE TABLE IF NOT EXISTS users (
-                id SERIAL PRIMARY KEY,
-                user_id BIGINT NOT NULL UNIQUE,
-                first_name VARCHAR(255),
-                last_name VARCHAR(255),
-                username VARCHAR(100),
-                language_code VARCHAR(10) DEFAULT 'uz',
-                phone_number VARCHAR(20),
-                interface_lang VARCHAR(10) DEFAULT 'uz',
-                default_from_lang VARCHAR(10) DEFAULT 'en',
-                default_to_lang VARCHAR(10) DEFAULT 'uz',
-                auto_translate BOOLEAN DEFAULT FALSE,
-                is_active BOOLEAN DEFAULT TRUE,
-                is_blocked BOOLEAN DEFAULT FALSE,
-                is_premium BOOLEAN DEFAULT FALSE,
-                is_admin BOOLEAN DEFAULT FALSE,
-                is_verified BOOLEAN DEFAULT FALSE,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL UNIQUE,
+                first_name TEXT, last_name TEXT, username TEXT,
+                language_code TEXT DEFAULT 'uz',
+                phone_number TEXT,
+                interface_lang TEXT DEFAULT 'uz',
+                default_from_lang TEXT DEFAULT 'en',
+                default_to_lang TEXT DEFAULT 'uz',
+                auto_translate INTEGER DEFAULT 0,
+                is_active INTEGER DEFAULT 1,
+                is_blocked INTEGER DEFAULT 0,
+                is_premium INTEGER DEFAULT 0,
+                is_admin INTEGER DEFAULT 0,
+                is_verified INTEGER DEFAULT 0,
                 verified_at TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 last_activity_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 first_seen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                source VARCHAR(50),
-                referrer_id BIGINT REFERENCES users(user_id) ON DELETE SET NULL,
-                platform VARCHAR(50),
-                meta JSONB DEFAULT '{}'::jsonb
+                source TEXT, referrer_id INTEGER, platform TEXT
             )
         """)
         db.commit()
         print("[DB SCHEMA] [OK] users table created", flush=True)
-        
-        # 2. USER SESSIONS
+
         sql.execute("""
             CREATE TABLE IF NOT EXISTS user_sessions (
-                id SERIAL PRIMARY KEY,
-                user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
                 started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 ended_at TIMESTAMP,
                 duration_seconds INTEGER,
                 translations_count INTEGER DEFAULT 0,
                 exercises_count INTEGER DEFAULT 0,
                 messages_count INTEGER DEFAULT 0,
-                platform VARCHAR(50),
-                ip_address INET,
-                end_reason VARCHAR(50)
+                platform TEXT, end_reason TEXT
             )
         """)
         db.commit()
         print("[DB SCHEMA] [OK] user_sessions table created", flush=True)
-        
-        # 3. TRANSLATION HISTORY
+
         sql.execute("""
             CREATE TABLE IF NOT EXISTS translation_history (
-                id SERIAL PRIMARY KEY,
-                user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
                 source_text TEXT NOT NULL,
                 translated_text TEXT NOT NULL,
-                from_lang VARCHAR(10) NOT NULL,
-                to_lang VARCHAR(10) NOT NULL,
-                detected_lang VARCHAR(10),
-                text_length INTEGER,
-                word_count INTEGER,
-                char_count INTEGER,
-                method VARCHAR(50) DEFAULT 'api',
-                provider VARCHAR(50),
-                response_time_ms INTEGER,
-                translation_mode VARCHAR(50),
-                chat_type VARCHAR(50),
-                chat_id BIGINT,
+                from_lang TEXT NOT NULL,
+                to_lang TEXT NOT NULL,
+                detected_lang TEXT,
+                text_length INTEGER, word_count INTEGER, char_count INTEGER,
+                method TEXT DEFAULT 'api', provider TEXT, response_time_ms INTEGER,
+                translation_mode TEXT, chat_type TEXT, chat_id INTEGER,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                session_id INTEGER REFERENCES user_sessions(id) ON DELETE SET NULL
+                session_id INTEGER
             )
         """)
         db.commit()
         print("[DB SCHEMA] [OK] translation_history table created", flush=True)
-        
-        # 4. ACHIEVEMENTS
+
         sql.execute("""
             CREATE TABLE IF NOT EXISTS achievements (
-                id SERIAL PRIMARY KEY,
-                code VARCHAR(100) UNIQUE NOT NULL,
-                name VARCHAR(200) NOT NULL,
-                description TEXT,
-                emoji VARCHAR(20),
-                category VARCHAR(50),
-                requirement_type VARCHAR(50),
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                code TEXT UNIQUE NOT NULL,
+                name TEXT NOT NULL,
+                description TEXT, emoji TEXT, category TEXT,
+                requirement_type TEXT,
                 requirement_value INTEGER DEFAULT 1,
                 xp_reward INTEGER DEFAULT 0,
-                badge_url TEXT,
-                display_order INTEGER DEFAULT 0,
-                is_active BOOLEAN DEFAULT TRUE,
+                badge_url TEXT, display_order INTEGER DEFAULT 0,
+                is_active INTEGER DEFAULT 1,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
         db.commit()
         print("[DB SCHEMA] [OK] achievements table created", flush=True)
-        
-        # 5. USER ACHIEVEMENTS
+
         sql.execute("""
             CREATE TABLE IF NOT EXISTS user_achievements (
-                id SERIAL PRIMARY KEY,
-                user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-                achievement_id INTEGER NOT NULL REFERENCES achievements(id) ON DELETE CASCADE,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                achievement_id INTEGER NOT NULL,
                 unlocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 progress INTEGER DEFAULT 0,
-                is_unlocked BOOLEAN DEFAULT FALSE,
-                context JSONB DEFAULT '{}'::jsonb,
+                is_unlocked INTEGER DEFAULT 0,
                 UNIQUE(user_id, achievement_id)
             )
         """)
         db.commit()
         print("[DB SCHEMA] [OK] user_achievements table created", flush=True)
-        
-        # 6. USER PREFERENCES
+
         sql.execute("""
             CREATE TABLE IF NOT EXISTS user_preferences (
-                id SERIAL PRIMARY KEY,
-                user_id BIGINT NOT NULL UNIQUE REFERENCES users(user_id) ON DELETE CASCADE,
-                auto_detect_lang BOOLEAN DEFAULT TRUE,
-                show_pronunciation BOOLEAN DEFAULT TRUE,
-                show_examples BOOLEAN DEFAULT FALSE,
-                default_exercise_type VARCHAR(50) DEFAULT 'flashcard',
-                exercise_difficulty VARCHAR(20) DEFAULT 'adaptive',
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL UNIQUE,
+                auto_detect_lang INTEGER DEFAULT 1,
+                show_pronunciation INTEGER DEFAULT 1,
+                show_examples INTEGER DEFAULT 0,
+                default_exercise_type TEXT DEFAULT 'flashcard',
+                exercise_difficulty TEXT DEFAULT 'adaptive',
                 questions_per_session INTEGER DEFAULT 10,
-                daily_reminder BOOLEAN DEFAULT TRUE,
-                reminder_time TIME DEFAULT '09:00',
-                streak_reminder BOOLEAN DEFAULT TRUE,
-                theme VARCHAR(20) DEFAULT 'light',
-                font_size VARCHAR(10) DEFAULT 'medium',
-                share_progress BOOLEAN DEFAULT TRUE,
-                show_on_leaderboard BOOLEAN DEFAULT TRUE,
+                daily_reminder INTEGER DEFAULT 1,
+                reminder_time TEXT DEFAULT '09:00',
+                streak_reminder INTEGER DEFAULT 1,
+                theme TEXT DEFAULT 'light',
+                font_size TEXT DEFAULT 'medium',
+                share_progress INTEGER DEFAULT 1,
+                show_on_leaderboard INTEGER DEFAULT 1,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
         db.commit()
         print("[DB SCHEMA] [OK] user_preferences table created", flush=True)
-        
-        # 7. DAILY CHALLENGES
+
         sql.execute("""
             CREATE TABLE IF NOT EXISTS daily_challenges (
-                id SERIAL PRIMARY KEY,
-                challenge_date DATE UNIQUE NOT NULL,
-                title VARCHAR(200),
-                description TEXT,
-                challenge_type VARCHAR(50),
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                challenge_date TEXT UNIQUE NOT NULL,
+                title TEXT, description TEXT, challenge_type TEXT,
                 target_value INTEGER NOT NULL,
-                target_unit VARCHAR(50),
+                target_unit TEXT,
                 xp_reward INTEGER DEFAULT 50,
                 bonus_reward TEXT,
-                is_active BOOLEAN DEFAULT TRUE,
+                is_active INTEGER DEFAULT 1,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
         db.commit()
         print("[DB SCHEMA] [OK] daily_challenges table created", flush=True)
-        
-        # 8. USER DAILY CHALLENGE PROGRESS
+
         sql.execute("""
             CREATE TABLE IF NOT EXISTS user_challenge_progress (
-                id SERIAL PRIMARY KEY,
-                user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-                challenge_id INTEGER NOT NULL REFERENCES daily_challenges(id) ON DELETE CASCADE,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL, challenge_id INTEGER NOT NULL,
                 current_value INTEGER DEFAULT 0,
-                is_completed BOOLEAN DEFAULT FALSE,
+                is_completed INTEGER DEFAULT 0,
                 completed_at TIMESTAMP,
-                reward_claimed BOOLEAN DEFAULT FALSE,
+                reward_claimed INTEGER DEFAULT 0,
                 claimed_at TIMESTAMP,
                 UNIQUE(user_id, challenge_id)
             )
         """)
         db.commit()
         print("[DB SCHEMA] [OK] user_challenge_progress table created", flush=True)
-        
-        # 9. USER ACTIVITY DAILY
+
         sql.execute("""
             CREATE TABLE IF NOT EXISTS user_activity_daily (
-                id SERIAL PRIMARY KEY,
-                user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-                activity_date DATE NOT NULL,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL, activity_date TEXT NOT NULL,
                 translations_count INTEGER DEFAULT 0,
                 translation_chars INTEGER DEFAULT 0,
                 exercise_sessions_count INTEGER DEFAULT 0,
@@ -209,14 +177,12 @@ async def create_comprehensive_schema():
             )
         """)
         db.commit()
-        print("[DB SCHEMA] [OK] user_activity_daily table created", flush=True)
-        
-        print("\n[DB SCHEMA] [SUCCESS] ALL TABLES CREATED SUCCESSFULLY!")
+        print("[DB SCHEMA] [SUCCESS] ALL TABLES CREATED SUCCESSFULLY!")
         return True
-        
+
     except Exception as e:
         db.rollback()
-        print(f"\n[DB SCHEMA] [ERROR]: {e}")
+        print(f"[DB SCHEMA] [ERROR]: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -225,7 +191,7 @@ async def create_comprehensive_schema():
 async def init_default_achievements():
     """Initialize default achievements"""
     print("[DB SCHEMA] Initializing default achievements...", flush=True)
-    
+
     achievements = [
         ('first_translation', 'First Translation', 'Complete your first translation', '🎯', 'translation', 'count', 1, 10),
         ('translator_10', 'Translator', 'Complete 10 translations', '📝', 'translation', 'count', 10, 25),
@@ -243,15 +209,14 @@ async def init_default_achievements():
         ('referral_1', 'Influencer', 'Refer 1 friend', '👥', 'social', 'count', 1, 25),
         ('referral_5', 'Ambassador', 'Refer 5 friends', '🌟', 'social', 'count', 5, 100),
     ]
-    
+
     try:
         for code, name, description, emoji, category, req_type, req_val, xp in achievements:
             sql.execute("""
-                INSERT INTO achievements (code, name, description, emoji, category, requirement_type, requirement_value, xp_reward)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (code) DO NOTHING
+                INSERT OR IGNORE INTO achievements
+                (code, name, description, emoji, category, requirement_type, requirement_value, xp_reward)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (code, name, description, emoji, category, req_type, req_val, xp))
-        
         db.commit()
         print(f"[DB SCHEMA] [OK] {len(achievements)} default achievements initialized")
         return True
