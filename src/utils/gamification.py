@@ -200,7 +200,6 @@ class GamificationEngine:
                 SET streak_days = ?, longest_streak = ?, last_streak_date = date('now')
                 WHERE user_id = ?
             """, (streak, longest, user_id))
-            """, (streak, longest, user_id))
             
             db.commit()
             

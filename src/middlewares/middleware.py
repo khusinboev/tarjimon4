@@ -15,27 +15,25 @@ class RegisterUserMiddleware(BaseMiddleware):
         first_name = user.first_name
 
         try:
-            sql.execute("SELECT user_id FROM accounts WHERE user_id = %s", (user_id,))
+            sql.execute("SELECT user_id FROM accounts WHERE user_id = ?", (user_id,))
             if not sql.fetchone():
                 sql.execute(
-                    "INSERT INTO accounts (user_id, lang_code, created_at, first_name, username) VALUES (%s, %s, CURRENT_TIMESTAMP, %s, %s)",
+                    "INSERT OR IGNORE INTO accounts (user_id, lang_code, created_at, first_name, username) VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?)",
                     (user_id, lang_code, first_name, username)
                 )
                 db.commit()
 
                 try:
                     sql.execute("""
-                        INSERT INTO users_enhanced
+                        INSERT OR IGNORE INTO users_enhanced
                         (user_id, username, first_name, language_code, created_at, last_active_at)
-                        VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                        ON CONFLICT (user_id) DO NOTHING
+                        VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                     """, (user_id, username, first_name, lang_code))
                     db.commit()
 
                     sql.execute("""
-                        INSERT INTO leaderboard (user_id, total_xp)
-                        VALUES (%s, 0)
-                        ON CONFLICT (user_id) DO NOTHING
+                        INSERT OR IGNORE INTO leaderboard (user_id, total_xp)
+                        VALUES (?, 0)
                     """, (user_id,))
                     db.commit()
                 except Exception as e:
@@ -48,17 +46,17 @@ class RegisterUserMiddleware(BaseMiddleware):
                 try:
                     sql.execute("""
                         UPDATE accounts
-                        SET first_name = COALESCE(%s, first_name),
-                            username = COALESCE(%s, username)
-                        WHERE user_id = %s
+                        SET first_name = COALESCE(?, first_name),
+                            username = COALESCE(?, username)
+                        WHERE user_id = ?
                     """, (first_name, username, user_id))
 
                     sql.execute("""
                         UPDATE users_enhanced
                         SET last_active_at = CURRENT_TIMESTAMP,
-                            username = COALESCE(%s, username),
-                            first_name = COALESCE(%s, first_name)
-                        WHERE user_id = %s
+                            username = COALESCE(?, username),
+                            first_name = COALESCE(?, first_name)
+                        WHERE user_id = ?
                     """, (username, first_name, user_id))
                     db.commit()
                 except Exception as e:
