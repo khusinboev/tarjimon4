@@ -94,7 +94,6 @@ class UserPanels:
         btn = ReplyKeyboardMarkup(
             keyboard=[
                 [KeyboardButton(text="🌐 Tilni tanlash"), KeyboardButton(text="ℹ️ Yordam")],
-                [KeyboardButton(text="📚 Lug'atlar va Mashqlar")],
             ],
             resize_keyboard=True,
         )

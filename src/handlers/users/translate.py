@@ -253,7 +253,6 @@ async def cb_translate_options(callback: CallbackQuery):
 MAIN_MENU_BUTTONS = {
     "🌐 Tilni tanlash",
     "ℹ️ Yordam",
-    "📚 Lug'atlar va Mashqlar",
 }
 
 @translate_router.message(F.text)

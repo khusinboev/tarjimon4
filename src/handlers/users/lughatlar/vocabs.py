@@ -149,7 +149,7 @@ async def db_exec(query: str, params: tuple = None, fetch: bool = False, many: b
 async def get_user_data(user_id: int) -> Dict[str, Any]:
     """Fetch user lang and books in one query batch for optimization."""
     lang_row = await db_exec(
-        "SELECT interface_lang FROM users WHERE user_id=%s",
+        "SELECT interface_lang FROM users WHERE user_id=?",
         (user_id,), fetch=True
     )
     lang = lang_row["interface_lang"] if lang_row else "uz"
@@ -160,9 +160,9 @@ async def get_user_data(user_id: int) -> Dict[str, Any]:
                   name,
                   is_public,
                   (SELECT COUNT(*) FROM vocab_entries WHERE book_id = vocab_books.id) as word_count,
-                  created_at::date as created_date
+                  date(created_at) as created_date
            FROM vocab_books
-           WHERE user_id = %s
+           WHERE user_id = ?
            ORDER BY created_at DESC""",
         (user_id,), fetch=True, many=True
     )
@@ -190,7 +190,7 @@ async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS
                         vb.name,
                         vb.is_public,
                         vb.user_id,
-                        vb.created_at::date as created_date, COALESCE(a.user_id::text, 'Unknown') as author_name,
+                        date(vb.created_at) as created_date, COALESCE(CAST(a.user_id AS TEXT), 'Unknown') as author_name,
                         COUNT(ve.id) as word_count
                  FROM vocab_books vb
                           LEFT JOIN users a ON vb.user_id = a.user_id
@@ -203,10 +203,10 @@ async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS
     if public_only:
         base_query += " AND vb.is_public = TRUE"
         if exclude_user:
-            base_query += " AND vb.user_id != %s"
+            base_query += " AND vb.user_id != ?"
             params.append(user_id)
     else:
-        base_query += " AND vb.user_id = %s"
+        base_query += " AND vb.user_id = ?"
         params.append(user_id)
 
     base_query += """
@@ -219,7 +219,7 @@ async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS
 
     base_query += """
         ORDER BY vb.created_at DESC
-        LIMIT %s OFFSET %s
+        LIMIT ? OFFSET ?
     """
 
     params.extend([per_page, offset])
@@ -231,7 +231,7 @@ async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS
         "SELECT vb.id, vb.name, vb.is_public, vb.user_id, vb.created_at::date as created_date, COALESCE(a.user_id::text, 'Unknown') as author_name, COUNT(ve.id) as word_count",
         "SELECT COUNT(DISTINCT vb.id)"
     )
-    count_query = count_query.split("ORDER BY")[0].replace("LIMIT %s OFFSET %s", "")
+    count_query = count_query.split("ORDER BY")[0].replace("LIMIT ? OFFSET ?", "")
 
     count_params = params[:-2] if params else []
     total_result = await db_exec(count_query, tuple(count_params), fetch=True)
@@ -242,13 +242,13 @@ async def get_paginated_books(user_id: int, page: int = 0, per_page: int = BOOKS
 
 async def set_user_lang(user_id: int, lang: str):
     row = await db_exec(
-        "SELECT id FROM users WHERE user_id=%s",
+        "SELECT id FROM users WHERE user_id=?",
         (user_id,), fetch=True
     )
     if row:
-        await db_exec("UPDATE users SET interface_lang=%s WHERE id=%s", (lang, row["id"]))
+        await db_exec("UPDATE users SET interface_lang=? WHERE id=?", (lang, row["id"]))
     else:
-        await db_exec("INSERT INTO users (user_id, interface_lang) VALUES (%s,%s)", (user_id, lang))
+        await db_exec("INSERT INTO users (user_id, interface_lang) VALUES (?,?)", (user_id, lang))
 
 
 # =====================================================
@@ -348,7 +348,7 @@ def create_paginated_kb(books: List[Dict], current_page: int, total_pages: int, 
 # =====================================================
 async def export_book_to_excel(book_id: int, user_id: int) -> Optional[str]:
     rows = await db_exec(
-        "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s ORDER BY id",
+        "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=? ORDER BY id",
         (book_id,), fetch=True, many=True
     )
     if len(rows) < 1:
