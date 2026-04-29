@@ -38,7 +38,7 @@ class CheckData:
     async def channels_btn(channels: list):
         keyboard = []
         for index, channel_id in enumerate(channels, 1):
-        sql.execute("SELECT chat_id, username FROM mandatorys WHERE chat_id=?", (channel_id,))
+            sql.execute("SELECT chat_id, username FROM mandatorys WHERE chat_id=?", (channel_id,))
             link = sql.fetchone()
             if link:
                 keyboard.append([
