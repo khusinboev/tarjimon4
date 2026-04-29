@@ -236,21 +236,20 @@ class UserPanelKeyboards:
         """Beautiful main menu with organized layout"""
         builder = ReplyKeyboardBuilder()
         
-        # First row - Core features (match original system)
+        # First row - Language and Help
         builder.row(
             KeyboardButton(text=FancyButtons.LANGUAGES),
-            KeyboardButton(text=FancyButtons.TRANSLATE)
-        )
-        
-        # Second row - Schedule and Help
-        builder.row(
-            KeyboardButton(text=FancyButtons.TIMETABLE),
             KeyboardButton(text=FancyButtons.HELP)
         )
         
-        # Third row - Vocabulary (single button like original)
+        # Second row - Vocabulary (single button like original)
         builder.row(
             KeyboardButton(text=FancyButtons.VOCABULARY)
+        )
+        
+        # Third row - Profile
+        builder.row(
+            KeyboardButton(text=FancyButtons.PROFILE)
         )
         
         return builder.as_markup(resize_keyboard=True)

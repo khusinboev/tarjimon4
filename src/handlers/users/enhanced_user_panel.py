@@ -107,24 +107,6 @@ async def profile_button_handler(message: Message):
 # 📝 TRANSLATION MENU
 # ==========================================
 
-@enhanced_user_router.message(F.text == FancyButtons.TRANSLATE)
-async def translation_menu(message: Message):
-    """Enhanced translation menu"""
-    text = """
-📝 <b>TARJIMA QILISH</b>
-
-Quyidagi usullardan birini tanlang:
-
-📝 <b>Matn</b> — Har qanday matnni tarjima qilish
-🎙️ <b>Ovozli</b> — Ovozli xabarni matnga aylantirish
-📷 <b>Rasm/OCR</b> — Rasmdagi matnni tanib olish
-📎 <b>Hujjat</b> — PDF va hujjatlarni tarjima qilish
-
-💡 <i>Matn yuborish uchun tilni tanlab, matnni yozing!</i>
-"""
-    await message.answer(text, reply_markup=user_kb.translation_menu(), parse_mode="HTML")
-
-
 @enhanced_user_router.message(F.text == FancyButtons.LANGUAGES)
 async def language_selection(message: Message):
     """Visual language selection"""

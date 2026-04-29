@@ -93,8 +93,7 @@ class UserPanels:
     async def user_main_menu():
         btn = ReplyKeyboardMarkup(
             keyboard=[
-                [KeyboardButton(text="🌐 Tilni tanlash"), KeyboardButton(text="📝 Tarjima qilish")],
-                [KeyboardButton(text="📅 Dars jadvali"), KeyboardButton(text="ℹ️ Yordam")],
+                [KeyboardButton(text="🌐 Tilni tanlash"), KeyboardButton(text="ℹ️ Yordam")],
                 [KeyboardButton(text="📚 Lug'atlar va Mashqlar")],
                 [KeyboardButton(text="👤 Profil")],
             ],

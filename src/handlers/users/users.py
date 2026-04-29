@@ -4,7 +4,6 @@ from aiogram.enums import ChatType
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 from config import bot, ADMIN_ID
-from src.handlers.users.timetable import save_timetable, get_daily_timetable
 from src.keyboards.buttons import UserPanels
 from src.keyboards.keyboard_func import CheckData
 
@@ -28,29 +27,6 @@ async def menu_lang(msg: Message):
             "❌ Error loading languages. Please try again."
         )
         print(f"[ERROR] menu_lang: {e}")
-
-@user_router.message(F.text == "📝 Tarjima qilish")
-async def menu_translate(msg: Message):
-    await msg.answer("✍️ Tarjima qilish uchun matn yuboring yoki ovozli xabar yuboring.")
-
-@user_router.message(F.text == "📅 Dars jadvali")
-async def menu_timetable(msg: Message):
-    try:
-        processing_msg = await msg.answer("⏳ Jadval yuklanmoqda...")
-        timetable_path = await save_timetable()
-        timetable_text = get_daily_timetable(timetable_path)
-        await processing_msg.delete()
-        await msg.answer(timetable_text, parse_mode="HTML")
-    except Exception as e:
-        try:
-            await processing_msg.delete()
-        except:
-            pass
-        await msg.answer(
-            "❌ Jadvalni yuklashda xatolik yuz berdi. Iltimos, keyinroq qaytadan urinib ko'ring.\n"
-            "❌ Error loading schedule. Please try again later."
-        )
-        print(f"[ERROR] menu_timetable: {e}")
 
 @user_router.message(F.text == "ℹ️ Yordam")
 async def menu_help(msg: Message):
@@ -106,25 +82,6 @@ async def blocked_user_handler(message: Message):
         "Agar blokdan chiqishni istasangiz, admin bilan bog‘laning."
     )
 
-@user_router.message(Command("jadval"))
-async def cmd_jadval(msg: Message):
-    try:
-        processing_msg = await msg.answer("⏳ Jadval yuklanmoqda...")
-        timetable_path = await save_timetable()
-        timetable_text = get_daily_timetable(timetable_path)
-        await processing_msg.delete()
-        await msg.answer(timetable_text, parse_mode="HTML")
-    except Exception as e:
-        try:
-            await processing_msg.delete()
-        except:
-            pass
-        await msg.answer(
-            "❌ Jadvalni yuklashda xatolik yuz berdi. Iltimos, keyinroq qaytadan urinib ko'ring.\n"
-            "❌ Error loading schedule. Please try again later."
-        )
-        print(f"[ERROR] cmd_jadval: {e}")
-
 @user_router.message(CommandStart())
 async def start_cmd1(message: Message):
     try:
@@ -144,8 +101,6 @@ async def start_cmd1(message: Message):
         await message.answer(
             "👋 <b>Botimizga xush kelibsiz!</b>\n\n"
             "🌐 Tilni tanlash - Tarjima tillari\n"
-            "📝 Tarjima qilish - Matn tarjima qilish\n"
-            "📅 Dars jadvali - Kunlik jadval\n"
             "ℹ️ Yordam - Bot haqida ma'lumot\n"
             "📚 Lug'atlar va Mashqlar - So'z va mashqlar\n"
             "👤 Profil - Shaxsiy kabinet\n\n"
@@ -168,7 +123,7 @@ async def check(call: CallbackQuery):
         if check_status:
             await call.message.delete()
             await bot.send_message(chat_id=user_id,
-                                   text="👋 <b>Botimizga xush kelibsiz!</b>\n\n" +
+                                   text="👋 <b>Botimizga xush kelibsiz!</b>\n\n"
                                         "Quyidagi menyudan kerakli bo'limni tanlang:",
                                    reply_markup=await UserPanels.user_main_menu(),
                                    parse_mode="HTML")
