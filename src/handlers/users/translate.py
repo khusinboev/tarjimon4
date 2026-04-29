@@ -191,7 +191,7 @@ def get_language_keyboard(user_id: int):
         ])
     # Back button
     buttons.append([
-        InlineKeyboardButton(text="⬅️ Orqaga  •  Kembali  •  Back", callback_data="setlang:back")
+        InlineKeyboardButton(text="⬅️ Back", callback_data="setlang:back")
     ])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
@@ -199,8 +199,8 @@ def get_translation_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="🌐 Til  •  Bahasa  •  Lang", callback_data="translate:setlang"),
-                InlineKeyboardButton(text="🔄 Almashtir  •  Tukar  •  Switch", callback_data="translate:switch")
+                InlineKeyboardButton(text="🌐 Lang", callback_data="translate:setlang"),
+                InlineKeyboardButton(text="🔄 Switch", callback_data="translate:switch")
             ]
         ]
     )
@@ -251,35 +251,25 @@ async def split_and_send(msg: Message, text: str, reply_markup=None):
 @translate_router.message(Command("lang"))
 async def cmd_lang(msg: Message):
     await msg.answer(
-        "🌐 <b>Tillarni tanlang</b>\n"
-        "✅ Chap: Kiruvchi (Input) | ✅ O‘ng: Chiquvchi (Output)\n"
-        "<i>Til ustiga bosing va tanlang. Orqaga qaytish uchun ⬅️ tugmasini bosing.</i>",
+        MSG["lang_title"],
         reply_markup=get_language_keyboard(msg.from_user.id),
         parse_mode="HTML"
     )
 
 @translate_router.message(Command("help"))
 async def cmd_help(msg: Message):
-    help_text = (
-        "📚 <b>Tarjimon bot qo‘llanmasi</b>\n"
-        "📚 <b>Translator bot guide</b>\n\n"
-        "🔹 <b>/lang</b> — Kiruvchi va chiquvchi tillarni tanlash\n"
-        "🔹 <b>/lang</b> — Select input and output languages\n"
-        "🔹 Matn yuboring — Tanlangan tillarga tarjima qiladi\n"
-        "🔹 Send text — Translates to selected languages\n"
-        "🔹 Rasm captioni — Caption matnini tarjima qiladi\n"
-        "🔹 Image caption — Translates the caption text\n"
-        "🔹 Audio/Voice — Hozircha qo‘llab-quvvatlanmaydi\n"
-        "🔹 Audio/Voice — Not supported yet\n\n"
-        "🌐 Qo‘llab-quvvatlanadigan tillar:\n" +
-        ", ".join([f"{v['flag']} {v['name']}" for v in LANGUAGES.values() if v['name'] != "Avto"])
-    )
-    await msg.answer(help_text, parse_mode="HTML")
+    lang_list = ", ".join([f"{v['flag']} {v['name']}" for v in LANGUAGES.values() if v['name'] != "Avto"])
+    await msg.answer(MSG["help"] + lang_list, parse_mode="HTML")
 
 @translate_router.callback_query(F.data.startswith("setlang:"))
 async def cb_lang(callback: CallbackQuery):
     if callback.data == "setlang:ignore":
-        await callback.answer("🛑 Mumkin emas / Not allowed")
+        await callback.answer("Header — not clickable")
+    elif callback.data == "setlang:to_auto_blocked":
+        await callback.answer(
+            "🚫 Auto cannot be output language!\nTanlang: o'ng ustundan boshqa til tanlang.",
+            show_alert=True
+        )
     elif callback.data == "setlang:back":
         await callback.message.delete()
         await callback.answer()
@@ -293,7 +283,7 @@ async def cb_lang(callback: CallbackQuery):
         except:
             pass
         try:
-            await callback.answer("✅ Til yangilandi / Language updated")
+            await callback.answer(MSG["lang_updated"])
         except:
             pass
 
@@ -303,18 +293,16 @@ async def cb_translate_options(callback: CallbackQuery):
     if action == "setlang":
         kb = get_language_keyboard(callback.from_user.id)
         await callback.message.reply(
-            "🌐 <b>Tillarni tanlang</b>\n"
-            "✅ Chap: Kiruvchi (Input) | ✅ O‘ng: Chiquvchi (Output)\n"
-            "<i>Til ustiga bosing va tanlang. Orqaga qaytish uchun ⬅️ tugmasini bosing.</i>",
-            reply_markup=kb,
+            MSG["lang_title"],
+            reply_markup=get_language_keyboard(callback.from_user.id),
             parse_mode="HTML"
         )
         await callback.answer()
     elif action == "switch":
         if switch_user_langs(callback.from_user.id):
-            await callback.answer("✅ Tillar almashtirildi / Languages switched")
+            await callback.answer(MSG["langs_switched"])
         else:
-            await callback.answer("⚠️ Tillar topilmadi / Languages not found", show_alert=True)
+            await callback.answer(MSG["langs_not_found"], show_alert=True)
 
 MAIN_MENU_BUTTONS = {
     "🌐 Tilni tanlash",
@@ -342,7 +330,7 @@ async def handle_text(msg: Message):
     if not check_status:
         try:
             await msg.answer(
-                "Kanallarimizga obuna bo'ling \n\nSubscribe to our channels",
+                MSG["subscribe"],
                 reply_markup=await UserPanels.join_btn(msg.from_user.id)
             )
         except:
@@ -353,21 +341,13 @@ async def handle_text(msg: Message):
         langs = get_user_langs(msg.from_user.id)
         if not langs:
             return await msg.answer(
-                "🌐 <b>Tillarni tanlamadingiz</b>\n\n"
-                "Tarjima qilish uchun avval tillarni tanlang:\n"
-                "➡️ Bosh menyudagi '🌐 Tilni tanlash' tugmasini bosing\n\n"
-                "🌐 <b>Languages not selected</b>\n\n"
-                "To translate, first select languages:\n"
-                "➡️ Press '🌐 Tilni tanlash' in main menu",
+                MSG["no_langs"],
                 parse_mode="HTML"
             )
         from_lang, to_lang = langs
         if not to_lang:
             return await msg.answer(
-                "❗ <b>Chiquvchi til tanlanmagan</b>\n\n"
-                "'🌐 Tilni tanlash' orqali chiquvchi tilni tanlang (o'ng ustun)\n\n"
-                "❗ <b>Output language not selected</b>\n\n"
-                "Select output language via '🌐 Tilni tanlash' (right column)",
+                MSG["no_output_lang"],
                 parse_mode="HTML"
             )
 
