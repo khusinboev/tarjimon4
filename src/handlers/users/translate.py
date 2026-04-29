@@ -72,19 +72,19 @@ fallback_translator = GoogleTransFallback()
 
 # --- Database helpers ---
 def get_user_langs(user_id: int):
-    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id=%s", (user_id,))
+    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id=?", (user_id,))
     return sql.fetchone()
 
 def update_user_lang(user_id: int, lang_code: str, direction: str):
     field = "from_lang" if direction == "from" else "to_lang"
-    sql.execute("SELECT 1 FROM user_languages WHERE user_id=%s", (user_id,))
+    sql.execute("SELECT 1 FROM user_languages WHERE user_id=?", (user_id,))
     if sql.fetchone():
-        sql.execute(f"UPDATE user_languages SET {field}=%s WHERE user_id=%s", (lang_code, user_id))
+        sql.execute(f"UPDATE user_languages SET {field}=? WHERE user_id=?", (lang_code, user_id))
     else:
         from_lang = lang_code if direction == "from" else None
         to_lang = lang_code if direction == "to" else None
         sql.execute(
-            "INSERT INTO user_languages (user_id, from_lang, to_lang) VALUES (%s, %s, %s)",
+            "INSERT INTO user_languages (user_id, from_lang, to_lang) VALUES (?, ?, ?)",
             (user_id, from_lang, to_lang),
         )
     db.commit()
@@ -93,31 +93,35 @@ def update_user_lang(user_id: int, lang_code: str, direction: str):
 def get_language_keyboard(user_id: int):
     from_lang, to_lang = get_user_langs(user_id) or (None, None)
     buttons = []
-    # Header row
+    # Header row — column labels
+    buttons.append([
+        InlineKeyboardButton(text="📥 Kiruvchi", callback_data="setlang:ignore"),
+        InlineKeyboardButton(text="📤 Chiquvchi", callback_data="setlang:ignore"),
+    ])
+    # Auto row
     buttons.append([
         InlineKeyboardButton(
             text=f"{'✅ ' if from_lang == 'auto' else ''}🌐 Avto",
             callback_data="setlang:from:auto"
         ),
-        InlineKeyboardButton(text=" ", callback_data="setlang:ignore"),
         InlineKeyboardButton(
             text=f"{'✅ ' if to_lang == 'auto' else ''}🌐 Avto",
             callback_data="setlang:to:auto"
-        )
+        ),
     ])
-    # Language rows
+    # Language rows — 2 columns side by side
     for code, data in LANGUAGES.items():
-        if code == "auto": continue
+        if code == "auto":
+            continue
         buttons.append([
             InlineKeyboardButton(
                 text=f"{'✅ ' if from_lang == code else ''}{data['flag']} {data['name']}",
                 callback_data=f"setlang:from:{code}"
             ),
-            InlineKeyboardButton(text=" ", callback_data="setlang:ignore"),
             InlineKeyboardButton(
                 text=f"{'✅ ' if to_lang == code else ''}{data['flag']} {data['name']}",
                 callback_data=f"setlang:to:{code}"
-            )
+            ),
         ])
     # Back button
     buttons.append([
@@ -154,12 +158,12 @@ def translate_text(from_lang: str, to_lang: str, text: str):
 
 # --- Switch tillar funksiyasi ---
 def switch_user_langs(user_id: int):
-    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id=%s", (user_id,))
+    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id=?", (user_id,))
     langs = sql.fetchone()
     if langs:
         from_lang, to_lang = langs
         sql.execute(
-            "UPDATE user_languages SET from_lang=%s, to_lang=%s WHERE user_id=%s",
+            "UPDATE user_languages SET from_lang=?, to_lang=? WHERE user_id=?",
             (to_lang, from_lang, user_id)
         )
         db.commit()

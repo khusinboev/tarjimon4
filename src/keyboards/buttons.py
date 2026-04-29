@@ -74,7 +74,7 @@ class AdminPanel:
 class UserPanels:
     @staticmethod
     async def join_btn(user_id):
-        sql.execute("SELECT chat_id FROM public.mandatorys")
+        sql.execute("SELECT chat_id FROM mandatorys")
         rows = sql.fetchall()
         join_inline = []
         title = 1

@@ -67,14 +67,14 @@ async def new(message: Message):
     all_users = cur.fetchone()[0]
 
     # Oxirgi 3 oydagi jami foydalanuvchilar
-    cur.execute("SELECT COUNT(*) FROM users WHERE DATE(created_at) >= %s", (months[-1],))
+    cur.execute("SELECT COUNT(*) FROM users WHERE DATE(created_at) >= ?", (months[-1],))
     last_3_months = cur.fetchone()[0]
 
     # Har bir oy bo‘yicha statistikalar
     month_counts = {}
     for month in months:
         cur.execute(
-            "SELECT COUNT(*) FROM users WHERE DATE(created_at) >= %s AND DATE(created_at) < %s",
+            "SELECT COUNT(*) FROM users WHERE DATE(created_at) >= ? AND DATE(created_at) < ?",
             (month, month + relativedelta(months=1))
         )
         month_counts[month.strftime("%B")] = cur.fetchone()[0] or 0
@@ -83,7 +83,7 @@ async def new(message: Message):
     last_7_days = {}
     for i in range(7):
         date_str = (now - timedelta(days=i)).strftime("%Y-%m-%d")
-        cur.execute("SELECT COUNT(*) FROM users WHERE DATE(created_at) = %s", (date_str,))
+        cur.execute("SELECT COUNT(*) FROM users WHERE DATE(created_at) = ?", (date_str,))
         last_7_days[date_str] = cur.fetchone()[0] or 0
 
     # --- Yangi qo'shiladigan qism: tillar kesimi ---
@@ -180,7 +180,7 @@ async def channel_add1(message: Message, state: FSMContext):
         #                            parse_mode="html")
         # else:
         #     channel_id = chat.id
-        #     sql.execute(f"SELECT chat_id FROM public.mandatorys WHERE chat_id = {channel_id}")
+        #     sql.execute(f"SELECT chat_id FROM mandatorys WHERE chat_id = {channel_id}")
         #     data = sql.fetchone()
         #     if data is None:
         #         await PanelFunc.channel_add(channel_id, link)
@@ -203,7 +203,7 @@ async def channel_add1(message: Message, state: FSMContext):
                                    parse_mode="html")
         else:
             channel_id = chat.id
-            sql.execute(f"SELECT chat_id FROM public.mandatorys WHERE chat_id = {channel_id}")
+            sql.execute(f"SELECT chat_id FROM mandatorys WHERE chat_id = {channel_id}")
             data = sql.fetchone()
             if data is None:
                 await message.reply("Kanal username qabul qilindi, endi taklif havolasini yuboring. U https://t.me/+ deb boshlanadi. Buni kanal havolalari bo'limida yaratasiz.", reply_markup=markup)
@@ -224,7 +224,7 @@ async def channel_add1(message: Message, state: FSMContext):
                                    parse_mode="html")
         else:
             channel_id = chat.id
-            sql.execute(f"SELECT chat_id FROM public.mandatorys WHERE chat_id = {channel_id}")
+            sql.execute(f"SELECT chat_id FROM mandatorys WHERE chat_id = {channel_id}")
             data = sql.fetchone()
             if data is None:
                 await message.reply(
@@ -263,7 +263,7 @@ async def channel_delete(message: Message, state: FSMContext):
 async def channel_delete2(message: Message, state: FSMContext):
     all_details = await bot.get_chat(message.text)
     channel_id = all_details.id
-    sql.execute(f"""SELECT chat_id FROM public.mandatorys WHERE chat_id = '{channel_id}'""")
+    sql.execute(f"""SELECT chat_id FROM mandatorys WHERE chat_id = '{channel_id}'""")
     data = sql.fetchone()
 
     if data is None:

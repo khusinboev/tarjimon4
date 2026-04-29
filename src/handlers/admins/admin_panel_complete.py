@@ -682,13 +682,13 @@ async def users_search_execute(message: Message, state: FSMContext):
         # Try as ID first
         try:
             user_id = int(query)
-            sql.execute("SELECT user_id, first_name, username, created_at FROM users WHERE user_id = %s", (user_id,))
+            sql.execute("SELECT user_id, first_name, username, created_at FROM users WHERE user_id = ?", (user_id,))
         except ValueError:
             # Search by username
             sql.execute("""
                 SELECT user_id, first_name, username, created_at 
                 FROM users 
-                WHERE username ILIKE %s
+                WHERE username LIKE ?
                 LIMIT 5
             """, (f"%{query}%",))
         
@@ -1030,7 +1030,7 @@ async def channel_add_execute(message: Message, state: FSMContext):
         
         # Save to database
         sql.execute(
-            "INSERT INTO mandatorys (chat_id, username, title, types) VALUES (%s, %s, %s, %s) ON CONFLICT (chat_id) DO UPDATE SET username = EXCLUDED.username",
+            "INSERT INTO mandatorys (chat_id, username, title, types) VALUES (?, ?, ?, ?) ON CONFLICT (chat_id) DO UPDATE SET username = EXCLUDED.username",
             (chat_id, username, chat.title, 'channel')
         )
         db.commit()
@@ -1076,7 +1076,7 @@ async def channel_delete_execute(callback: CallbackQuery):
     chat_id = int(callback.data.split(":")[3])
     
     try:
-        sql.execute("DELETE FROM mandatorys WHERE chat_id = %s", (chat_id,))
+        sql.execute("DELETE FROM mandatorys WHERE chat_id = ?", (chat_id,))
         db.commit()
         await callback.answer("✅ Kanal o'chirildi!")
         await channels_list(callback)

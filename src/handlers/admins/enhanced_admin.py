@@ -376,7 +376,7 @@ async def search_user(message: Message, state: FSMContext):
         sql.execute("""
             SELECT user_id, first_name, username, created_at, last_active_at, 
                    is_blocked, is_premium, streak_days, user_level
-            FROM users_enhanced WHERE user_id = %s
+            FROM users_enhanced WHERE user_id = ?
         """, (user_id,))
     except ValueError:
         # Search by username or name
@@ -384,7 +384,7 @@ async def search_user(message: Message, state: FSMContext):
             SELECT user_id, first_name, username, created_at, last_active_at,
                    is_blocked, is_premium, streak_days, user_level
             FROM users_enhanced 
-            WHERE username ILIKE %s OR first_name ILIKE %s
+            WHERE username LIKE ? OR first_name LIKE ?
             LIMIT 5
         """, (f"%{query}%", f"%{query}%"))
     
