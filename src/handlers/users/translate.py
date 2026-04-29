@@ -89,24 +89,90 @@ def update_user_lang(user_id: int, lang_code: str, direction: str):
         )
     db.commit()
 
+# --- 3-tilli xabarlar ---
+MSG = {
+    "lang_title": (
+        "🌐 <b>Tilni tanlang</b>  |  <b>Pilih Bahasa</b>  |  <b>Select Language</b>\n\n"
+        "📥 <b>Kiruvchi</b> — tarjima qilinadigan matn tili\n"
+        "    <i>Bahasa sumber</i>  |  <i>Source language</i>\n\n"
+        "📤 <b>Chiquvchi</b> — tarjima natijalari tili\n"
+        "    <i>Bahasa tujuan</i>  |  <i>Target language</i>"
+    ),
+    "lang_updated": "✅ Til saqlandi  •  Bahasa disimpan  •  Language saved",
+    "auto_output_blocked": (
+        "🚫 Chiquvchi til uchun <b>Avto</b> tanlab bo'lmaydi!\n"
+        "🚫 <b>Auto</b> tidak bisa dipilih untuk bahasa tujuan!\n"
+        "🚫 <b>Auto</b> cannot be selected as output language!"
+    ),
+    "langs_switched": (
+        "🔄 Tillar almashtirildi\n"
+        "🔄 Bahasa ditukar\n"
+        "🔄 Languages switched"
+    ),
+    "langs_not_found": (
+        "⚠️ Tillar topilmadi  •  Bahasa tidak ditemukan  •  Languages not found"
+    ),
+    "no_langs": (
+        "⚙️ <b>Tillar tanlanmagan!</b>\n\n"
+        "🇺🇿 Tarjima uchun avval tilni tanlang:\n"
+        "🇮🇩 Pilih bahasa terlebih dahulu untuk menerjemahkan:\n"
+        "🇬🇧 Select languages first to translate:\n\n"
+        "👉 <b>🌐 Tilni tanlash</b>"
+    ),
+    "no_output_lang": (
+        "⚙️ <b>Chiquvchi til tanlanmagan!</b>\n\n"
+        "🇺🇿 O'ng ustundan chiquvchi tilni tanlang\n"
+        "🇮🇩 Pilih bahasa tujuan di kolom kanan\n"
+        "🇬🇧 Select output language in the right column\n\n"
+        "👉 <b>🌐 Tilni tanlash</b>"
+    ),
+    "subscribe": (
+        "📢 <b>Kanalga obuna bo'ling!</b>\n"
+        "📢 <b>Silakan bergabung ke channel!</b>\n"
+        "📢 <b>Please subscribe to our channel!</b>"
+    ),
+    "translate_error": (
+        "⚠️ <b>Tarjima xatosi</b>\n"
+        "⚠️ <b>Kesalahan terjemahan</b>\n"
+        "⚠️ <b>Translation error</b>\n\n"
+        "🔄 Qaytadan urinib ko'ring  •  Coba lagi  •  Please try again"
+    ),
+    "help": (
+        "📖 <b>Qo'llanma  •  Panduan  •  Guide</b>\n\n"
+        "🇺🇿 <b>Foydalanish:</b>\n"
+        "• <b>🌐 Tilni tanlash</b> — kiruvchi va chiquvchi tilni o'rnating\n"
+        "• Matn yuboring — tarjima avtomatik chiqadi\n"
+        "• <b>🔄 Switch</b> — tillarni almashtirish\n\n"
+        "🇮🇩 <b>Cara pakai:</b>\n"
+        "• <b>🌐 Tilni tanlash</b> — atur bahasa sumber & tujuan\n"
+        "• Kirim teks — terjemahan otomatis muncul\n"
+        "• <b>🔄 Switch</b> — tukar bahasa\n\n"
+        "🇬🇧 <b>How to use:</b>\n"
+        "• <b>🌐 Tilni tanlash</b> — set input & output language\n"
+        "• Send text — translation appears automatically\n"
+        "• <b>🔄 Switch</b> — swap languages\n\n"
+        "🌐 <b>Supported languages / Bahasa didukung / Qo'llab-quvvatlanadigan tillar:</b>\n"
+    ),
+}
+
 # --- UI helpers ---
 def get_language_keyboard(user_id: int):
     from_lang, to_lang = get_user_langs(user_id) or (None, None)
     buttons = []
     # Header row — column labels
     buttons.append([
-        InlineKeyboardButton(text="📥 Kiruvchi", callback_data="setlang:ignore"),
-        InlineKeyboardButton(text="📤 Chiquvchi", callback_data="setlang:ignore"),
+        InlineKeyboardButton(text="📥 Kiruvchi | Input", callback_data="setlang:ignore"),
+        InlineKeyboardButton(text="📤 Chiquvchi | Output", callback_data="setlang:ignore"),
     ])
-    # Auto row
+    # Auto row — faqat kiruvchi uchun
     buttons.append([
         InlineKeyboardButton(
-            text=f"{'✅ ' if from_lang == 'auto' else ''}🌐 Avto",
+            text=f"{'✅ ' if from_lang == 'auto' else ''}🌐 Avto (auto-detect)",
             callback_data="setlang:from:auto"
         ),
         InlineKeyboardButton(
-            text=f"{'✅ ' if to_lang == 'auto' else ''}🌐 Avto",
-            callback_data="setlang:to:auto"
+            text="🚫 Avto (not allowed)",
+            callback_data="setlang:to_auto_blocked"
         ),
     ])
     # Language rows — 2 columns side by side
@@ -125,7 +191,7 @@ def get_language_keyboard(user_id: int):
         ])
     # Back button
     buttons.append([
-        InlineKeyboardButton(text="⬅️ Orqaga / Back", callback_data="setlang:back")
+        InlineKeyboardButton(text="⬅️ Orqaga  •  Kembali  •  Back", callback_data="setlang:back")
     ])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
@@ -133,8 +199,8 @@ def get_translation_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="🌐 Langs", callback_data="translate:setlang"),
-                InlineKeyboardButton(text="🔄 Switch", callback_data="translate:switch")
+                InlineKeyboardButton(text="🌐 Til  •  Bahasa  •  Lang", callback_data="translate:setlang"),
+                InlineKeyboardButton(text="🔄 Almashtir  •  Tukar  •  Switch", callback_data="translate:switch")
             ]
         ]
     )
