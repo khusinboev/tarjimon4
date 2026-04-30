@@ -5,6 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from config import bot, ADMIN_ID
 from src.keyboards.buttons import UserPanels
 from src.keyboards.keyboard_func import CheckData
+from src.utils.messages import MSG
 
 user_router = Router()
 
@@ -14,17 +15,12 @@ async def menu_lang(msg: Message):
     try:
         from src.handlers.users.translate import get_language_keyboard
         await msg.answer(
-            "🌐 <b>Tillarni tanlang</b>\n"
-            "✅ Chap: Kiruvchi (Input) | ✅ O'ng: Chiquvchi (Output)\n"
-            "<i>Til ustiga bosing va tanlang. Orqaga qaytish uchun ⬅️ tugmasini bosing.</i>",
+            MSG["lang_title"],
             reply_markup=get_language_keyboard(msg.from_user.id),
             parse_mode="HTML"
         )
     except Exception as e:
-        await msg.answer(
-            "❌ Tillarni yuklashda xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.\n"
-            "❌ Error loading languages. Please try again."
-        )
+        await msg.answer(MSG["langs_loading_error"])
         print(f"[ERROR] menu_lang: {e}")
 
 
@@ -65,10 +61,7 @@ async def menu_cabinet(msg: Message):
 # Blocked user handler
 @user_router.message(F.from_user.id == 7638932125)
 async def blocked_user_handler(message: Message):
-    await message.answer(
-        "Siz adminimiz @adkhambek_4 ni bloklaganingiz sababli bot tomonidan bloklangansiz.\n"
-        "Agar blokdan chiqishni istasangiz, admin bilan bog'laning."
-    )
+    await message.answer(MSG["blocked"], parse_mode="HTML")
 
 
 @user_router.message(CommandStart())
@@ -87,11 +80,7 @@ async def start_cmd1(message: Message):
             print(f"[DEBUG] Streak check on start: {e}")
 
         await message.answer(
-            "👋 <b>Botimizga xush kelibsiz!</b>\n\n"
-            "🌐 Tilni tanlash - Tarjima tillari\n"
-            "ℹ️ Yordam - Bot haqida ma'lumot\n"
-            "📚 Lug'atlar va Mashqlar - So'z va mashqlar\n\n"
-            "Quyidagi menyudan kerakli bo'limni tanlang:",
+            MSG["welcome"],
             reply_markup=await UserPanels.user_main_menu(),
             parse_mode="HTML"
         )
@@ -112,8 +101,7 @@ async def check(call: CallbackQuery):
             await call.message.delete()
             await bot.send_message(
                 chat_id=user_id,
-                text="👋 <b>Botimizga xush kelibsiz!</b>\n\n"
-                     "Quyidagi menyudan kerakli bo'limni tanlang:",
+                text=MSG["welcome"],
                 reply_markup=await UserPanels.user_main_menu(),
                 parse_mode="HTML"
             )

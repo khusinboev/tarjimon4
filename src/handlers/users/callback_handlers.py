@@ -12,6 +12,7 @@ from src.keyboards.sophisticated_keyboards import (
     user_kb, lang_selector, practice_kb, game_kb, FancyButtons
 )
 from src.keyboards.buttons import UserPanels
+from src.utils.messages import MSG
 
 # Create router for callbacks
 callback_router = Router()
@@ -116,47 +117,40 @@ async def translation_text(callback: CallbackQuery):
 async def translation_voice(callback: CallbackQuery):
     """Handle voice translation selection"""
     await callback.message.answer(
-        "🎙️ <b>OVOZLI TARJIMA</b>\n\n"
-        "Ovozli xabar yuboring.\n"
-        "Tez orada qo'shiladi!",
+        MSG["coming_soon"],
         parse_mode="HTML"
     )
-    await callback.answer("Tez orada!", show_alert=True)
+    await callback.answer("Coming soon...", show_alert=True)
 
 
 @callback_router.callback_query(F.data == "trans:image")
 async def translation_image(callback: CallbackQuery):
     """Handle image/OCR translation selection"""
     await callback.message.answer(
-        "📷 <b>RASM TARJIMA (OCR)</b>\n\n"
-        "Rasm yuboring va matn aniqlansin.\n"
-        "Tez orada qo'shiladi!",
+        MSG["coming_soon"],
         parse_mode="HTML"
     )
-    await callback.answer("Tez orada!", show_alert=True)
+    await callback.answer("Coming soon...", show_alert=True)
 
 
 @callback_router.callback_query(F.data == "trans:doc")
 async def translation_doc(callback: CallbackQuery):
     """Handle document translation selection"""
     await callback.message.answer(
-        "📎 <b>HUJJAT TARJIMA</b>\n\n"
-        "PDF yoki boshqa hujjat yuboring.\n"
-        "Tez orada qo'shiladi!",
+        MSG["coming_soon"],
         parse_mode="HTML"
     )
-    await callback.answer("Tez orada!", show_alert=True)
+    await callback.answer("Coming soon...", show_alert=True)
 
 
 @callback_router.callback_query(F.data == "trans:favorites")
 async def translation_favorites(callback: CallbackQuery):
     """Show favorite translations"""
     await callback.message.answer(
-        "⭐ <b>SEVIMLI TARJIMALAR</b>\n\n"
-        "Bu funksiya tez orada qo'shiladi!",
+        MSG["coming_soon"],
         parse_mode="HTML"
     )
-    await callback.answer("Tez orada!", show_alert=True)
+    await callback.answer("Coming soon...", show_alert=True)
 
 
 @callback_router.callback_query(F.data == "trans:history")
@@ -207,44 +201,40 @@ async def settings_language(callback: CallbackQuery):
 async def settings_notifications(callback: CallbackQuery):
     """Notification settings"""
     await callback.message.answer(
-        "🔔 <b>BILDIRISHNOMALAR</b>\n\n"
-        "Bu funksiya tez orada qo'shiladi!",
+        MSG["notifications_settings"],
         parse_mode="HTML"
     )
-    await callback.answer("Tez orada!", show_alert=True)
+    await callback.answer("Coming soon...", show_alert=True)
 
 
 @callback_router.callback_query(F.data == "settings:theme")
 async def settings_theme(callback: CallbackQuery):
     """Theme settings"""
     await callback.message.answer(
-        "🎨 <b>MAVZU SOZLAMALARI</b>\n\n"
-        "Bu funksiya tez orada qo'shiladi!",
+        MSG["theme_settings"],
         parse_mode="HTML"
     )
-    await callback.answer("Tez orada!", show_alert=True)
+    await callback.answer("Coming soon...", show_alert=True)
 
 
 @callback_router.callback_query(F.data == "settings:sound")
 async def settings_sound(callback: CallbackQuery):
     """Sound settings"""
     await callback.message.answer(
-        "🔊 <b>OVoz SOZLAMALARI</b>\n\n"
-        "Bu funksiya tez orada qo'shiladi!",
+        MSG["sound_settings"],
         parse_mode="HTML"
     )
-    await callback.answer("Tez orada!", show_alert=True)
+    await callback.answer("Coming soon...", show_alert=True)
 
 
 @callback_router.callback_query(F.data == "settings:export")
 async def settings_export(callback: CallbackQuery):
     """Export user data"""
     await callback.message.answer(
-        "📊 <b>MA'LUMOTLARNI EKSPORT</b>\n\n"
-        "Bu funksiya tez orada qo'shiladi!",
+        MSG["export_data"],
         parse_mode="HTML"
     )
-    await callback.answer("Tez orada!", show_alert=True)
+    await callback.answer("Coming soon...", show_alert=True)
 
 
 @callback_router.callback_query(F.data == "settings:delete")
@@ -292,11 +282,10 @@ async def practice_flashcards(callback: CallbackQuery):
 async def practice_writing(callback: CallbackQuery):
     """Start writing practice"""
     await callback.message.answer(
-        "✏️ <b>YOZMA MASHQ</b>\n\n"
-        "Bu funksiya tez orada qo'shiladi!",
+        MSG["coming_soon"],
         parse_mode="HTML"
     )
-    await callback.answer("Tez orada!", show_alert=True)
+    await callback.answer("Coming soon...", show_alert=True)
 
 
 @callback_router.callback_query(F.data == "practice:choice")

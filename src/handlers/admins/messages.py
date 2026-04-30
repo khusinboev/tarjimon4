@@ -12,6 +12,7 @@ from aiogram.exceptions import (
 )
 from config import ADMIN_ID, sql, bot
 from src.keyboards.buttons import AdminPanel
+from src.utils.messages import MSG
 
 # Logging configuration
 logging.basicConfig(
@@ -150,7 +151,12 @@ async def broadcast(user_ids: list[int], message: Message, send_func, is_test: b
     total = len(user_ids)
     success = 0
     failed = 0
-    status_msg = await message.answer("📤 Yuborish boshlandi...")
+    status_msg = await message.answer(
+        "📬 <b>Xabar yuborilmoqda...</b>\n"
+        "📬 <b>Mengirim pesan...</b>\n"
+        "📬 <b>Sending message...</b>",
+        parse_mode="HTML"
+    )
     batch_size = 100
     update_interval = 1000  # Update every 1000 users
     # For more frequent updates, use update_interval = 100 and increase sleep to 1 second:
@@ -175,13 +181,16 @@ async def broadcast(user_ids: list[int], message: Message, send_func, is_test: b
         # Update progress
         if (i + batch_size) % update_interval == 0 or (i + batch_size) >= total:
             try:
-                await status_msg.edit_text(
+                progress_text = (
                     f"📬 {'Sinov' if is_test else 'Xabar'} yuborilmoqda...\n\n"
-                    f"✅ Yuborilgan: {success} ta\n"
-                    f"❌ Yuborilmagan: {failed} ta\n"
-                    f"📦 Jami: {total} ta\n"
+                    f"📬 {'Tes' if is_test else 'Pesan'} dikirim...\n\n"
+                    f"📬 {'Test' if is_test else 'Message'} being sent...\n\n"
+                    f"✅ Yuborilgan: {success} ta | Terkirim: {success} | Sent: {success}\n"
+                    f"❌ Yuborilmagan: {failed} ta | Tidak terkirim: {failed} | Failed: {failed}\n"
+                    f"📦 Jami: {total} ta | Total: {total} | Total: {total}\n"
                     f"📊 Progres: {min(i + batch_size, total)}/{total}"
                 )
+                await status_msg.edit_text(progress_text)
             except Exception as e:
                 logger.error(f"Failed to update status message: {e}")
 
@@ -191,10 +200,13 @@ async def broadcast(user_ids: list[int], message: Message, send_func, is_test: b
 
     # Final status message
     await message.answer(
-        f"✅ {'Sinov' if is_test else 'Xabar'} yuborildi\n\n"
-        f"📤 Yuborilgan: {success} ta\n"
-        f"❌ Yuborilmagan: {failed} ta",
-        reply_markup=await AdminPanel.admin_msg()
+        f"✅ {'Sinov' if is_test else 'Xabar'} yuborildi\n"
+        f"✅ {'Tes' if is_test else 'Pesan'} terkirim\n"
+        f"✅ {'Test' if is_test else 'Message'} sent\n\n"
+        f"📤 Yuborilgan: {success} ta | Terkirim: {success} | Sent: {success}\n"
+        f"❌ Yuborilmagan: {failed} ta | Tidak terkirim: {failed} | Failed: {failed}",
+        reply_markup=await AdminPanel.admin_msg(),
+        parse_mode="HTML"
     )
     logger.info(f"Broadcast completed: {success} successful, {failed} failed, total: {total}")
 
