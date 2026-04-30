@@ -38,7 +38,7 @@ class CheckData:
     async def channels_btn(channels: list):
         keyboard = []
         for index, channel_id in enumerate(channels, 1):
-            sql.execute("SELECT chat_id, username FROM mandatorys WHERE chat_id=?", (channel_id,))
+            sql.execute("SELECT chat_id, username FROM mandatorys WHERE chat_id=%s", (channel_id,))
             link = sql.fetchone()
             if link:
                 keyboard.append([
@@ -54,12 +54,12 @@ class CheckData:
 class PanelFunc:
     @staticmethod
     async def channel_add(chat_id, link):
-        sql.execute("INSERT INTO mandatorys(chat_id, username) VALUES(?, ?)", (chat_id, link))
+        sql.execute("INSERT INTO mandatorys(chat_id, username) VALUES(%s, %s)", (chat_id, link))
         db.commit()
 
     @staticmethod
     async def channel_delete(id):
-        sql.execute("DELETE FROM mandatorys WHERE chat_id=?", (id,))
+        sql.execute("DELETE FROM mandatorys WHERE chat_id=%s", (id,))
         db.commit()
 
     @staticmethod
@@ -88,12 +88,12 @@ class PanelFunc:
 
     @staticmethod
     async def admin_add(chat_id):
-        sql.execute("INSERT INTO admins(user_id) VALUES(?)", (chat_id,))
+        sql.execute("INSERT INTO admins(user_id) VALUES(%s)", (chat_id,))
         db.commit()
 
     @staticmethod
     async def admin_delete(id):
-        sql.execute("DELETE FROM admins WHERE user_id=?", (id,))
+        sql.execute("DELETE FROM admins WHERE user_id=%s", (id,))
         db.commit()
 
     @staticmethod

@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-import psycopg2
 import pytz
 from aiogram import Router, F
 from aiogram.exceptions import AiogramError
@@ -59,36 +58,34 @@ async def new(message: Message):
     current_month = now.replace(day=1)
     months = [current_month - relativedelta(months=i) for i in range(3)]
 
-    conn = psycopg2.connect(**DB_CONFIG)
-    cur = conn.cursor()
 
     # Jami foydalanuvchilar
-    cur.execute("SELECT COUNT(*) FROM users WHERE is_active = TRUE")
-    all_users = cur.fetchone()[0]
+    sql.execute("SELECT COUNT(*) FROM users WHERE is_active = TRUE")
+    all_users = sql.fetchone()[0]
 
     # Oxirgi 3 oydagi jami foydalanuvchilar
-    cur.execute("SELECT COUNT(*) FROM users WHERE DATE(created_at) >= ?", (months[-1],))
-    last_3_months = cur.fetchone()[0]
+    sql.execute("SELECT COUNT(*) FROM users WHERE created_at::date >= %s", (months[-1],))
+    last_3_months = sql.fetchone()[0]
 
     # Har bir oy bo‘yicha statistikalar
     month_counts = {}
     for month in months:
-        cur.execute(
-            "SELECT COUNT(*) FROM users WHERE DATE(created_at) >= ? AND DATE(created_at) < ?",
+        sql.execute(
+            "SELECT COUNT(*) FROM users WHERE created_at::date >= %s AND created_at::date < %s",
             (month, month + relativedelta(months=1))
         )
-        month_counts[month.strftime("%B")] = cur.fetchone()[0] or 0
+        month_counts[month.strftime("%B")] = sql.fetchone()[0] or 0
 
     # Oxirgi 7 kun statistikasi
     last_7_days = {}
     for i in range(7):
         date_str = (now - timedelta(days=i)).strftime("%Y-%m-%d")
-        cur.execute("SELECT COUNT(*) FROM users WHERE DATE(created_at) = ?", (date_str,))
-        last_7_days[date_str] = cur.fetchone()[0] or 0
+        sql.execute("SELECT COUNT(*) FROM users WHERE created_at::date = %s", (date_str,))
+        last_7_days[date_str] = sql.fetchone()[0] or 0
 
     # --- Yangi qo'shiladigan qism: tillar kesimi ---
-    cur.execute("SELECT interface_lang, COUNT(*) FROM users GROUP BY interface_lang ORDER BY COUNT(*) DESC")
-    lang_stats = cur.fetchall()
+    sql.execute("SELECT interface_lang, COUNT(*) FROM users GROUP BY interface_lang ORDER BY COUNT(*) DESC")
+    lang_stats = sql.fetchall()
 
 
     # Xabarni tayyorlash (asosiy statistikalar)
@@ -118,7 +115,7 @@ async def new(message: Message):
     # for part in parts:
     #     await message.answer(part, parse_mode="Markdown")
     # --- Oxirgi 48 soatda tillar kesimi (TOP 10) ---
-    cur.execute("""
+    sql.execute("""
         SELECT interface_lang, COUNT(*) 
         FROM users 
         WHERE created_at >= NOW() - interval '48 hours'
@@ -126,7 +123,7 @@ async def new(message: Message):
         ORDER BY COUNT(*) DESC 
         LIMIT 10
     """)
-    lang_last_48 = cur.fetchall()
+    lang_last_48 = sql.fetchall()
 
     # --- Xabar matni ---
     langs_48_text = "⏰ *Oxirgi 48 soatda qo‘shilganlar (TOP 10 tillar):*\n\n"
@@ -310,7 +307,7 @@ async def admin_statistics(message: Message):
         # Bugun qo'shilgan foydalanuvchilar
         sql.execute("""
             SELECT COUNT(*) FROM users 
-            WHERE DATE(created_at) = CURRENT_DATE
+            WHERE created_at::date = CURRENT_DATE
         """)
         today_users = sql.fetchone()[0]
         
@@ -328,7 +325,7 @@ async def admin_statistics(message: Message):
         # Bugungi tarjimalar
         sql.execute("""
             SELECT COUNT(*) FROM translation_history 
-            WHERE DATE(created_at) = CURRENT_DATE
+            WHERE created_at::date = CURRENT_DATE
         """)
         today_translations = sql.fetchone()[0]
         

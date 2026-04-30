@@ -134,7 +134,7 @@ async def cb_start_practice(cb: CallbackQuery, state: FSMContext):
 
     # Lug'atning mavjudligini va egasini tekshirish
     book_check = await db_exec(
-        "SELECT name FROM vocab_books WHERE id=? AND user_id=?",
+        "SELECT name FROM vocab_books WHERE id=%s AND user_id=%s",
         (book_id, user_id), fetch=True
     )
 
@@ -143,7 +143,7 @@ async def cb_start_practice(cb: CallbackQuery, state: FSMContext):
         return
 
     rows = await db_exec(
-        "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=?",
+        "SELECT word_src, word_trg FROM vocab_entries WHERE book_id=%s",
         (book_id,), fetch=True, many=True
     )
 

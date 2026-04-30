@@ -72,19 +72,19 @@ fallback_translator = GoogleTransFallback()
 
 # --- Database helpers ---
 def get_user_langs(user_id: int):
-    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id=?", (user_id,))
+    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id=%s", (user_id,))
     return sql.fetchone()
 
 def update_user_lang(user_id: int, lang_code: str, direction: str):
     field = "from_lang" if direction == "from" else "to_lang"
-    sql.execute("SELECT 1 FROM user_languages WHERE user_id=?", (user_id,))
+    sql.execute("SELECT 1 FROM user_languages WHERE user_id=%s", (user_id,))
     if sql.fetchone():
         sql.execute(f"UPDATE user_languages SET {field}=? WHERE user_id=?", (lang_code, user_id))
     else:
         from_lang = lang_code if direction == "from" else None
         to_lang = lang_code if direction == "to" else None
         sql.execute(
-            "INSERT INTO user_languages (user_id, from_lang, to_lang) VALUES (?, ?, ?)",
+            "INSERT INTO user_languages (user_id, from_lang, to_lang) VALUES (%s, %s, %s)",
             (user_id, from_lang, to_lang),
         )
     db.commit()
@@ -224,7 +224,7 @@ def translate_text(from_lang: str, to_lang: str, text: str):
 
 # --- Switch tillar funksiyasi ---
 def switch_user_langs(user_id: int):
-    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id=?", (user_id,))
+    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id=%s", (user_id,))
     langs = sql.fetchone()
     if langs:
         from_lang, to_lang = langs

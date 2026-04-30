@@ -160,7 +160,7 @@ async def init_essential_series():
     for i, (code, name) in enumerate(ESSENTIAL_BOOKS.items(), 1):
         await db_exec("""
                       INSERT INTO essential_series (code, name, level_order)
-                      VALUES (?, ?, ?) ON CONFLICT (code) DO NOTHING
+                      VALUES (%s, %s, %s) ON CONFLICT (code) DO NOTHING
                       """, (code, name, i))
 
 
@@ -209,7 +209,7 @@ async def import_essential_file(series_code: str, file_path: str, admin_id: int)
 
     # Series ID olish
     series = await db_exec(
-        "SELECT id FROM essential_series WHERE code = ?",
+        "SELECT id FROM essential_series WHERE code = %s",
         (series_code,), fetch=True
     )
 
@@ -232,7 +232,7 @@ async def import_essential_file(series_code: str, file_path: str, admin_id: int)
             # Unit uchun kitob yaratish yoki yangilash
             book = await db_exec("""
                                  INSERT INTO essential_books (series_id, unit_number, title, word_count)
-                                 VALUES (?, ?, ?, ?) ON CONFLICT (series_id, unit_number)
+                                 VALUES (%s, %s, %s, %s) ON CONFLICT (series_id, unit_number)
                                  DO UPDATE SET word_count = excluded.word_count
                                  RETURNING id
                                  """, (series_id, unit_num, f"Unit {unit_num}", len(words)), fetch=True)
@@ -240,7 +240,7 @@ async def import_essential_file(series_code: str, file_path: str, admin_id: int)
             book_id = book['id']
 
             # Eski so'zlarni o'chirish
-            await db_exec("DELETE FROM essential_entries WHERE book_id = ?", (book_id,))
+            await db_exec("DELETE FROM essential_entries WHERE book_id = %s", (book_id,))
 
             # Yangi so'zlarni qo'shish
             word_count = 0
@@ -248,7 +248,7 @@ async def import_essential_file(series_code: str, file_path: str, admin_id: int)
                 try:
                     await db_exec("""
                                   INSERT INTO essential_entries (book_id, word_src, word_trg, position)
-                                  VALUES (?, ?, ?, ?)
+                                  VALUES (%s, %s, %s, %s)
                                   """, (book_id, word, translation, pos))
                     word_count += 1
                 except Exception as e:
@@ -257,7 +257,7 @@ async def import_essential_file(series_code: str, file_path: str, admin_id: int)
 
             # Kitob word_count yangilash
             await db_exec(
-                "UPDATE essential_books SET word_count = ? WHERE id = ?",
+                "UPDATE essential_books SET word_count = %s WHERE id = %s",
                 (word_count, book_id)
             )
 
@@ -354,7 +354,7 @@ async def get_unit_words(unit_id: int) -> list:
     words = await db_exec("""
                           SELECT word_src, word_trg
                           FROM essential_entries
-                          WHERE book_id = ?
+                          WHERE book_id = %s
                             AND is_active = TRUE
                           ORDER BY position
                           """, (unit_id,), fetch=True, many=True)
@@ -496,7 +496,7 @@ async def cb_essential_series(cb: CallbackQuery):
 
     # Series mavjudligini tekshirish
     series = await db_exec(
-        "SELECT id, name FROM essential_series WHERE code = ? AND is_active = TRUE",
+        "SELECT id, name FROM essential_series WHERE code = %s AND is_active = TRUE",
         (series_code,), fetch=True
     )
 
@@ -509,7 +509,7 @@ async def cb_essential_series(cb: CallbackQuery):
     units = await db_exec("""
                           SELECT id, unit_number, word_count, title
                           FROM essential_books
-                          WHERE series_id = ?
+                          WHERE series_id = %s
                             AND is_active = TRUE
                           ORDER BY unit_number
                               LIMIT ?
@@ -518,7 +518,7 @@ async def cb_essential_series(cb: CallbackQuery):
 
     # Umumiy soni
     total_count = await db_exec(
-        "SELECT COUNT(*) as count FROM essential_books WHERE series_id = ? AND is_active = TRUE",
+        "SELECT COUNT(*) as count FROM essential_books WHERE series_id = %s AND is_active = TRUE",
         (series['id'],), fetch=True
     )
 
@@ -554,7 +554,7 @@ async def cb_essential_unit_practice(cb: CallbackQuery, state: FSMContext):
                               SELECT eb.unit_number, eb.title, eb.word_count, es.name as series_name
                               FROM essential_books eb
                                        JOIN essential_series es ON eb.series_id = es.id
-                              WHERE eb.id = ?
+                              WHERE eb.id = %s
                                 AND eb.is_active = TRUE
                               """, (unit_id,), fetch=True)
 

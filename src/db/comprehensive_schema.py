@@ -215,7 +215,7 @@ async def init_default_achievements():
             sql.execute("""
                 INSERT OR IGNORE INTO achievements
                 (code, name, description, emoji, category, requirement_type, requirement_value, xp_reward)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """, (code, name, description, emoji, category, req_type, req_val, xp))
         db.commit()
         print(f"[DB SCHEMA] [OK] {len(achievements)} default achievements initialized")

@@ -208,7 +208,7 @@ async def init_parallel_series():
             # SQLite - use INSERT OR REPLACE
             await db_exec("""
                           INSERT OR REPLACE INTO parallel_series (code, name, src_lang, trg_lang, icon)
-                          VALUES (?, ?, ?, ?, ?)
+                          VALUES (%s, %s, %s, %s, %s)
                           """, (code, info["name"], info["src_lang"], info["trg_lang"], info["icon"]))
         else:
             # PostgreSQL - use ON CONFLICT

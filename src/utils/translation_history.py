@@ -44,7 +44,7 @@ def save_translation_history(
         sql.execute("""
             INSERT INTO translation_history 
             (user_id, from_lang, to_lang, source_text, translated_text)
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s)
         """, (user_id, from_lang, to_lang, original_text[:1000], translated_text[:1000]))
         
         db.commit()
@@ -53,7 +53,7 @@ def save_translation_history(
         # SQLite OFFSET in subquery ishlamaydi, shuning uchun min id orqali o'chiramiz
         sql.execute("""
             SELECT id FROM translation_history
-            WHERE user_id = ?
+            WHERE user_id = %s
             ORDER BY created_at DESC
             LIMIT 1 OFFSET 99
         """, (user_id,))
@@ -62,7 +62,7 @@ def save_translation_history(
             cutoff_id = row[0]
             sql.execute("""
                 DELETE FROM translation_history
-                WHERE user_id = ? AND id < ?
+                WHERE user_id = %s AND id < %s
             """, (user_id, cutoff_id))
         
         db.commit()
@@ -90,9 +90,9 @@ def get_translation_history(
         sql.execute("""
             SELECT id, from_lang, to_lang, source_text, translated_text, created_at
             FROM translation_history
-            WHERE user_id = ?
+            WHERE user_id = %s
             ORDER BY created_at DESC
-            LIMIT ?
+            LIMIT %s
         """, (user_id, limit))
         
         return sql.fetchall()
@@ -115,7 +115,7 @@ def get_favorite_translations(user_id: int) -> List[Tuple[int, str, str, str, st
         sql.execute("""
             SELECT id, from_lang, to_lang, source_text, translated_text
             FROM translation_history
-            WHERE user_id = ? AND is_favorite = TRUE
+            WHERE user_id = %s AND is_favorite = TRUE
             ORDER BY created_at DESC
             LIMIT 50
         """, (user_id,))
@@ -141,7 +141,7 @@ def toggle_favorite(user_id: int, translation_id: int) -> bool:
         sql.execute("""
             UPDATE translation_history
             SET is_favorite = NOT is_favorite
-            WHERE id = ? AND user_id = ?
+            WHERE id = %s AND user_id = %s
         """, (translation_id, user_id))
         
         db.commit()
@@ -166,7 +166,7 @@ def delete_translation(user_id: int, translation_id: int) -> bool:
     try:
         sql.execute("""
             DELETE FROM translation_history
-            WHERE id = ? AND user_id = ?
+            WHERE id = %s AND user_id = %s
         """, (translation_id, user_id))
         
         db.commit()
@@ -190,7 +190,7 @@ def clear_history(user_id: int) -> bool:
     try:
         sql.execute("""
             DELETE FROM translation_history
-            WHERE user_id = ? AND is_favorite = FALSE
+            WHERE user_id = %s AND is_favorite = FALSE
         """, (user_id,))
         
         db.commit()
@@ -215,7 +215,7 @@ def get_user_translation_stats(user_id: int) -> dict:
         # Jami tarjimalar
         sql.execute("""
             SELECT COUNT(*) FROM translation_history
-            WHERE user_id = ?
+            WHERE user_id = %s
         """, (user_id,))
         total = sql.fetchone()[0]
         
@@ -223,7 +223,7 @@ def get_user_translation_stats(user_id: int) -> dict:
         sql.execute("""
             SELECT from_lang, to_lang, COUNT(*) as count
             FROM translation_history
-            WHERE user_id = ?
+            WHERE user_id = %s
             GROUP BY from_lang, to_lang
             ORDER BY count DESC
             LIMIT 1
@@ -234,7 +234,7 @@ def get_user_translation_stats(user_id: int) -> dict:
         # Bugungi tarjimalar
         sql.execute("""
             SELECT COUNT(*) FROM translation_history
-            WHERE user_id = ? AND DATE(created_at) = CURRENT_DATE
+            WHERE user_id = %s AND DATE(created_at) = CURRENT_DATE
         """, (user_id,))
         today = sql.fetchone()[0]
         

@@ -75,7 +75,7 @@ async def enhanced_welcome(message: Message):
     try:
         sql.execute("""
             INSERT INTO users_enhanced (user_id, username, first_name, language_code)
-            VALUES (?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s)
             ON CONFLICT (user_id) DO UPDATE SET
                 username = EXCLUDED.username,
                 first_name = EXCLUDED.first_name,
@@ -113,7 +113,7 @@ async def language_selection(message: Message):
     user_id = message.from_user.id
     
     # Get current language preferences
-    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id = ?", (user_id,))
+    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id = %s", (user_id,))
     result = sql.fetchone()
     current_from = result[0] if result else 'auto'
     current_to = result[1] if result else 'uz'
@@ -150,7 +150,7 @@ async def profile_menu(message: Message):
     try:
         sql.execute("""
             INSERT INTO users_enhanced (user_id, username, first_name, language_code, created_at, last_active_at)
-            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             ON CONFLICT (user_id) DO UPDATE SET
                 username = EXCLUDED.username,
                 first_name = EXCLUDED.first_name,
@@ -161,7 +161,7 @@ async def profile_menu(message: Message):
         # Also ensure leaderboard entry exists
         sql.execute("""
             INSERT INTO leaderboard (user_id, total_xp)
-            VALUES (?, 0)
+            VALUES (%s, 0)
             ON CONFLICT (user_id) DO NOTHING
         """, (user_id,))
         db.commit()
@@ -174,7 +174,7 @@ async def profile_menu(message: Message):
     # Get user info
     sql.execute("""
         SELECT first_name, username, is_premium, premium_until, streak_days, user_level, experience_points
-        FROM users_enhanced WHERE user_id = ?
+        FROM users_enhanced WHERE user_id = %s
     """, (user_id,))
     user_info = sql.fetchone()
     
@@ -245,7 +245,7 @@ async def detailed_stats(callback: CallbackQuery):
             COUNT(CASE WHEN DATE(created_at) = CURRENT_DATE THEN 1 END) as today_trans,
             COUNT(CASE WHEN created_at > NOW() - INTERVAL '7 days' THEN 1 END) as week_trans,
             COUNT(DISTINCT from_lang || '→' || to_lang) as unique_pairs
-        FROM translations_enhanced WHERE user_id = ?
+        FROM translations_enhanced WHERE user_id = %s
     """, (user_id,))
     
     trans_stats = sql.fetchone()
@@ -256,7 +256,7 @@ async def detailed_stats(callback: CallbackQuery):
             COUNT(DISTINCT book_id) as books_with_words
         FROM vocab_entries_enhanced ve
         JOIN vocab_books_enhanced vb ON ve.book_id = vb.id
-        WHERE vb.user_id = ?
+        WHERE vb.user_id = %s
     """, (user_id,))
     
     vocab_stats = sql.fetchone()
@@ -340,7 +340,7 @@ async def show_achievements_callback(callback: CallbackQuery):
             SELECT a.code, a.name, a.description, a.icon_emoji, a.rarity, a.xp_reward,
                    ua.unlocked_at, ua.progress
             FROM achievements a
-            LEFT JOIN user_achievements ua ON a.id = ua.achievement_id AND ua.user_id = ?
+            LEFT JOIN user_achievements ua ON a.id = ua.achievement_id AND ua.user_id = %s
             ORDER BY ua.unlocked_at DESC NULLS LAST, a.xp_reward DESC
         """, (user_id,))
         
@@ -486,7 +486,7 @@ async def achievements_menu(message: Message):
         SELECT a.code, a.name, a.description, a.icon_emoji, a.rarity, a.xp_reward,
                ua.unlocked_at, ua.progress
         FROM achievements a
-        LEFT JOIN user_achievements ua ON a.id = ua.achievement_id AND ua.user_id = ?
+        LEFT JOIN user_achievements ua ON a.id = ua.achievement_id AND ua.user_id = %s
         ORDER BY ua.unlocked_at DESC NULLS LAST, a.xp_reward DESC
     """, (user_id,))
     
@@ -568,7 +568,7 @@ async def daily_challenge(callback: CallbackQuery):
     sql.execute("""
         SELECT current_value, is_completed
         FROM user_challenge_progress
-        WHERE user_id = ? AND challenge_id = ?
+        WHERE user_id = %s AND challenge_id = %s
     """, (user_id, challenge[0]))
     
     progress = sql.fetchone()
@@ -680,7 +680,7 @@ async def set_language(callback: CallbackQuery):
         print(f"Language update error: {e}")
     
     # Refresh the keyboard
-    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id = ?", (user_id,))
+    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id = %s", (user_id,))
     result = sql.fetchone()
     current_from = result[0] if result else 'auto'
     current_to = result[1] if result else 'uz'
@@ -696,7 +696,7 @@ async def switch_languages(callback: CallbackQuery):
     """Switch source and target languages"""
     user_id = callback.from_user.id
     
-    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id = ?", (user_id,))
+    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id = %s", (user_id,))
     result = sql.fetchone()
     
     if result:
@@ -705,8 +705,8 @@ async def switch_languages(callback: CallbackQuery):
         if from_lang != 'auto':
             sql.execute("""
                 UPDATE user_languages 
-                SET from_lang = ?, to_lang = ? 
-                WHERE user_id = ?
+                SET from_lang = %s, to_lang = %s 
+                WHERE user_id = %s
             """, (to_lang, from_lang, user_id))
             db.commit()
             
@@ -725,7 +725,7 @@ async def language_selection_done(callback: CallbackQuery):
     
     # Show confirmation
     user_id = callback.from_user.id
-    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id = ?", (user_id,))
+    sql.execute("SELECT from_lang, to_lang FROM user_languages WHERE user_id = %s", (user_id,))
     result = sql.fetchone()
     
     if result:
